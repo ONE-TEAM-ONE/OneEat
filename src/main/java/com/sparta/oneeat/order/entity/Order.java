@@ -3,6 +3,7 @@ package com.sparta.oneeat.order.entity;
 import com.sparta.oneeat.store.entity.Store;
 import com.sparta.oneeat.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "P_ORDER")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

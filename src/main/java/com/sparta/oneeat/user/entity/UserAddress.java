@@ -2,13 +2,14 @@ package com.sparta.oneeat.user.entity;
 
 import com.sparta.oneeat.store.entity.AddressCode;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="P_USER_ADDRESS")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

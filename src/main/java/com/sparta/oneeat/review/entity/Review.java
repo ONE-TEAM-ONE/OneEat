@@ -4,13 +4,14 @@ import com.sparta.oneeat.order.entity.Order;
 import com.sparta.oneeat.store.entity.Store;
 import com.sparta.oneeat.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "P_REVIEW")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -2,13 +2,14 @@ package com.sparta.oneeat.order.entity;
 
 import com.sparta.oneeat.menu.entity.Menu;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "P_MENU_ORDER")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderMenu {
     @ManyToOne
     @JoinColumn(name = "ORDER_ID", nullable = false)

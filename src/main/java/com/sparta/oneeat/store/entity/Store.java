@@ -4,6 +4,7 @@ import com.sparta.oneeat.menu.entity.Menu;
 import com.sparta.oneeat.review.entity.Review;
 import com.sparta.oneeat.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name="P_STORE")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

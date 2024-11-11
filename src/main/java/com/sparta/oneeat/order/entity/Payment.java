@@ -1,13 +1,14 @@
 package com.sparta.oneeat.order.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "P_PAYMENT")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

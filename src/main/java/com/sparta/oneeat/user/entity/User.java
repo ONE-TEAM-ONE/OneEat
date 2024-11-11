@@ -2,6 +2,7 @@ package com.sparta.oneeat.user.entity;
 
 import com.sparta.oneeat.store.entity.Store;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,7 @@ import java.util.List;
 @Entity
 @Table(name="P_USERS")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
     @Id
