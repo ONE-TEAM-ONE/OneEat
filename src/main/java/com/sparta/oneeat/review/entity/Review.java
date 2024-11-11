@@ -39,5 +39,5 @@ public class Review {
     private String image;
 
     @Column(name = "REVIEW_RATING", nullable = false)
-    private String rating;
+    private Integer rating;
 }

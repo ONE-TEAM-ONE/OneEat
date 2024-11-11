@@ -34,7 +34,7 @@ public class Menu {
     private String description;
 
     @Column(name="ITEM_AI")
-    private String ai;
+    private Boolean ai;
 
     @Column(name="ITEM_PRICE")
     private Integer price;
