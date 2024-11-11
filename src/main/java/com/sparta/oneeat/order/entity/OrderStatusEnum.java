@@ -1,4 +1,4 @@
 package com.sparta.oneeat.order.entity;
 
-public enum OrderStateEnum {
+public enum OrderStatusEnum {
 }

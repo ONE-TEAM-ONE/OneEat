@@ -46,7 +46,8 @@ public class Store {
     private String description;
 
     @Column(name="STORE_STATUS", nullable = false)
-    private StoreStateEnum state;
+    @Enumerated(EnumType.STRING)
+    private StoreStatusEnum status;
 
     @Column(name="STORE_START_TIME", nullable = false)
     private Date startTime;

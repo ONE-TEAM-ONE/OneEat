@@ -35,10 +35,12 @@ public class Order {
     private List<OrderMenu> orderMenuList;
 
     @Column(name = "ORDER_TYPE", nullable = false)
+    @Enumerated(EnumType.STRING)
     private OrderTypeEnum type;
 
     @Column(name = "ORDER_STATE", nullable = false)
-    private OrderStateEnum state;
+    @Enumerated(EnumType.STRING)
+    private OrderStatusEnum status;
 
     @Column(name = "ORDER_TOTALPRICE", nullable = false)
     private Integer totalPrice;

@@ -43,5 +43,6 @@ public class Menu {
     private String image;
 
     @Column(name="ITEM_STATUS")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private MenuStatusEnum status;
 }

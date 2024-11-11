@@ -22,6 +22,7 @@ public class Payment {
     private Order order;
 
     @Column(name = "PAYMENT_STATUS", nullable = false)
+    @Enumerated(EnumType.STRING)
     private PaymentStatusEnum status;
 
 }
