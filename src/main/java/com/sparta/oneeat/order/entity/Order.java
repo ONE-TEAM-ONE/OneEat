@@ -47,5 +47,4 @@ public class Order {
 
     @Column(name = "ORDER_ADDRESS")
     private String address;
-
 }

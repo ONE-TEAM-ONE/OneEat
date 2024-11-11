@@ -24,5 +24,4 @@ public class DeliveryRegion {
     @ManyToOne
     @JoinColumn(name = "ADDRESS_CODE_ID", nullable = false)
     private AddressCode addressCode;
-
 }

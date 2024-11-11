@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USERS_ID", nullable = false)
@@ -41,5 +40,4 @@ public class User {
     @Column(name="USERS_ROLE", nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRoleEnum role;
-
 }

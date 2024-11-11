@@ -27,5 +27,4 @@ public class Payment {
     @Column(name = "PAYMENT_STATUS", nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentStatusEnum status;
-
 }

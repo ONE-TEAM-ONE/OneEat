@@ -19,5 +19,4 @@ public class Category {
 
     @Column(name = "STORE_CATEGORY_CATEGORY", nullable = false)
     private StoreCategoryEnum category;
-
 }

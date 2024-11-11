@@ -13,6 +13,11 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderMenu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name="MENU_ORDER_ID", nullable = false)
+    private UUID id;
+
     @ManyToOne
     @JoinColumn(name = "ORDER_ID", nullable = false)
     private Order order;
@@ -21,15 +26,9 @@ public class OrderMenu {
     @JoinColumn(name = "ITEM_ID", nullable = false)
     private Menu menu;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name="MENU_ORDER_ID", nullable = false)
-    private UUID id;
-
     @Column(name = "QUANTITY", nullable = false)
     private Integer quantity;
 
     @Column(name = "PRICE", nullable = false)
     private Integer price;
-
 }
