@@ -41,6 +41,9 @@ out/
 *.properties
 .env
 
+# Include only application.yml
+!application.yml
+
 # Ignore macOS system files
 .DS_Store
 **/.DS_Store/**
