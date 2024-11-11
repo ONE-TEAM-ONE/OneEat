@@ -1,0 +1,32 @@
+package com.sparta.oneeat.order.entity;
+
+import com.sparta.oneeat.menu.entity.Menu;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "P_MENU_ORDER")
+@Getter
+@NoArgsConstructor
+public class OrderMenu {
+    @ManyToOne
+    @JoinColumn(name = "ORDER_ID", nullable = false)
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "ITEM_ID", nullable = false)
+    private Menu menu;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name="MENU_ORDER_ID", nullable = false)
+    private String id;
+
+    @Column(name = "QUANTITY", nullable = false)
+    private Integer quantity;
+
+    @Column(name = "PRICE", nullable = false)
+    private Integer price;
+
+}
