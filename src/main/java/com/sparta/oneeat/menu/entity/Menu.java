@@ -24,9 +24,6 @@ public class Menu {
     @JoinColumn(name = "STORE_ID")
     private Store store;
 
-    @OneToMany(mappedBy = "menu")
-    private List<OrderMenu> orderMenuList;
-
     @Column(name="ITEM_NAME")
     private String name;
 

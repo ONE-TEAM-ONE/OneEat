@@ -21,6 +21,9 @@ public class Payment {
     @JoinColumn(name = "ORDER_ID", nullable = false)
     private Order order;
 
+    @Column(name = "PAYMENT_DETAIL")
+    private String detail;
+
     @Column(name = "PAYMENT_STATUS", nullable = false)
     @Enumerated(EnumType.STRING)
     private PaymentStatusEnum status;

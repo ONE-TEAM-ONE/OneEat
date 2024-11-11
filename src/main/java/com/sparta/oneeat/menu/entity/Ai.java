@@ -17,7 +17,7 @@ public class Ai {
     @Column(name="AI_ID", nullable = false)
     private UUID id;
 
-    @Column(name="AI_REQUEST")
+    @Column(name="AI_REQUEST", nullable = false)
     private String request;
 
     @Column(name="AI_RESPONSE")
