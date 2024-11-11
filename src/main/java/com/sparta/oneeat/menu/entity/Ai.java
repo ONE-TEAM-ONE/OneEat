@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "P_AI")
 @Getter
@@ -13,7 +15,7 @@ public class Ai {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="AI_ID", nullable = false)
-    private String id;
+    private UUID id;
 
     @Column(name="AI_REQUEST")
     private String request;

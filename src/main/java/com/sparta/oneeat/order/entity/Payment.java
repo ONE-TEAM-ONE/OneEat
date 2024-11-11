@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "P_PAYMENT")
 @Getter
@@ -13,7 +15,7 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="PAYMENT_ID", nullable = false)
-    private String id;
+    private UUID id;
 
     @OneToOne
     @JoinColumn(name = "ORDER_ID", nullable = false)

@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "P_REVIEW")
 @Getter
@@ -16,7 +18,7 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="REVIEW_ID", nullable = false)
-    private String id;
+    private UUID id;
 
     @OneToOne
     @JoinColumn(name = "ORDER_ID")

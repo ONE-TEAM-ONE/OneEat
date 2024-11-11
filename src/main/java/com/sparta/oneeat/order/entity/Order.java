@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "P_ORDER")
@@ -17,7 +18,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="ORDER_ID", nullable = false)
-    private String id;
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "USERS_ID")

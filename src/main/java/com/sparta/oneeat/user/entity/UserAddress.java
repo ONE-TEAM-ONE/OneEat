@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Table(name="P_USER_ADDRESS")
 @Getter
@@ -14,7 +16,7 @@ public class UserAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="USER_ADDRESS_ID", nullable = false)
-    private String id;
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "USERS_ID", nullable = false)

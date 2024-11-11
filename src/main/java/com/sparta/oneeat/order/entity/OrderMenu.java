@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "P_MENU_ORDER")
 @Getter
@@ -22,7 +24,7 @@ public class OrderMenu {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="MENU_ORDER_ID", nullable = false)
-    private String id;
+    private UUID id;
 
     @Column(name = "QUANTITY", nullable = false)
     private Integer quantity;

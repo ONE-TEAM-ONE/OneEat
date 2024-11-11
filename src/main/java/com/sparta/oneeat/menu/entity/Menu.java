@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "P_ITEM")
@@ -17,7 +18,7 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="ITEM_ID", nullable = false)
-    private String id;
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "STORE_ID")

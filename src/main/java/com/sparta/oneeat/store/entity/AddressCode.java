@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Table(name="P_ADDRESS_CODE")
 @Getter
@@ -13,7 +15,7 @@ public class AddressCode {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="ADDRESS_CODE_ID", nullable = false)
-    private String id;
+    private UUID id;
 
     @Column(name = "ADDRESS_CODE_AREA", nullable = false)
     private String area;

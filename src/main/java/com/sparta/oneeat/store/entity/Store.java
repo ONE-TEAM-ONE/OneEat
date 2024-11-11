@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name="P_STORE")
@@ -19,7 +20,7 @@ public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="STORE_ID", nullable = false)
-    private String id;
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "USERS_ID", nullable = false)

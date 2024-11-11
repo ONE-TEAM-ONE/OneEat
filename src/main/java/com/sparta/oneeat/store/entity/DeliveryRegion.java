@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Table(name="P_DELIVERY_REGION")
 @Getter
@@ -13,7 +15,7 @@ public class DeliveryRegion {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="DELIVERY_REGION_ID", nullable = false)
-    private String id;
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "STORE_ID", nullable = false)
