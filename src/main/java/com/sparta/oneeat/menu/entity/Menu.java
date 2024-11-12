@@ -1,13 +1,11 @@
 package com.sparta.oneeat.menu.entity;
 
-import com.sparta.oneeat.order.entity.OrderMenu;
 import com.sparta.oneeat.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.UUID;
 
 @Entity
