@@ -30,6 +30,8 @@ public class EnvTest {
         assertNotNull(dotenv.get("DB_URL"), "DB_URL 값이 존재하지 않습니다.");
         assertNotNull(dotenv.get("DB_USERNAME"), "DB_USERNAME 값이 존재하지 않습니다.");
         assertNotNull(dotenv.get("DB_PASSWORD"), "DB_PASSWORD 값이 존재하지 않습니다.");
+        assertNotNull(dotenv.get("API_KEY"), "API_KEY 값이 존재하지 않습니다.");
+
     }
 
 }
