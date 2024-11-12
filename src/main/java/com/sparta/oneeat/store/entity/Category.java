@@ -18,5 +18,6 @@ public class Category {
     private UUID id;
 
     @Column(name = "STORE_CATEGORY_CATEGORY", nullable = false)
+    @Enumerated(EnumType.STRING)
     private StoreCategoryEnum category;
 }
