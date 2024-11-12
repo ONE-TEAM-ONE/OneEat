@@ -18,11 +18,15 @@ public class User {
     @Column(name = "USERS_ID", nullable = false)
     private Long id;
 
+
+    @OneToOne
+    @JoinColumn(name="USER_ADDRESS_ID", nullable = false)
+    private UserAddress currentAddress;
+
     @OneToMany(mappedBy = "user")
     private List<Store> storeList;
 
     @OneToMany(mappedBy = "user")
-    @JoinColumn(name="USER_ADDRESS_ID", nullable = false)
     private List<UserAddress> userAddress;
 
     @Column(name="USERS_USERNAME", nullable = false)
