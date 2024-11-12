@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequestMapping("/order")
@@ -42,6 +44,22 @@ public class OrderController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, orderService.getOrderList(2L, (page-1), size, sort, isAsc)));
     }
 
+
+    @Operation(summary = "주문 상세 조회", description = "주문 내역을 상세 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "주문 상세 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "주문 상세 조회 실패")
+    })
+    @GetMapping("/{order_id}")
+    public ResponseEntity<? extends BaseResponseBody> getOrderDetail(
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable(name = "order_id") UUID orderId
+    ){
+
+        log.info("orderId : {}", orderId);
+
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, orderService.getOrderDetail(1L, orderId)));
+    }
 
 }
 

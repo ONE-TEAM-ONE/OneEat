@@ -2,6 +2,7 @@ package com.sparta.oneeat.order.Service;
 
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
+import com.sparta.oneeat.order.dto.OrderDetailDto;
 import com.sparta.oneeat.order.dto.OrderListDto;
 import com.sparta.oneeat.order.entity.Order;
 import com.sparta.oneeat.order.repository.OrderRepository;
@@ -18,6 +19,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -51,6 +55,39 @@ public class OrderServiceImpl implements OrderService{
         }
         
         return orderList.map(OrderListDto::new);
+    }
+
+    @Override
+    public OrderDetailDto getOrderDetail(long userId, UUID orderId) {
+        // 유저확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+        // 주문 확인
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(ExceptionType.ORDER_NOT_EXIST));
+
+        OrderDetailDto orderDetailDto = null;
+
+        if(user.getRole() == UserRoleEnum.CUSTOMER){
+            // 고객인 경우, 해당 주문을 한 고객인지 확인
+
+            log.info(" 유저 엔티티 유저 PK : {}", user.getId());
+            log.info(" 주문 엔티티 유저 FK : {}", order.getUser().getId());
+
+            if(!Objects.equals(user.getId(), order.getUser().getId())) throw new CustomException(ExceptionType.ACCESS_DENIED);
+
+            orderDetailDto = new OrderDetailDto(order);
+
+        }else if(user.getRole() == UserRoleEnum.OWNER){
+            // 주인인 경우, 해당 가게의 주문인지 확인
+
+            log.info(" 유저 엔티티 상품 FK : {}", user.getStoreList().get(0).getId());
+            log.info(" 주문 엔티티 상품 FK : {}", order.getStore().getId());
+
+            if(!Objects.equals(user.getStoreList().get(0).getId(), order.getStore().getId())) throw new CustomException(ExceptionType.ACCESS_DENIED);
+
+            orderDetailDto = new OrderDetailDto(order);
+        }
+
+        return orderDetailDto;
     }
 
 }
