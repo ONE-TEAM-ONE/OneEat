@@ -22,16 +22,16 @@ public class Menu {
     @JoinColumn(name = "STORE_ID")
     private Store store;
 
-    @Column(name="ITEM_NAME")
+    @Column(name="ITEM_NAME", nullable = false)
     private String name;
 
     @Column(name="ITEM_DESC")
     private String description;
 
-    @Column(name="ITEM_AI")
+    @Column(name="ITEM_AI", nullable = false)
     private Boolean ai;
 
-    @Column(name="ITEM_PRICE")
+    @Column(name="ITEM_PRICE", nullable = false)
     private Integer price;
 
     @Column(name="ITEM_IMAGE")

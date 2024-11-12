@@ -20,12 +20,12 @@ public class Ai {
     @Column(name="AI_REQUEST", nullable = false)
     private String request;
 
-    @Column(name="AI_RESPONSE")
+    @Column(name="AI_RESPONSE", nullable = false)
     private String response;
 
-    @Column(name="USERS_ID")
+    @Column(name="USERS_ID", nullable = false)
     private String userId;
 
-    @Column(name="MENU_ID")
+    @Column(name="MENU_ID", nullable = false)
     private String menuId;
 }
