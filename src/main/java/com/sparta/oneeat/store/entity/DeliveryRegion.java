@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-
 @Entity
 @Table(name="P_DELIVERY_REGION")
 @Getter
