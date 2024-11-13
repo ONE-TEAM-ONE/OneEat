@@ -61,6 +61,22 @@ public class OrderController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, orderService.getOrderDetail(1L, orderId)));
     }
 
+    @Operation(summary = "주문 취소", description = "배달을 시작하지 않은 주문을 취소합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "주문 취소 성공"),
+            @ApiResponse(responseCode = "500", description = "주문 취소 실패")
+    })
+    @PatchMapping("/{order_id}")
+    public ResponseEntity<? extends BaseResponseBody> cancelOrder(
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable(name = "order_id") UUID orderId
+    ){
+
+        log.info("orderId : {}", orderId);
+        orderService.cancelOrder(1L, orderId);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
 }
 
 
