@@ -127,6 +127,10 @@ public class AiService {
     public void saveAi(AiRequestDto aiRequestDto) {
         // 메뉴 유효성
         // 유저 유효성
+        if(!userRepository.existsById(aiRequestDto.getUserId())) {
+            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); // 유저 없음
+        }
+
         log.info("aiRequest : {}", aiRequestDto);
         Ai ai = new Ai(aiRequestDto);
         aiRepository.save(ai);
