@@ -52,6 +52,14 @@ public class WebSecurityConfig {
         );
 
         http.authorizeHttpRequests((authorizeHttpRequests) -> {
+
+            // Swagger 파일 허용
+            authorizeHttpRequests.requestMatchers(
+                    "/v3/api-docs/**",
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"
+            ).permitAll();
+
             // 회원가입, 로그인 허용
             authorizeHttpRequests.requestMatchers("/api/auth/**").permitAll();
 
