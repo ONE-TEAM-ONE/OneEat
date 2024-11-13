@@ -49,7 +49,6 @@ public class AiService {
 
     // ai 요청이 들어오면 질문 조합
     public AiResponseDto generateQuestion(long userID, AiCallRequestDto requestDto) {
-        // TODO 검증 및 카테고리 구하기
         String category = validationAndGetStoreCategory(userID, requestDto.getStoreId());
 
         String question = "메뉴 이름 : " + requestDto.getMenuName() + "카테고리 : " + category
