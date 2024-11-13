@@ -117,4 +117,34 @@ public class OrderServiceImpl implements OrderService{
         }
     }
 
+
+    @Override
+    @Transactional
+    public void modifyOrderStatus(long userId, UUID orderId) {
+        // 유저 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+        // 주문 확인
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new CustomException(ExceptionType.ORDER_NOT_EXIST));
+
+        // 주인인 경우, 해당 가게의 주문인지 확인
+        if(!Objects.equals(user.getStoreList().get(0).getId(), order.getStore().getId())) throw new CustomException(ExceptionType.ACCESS_DENIED);
+
+        OrderStatusEnum currentStatus = order.getStatus();
+
+        log.info("현재 주문 상태 : {}", currentStatus);
+
+        if(currentStatus == OrderStatusEnum.PAYMENT_APPROVED){
+            // 결제완료일 경우 요리중으로 상태 변경
+            order.modifyStatus(OrderStatusEnum.COOKING);
+        }else if(currentStatus == OrderStatusEnum.COOKING){
+            // 요리중일 경우 배달중으로 상태 변경
+            order.modifyStatus(OrderStatusEnum.DELIVERING);
+        }else if(currentStatus == OrderStatusEnum.DELIVERING){
+            // 배달중일 경우 배달완료로 상태 변경
+            order.modifyStatus(OrderStatusEnum.DELIVERY_COMPLETED);
+        }else{
+            // 그 외의 상태일 경우 상태수정 불가
+            throw new CustomException(ExceptionType.MODIFY_NOT_ALLOWED);
+        }
+    }
 }

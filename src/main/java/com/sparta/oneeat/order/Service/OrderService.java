@@ -16,4 +16,7 @@ public interface OrderService {
 
     // 주문 취소
     void cancelOrder(long userId, UUID orderId);
+
+    // 주문 상태 변경
+    void modifyOrderStatus(long userId, UUID orderId);
 }

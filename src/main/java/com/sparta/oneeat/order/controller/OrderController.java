@@ -77,6 +77,21 @@ public class OrderController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
+    @Operation(summary = "주문 상태 변경", description = "주문 상태를 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "주문 상태 변경 성공"),
+            @ApiResponse(responseCode = "500", description = "주문 상태 변경 실패")
+    })
+    @PutMapping("/{order_id}")
+    public ResponseEntity<? extends BaseResponseBody> modifyStatus(
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable(name = "order_id") UUID orderId
+    ){
+
+        orderService.modifyOrderStatus(1L, orderId);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
 }
 
 

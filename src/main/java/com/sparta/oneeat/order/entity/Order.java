@@ -52,4 +52,8 @@ public class Order extends BaseEntity {
     public void cancle(){
         this.status = OrderStatusEnum.PAYMENT_CANCELLED;
     }
+
+    public void modifyStatus(OrderStatusEnum status){
+        this.status = status;
+    }
 }
