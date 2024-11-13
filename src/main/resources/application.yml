@@ -20,6 +20,9 @@ spring:
 jwt:
   secret_key: ${SECRET_KEY}
 
+api:
+  key: ${API_KEY}
+
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8

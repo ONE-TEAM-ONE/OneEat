@@ -41,4 +41,11 @@ public class EnvTest {
         assertNotNull(dotenv.get("jwt.secret_key"), "Secret Key가 존재하지 않습니다.");
     }
 
+    @Test
+    @Order(4)
+    @DisplayName("4. API key 확인")
+    void checkApiKey() {
+        assertNotNull(dotenv.get("API_KEY"), "API_KEY 값이 존재하지 않습니다.");
+    }
+
 }
