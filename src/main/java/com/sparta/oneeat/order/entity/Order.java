@@ -48,4 +48,12 @@ public class Order extends BaseEntity {
 
     @Column(name = "ORDER_ADDRESS")
     private String address;
+
+    public void cancle(){
+        this.status = OrderStatusEnum.PAYMENT_CANCELLED;
+    }
+
+    public void modifyStatus(OrderStatusEnum status){
+        this.status = status;
+    }
 }
