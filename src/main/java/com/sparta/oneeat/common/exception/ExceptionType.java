@@ -2,12 +2,15 @@ package com.sparta.oneeat.common.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException.Unauthorized;
 
 @Getter
 public enum ExceptionType {
     // 에러 열거
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "S-001", "서버 내부 오류입니다."),
+
+    // Auth
+    AUTH_DUPLICATE_USERNAME(HttpStatus.CONFLICT,"A-001","중복된 아이디를 가진 사용자가 존재합니다."),
+    AUTH_DUPLICATE_NICKNAME(HttpStatus.CONFLICT,"A-002","중복된 닉네임을 가진 사용자가 존재합니다."),
 
     // Ai
     AI_ACCESS_DENIED(HttpStatus.FORBIDDEN, "A-001", "권한이 없습니다."),
@@ -16,7 +19,7 @@ public enum ExceptionType {
 
     // Menu
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "M-001", "메뉴가 생성되지 않았습니다."),
-    MENU_INVALID_REQUEST(HttpStatus.BAD_REQUEST, "M-002", "요청 형식이 잘못되었습니다.");
+    MENU_INVALID_REQUEST(HttpStatus.BAD_REQUEST, "M-002", "요청 형식이 잘못되었습니다."),
 
     // 주문
     ORDER_NOT_EXIST(HttpStatus.NOT_FOUND, "O-001", "해당 주문이 존재하지 않습니다."),
@@ -25,7 +28,7 @@ public enum ExceptionType {
     CANCLE_NOT_ALLOW(HttpStatus.BAD_REQUEST, "O-004", "해당 주문을 취소할 수 없습니다."),
     ALREADY_CANCELLED(HttpStatus.BAD_REQUEST, "O-005", "이미 취소된 주문입니다."),
     MODIFY_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "O-006", "상태 수정이 가능한 주문이 아닙니다."),
-  
+
     // 리뷰
     REVIEW_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "R-001", "해당 주문의 리뷰가 존재합니다");
 
