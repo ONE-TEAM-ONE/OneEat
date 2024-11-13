@@ -21,7 +21,7 @@ public class DeliveryRegion {
     @JoinColumn(name = "STORE_ID", nullable = false)
     private Store store;
 
-    @ManyToOne
-    @JoinColumn(name = "ADDRESS_CODE_ID", nullable = false)
-    private AddressCode addressCode;
+//    @ManyToOne
+//    @JoinColumn(name = "ADDRESS_CODE_ID", nullable = false)
+//    private AddressCode addressCode;
 }
