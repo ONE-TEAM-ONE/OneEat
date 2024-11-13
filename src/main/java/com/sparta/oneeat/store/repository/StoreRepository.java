@@ -11,4 +11,8 @@ public interface StoreRepository extends JpaRepository <Store, UUID> {
 
     List<Store> findByUser(User user);
     Optional<Store> findByIdAndUser(UUID storeId, User user);
+
+    // 지정된 유저와 연관된 가게 조회
+    Optional<Store> findByUser(User user);
+
 }
