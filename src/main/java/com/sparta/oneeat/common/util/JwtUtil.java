@@ -3,12 +3,12 @@ package com.sparta.oneeat.common.util;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
 import com.sparta.oneeat.user.entity.UserRoleEnum;
-import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -22,8 +22,10 @@ public class JwtUtil {
     public static final String BEARER_PREFIX = "Bearer ";
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-    private final String secretKey = Dotenv.load().get("JWT_SECRET_KEY");
     private Key key;
+
+    @Value("${jwt.secret_key}")
+    private String secretKey;
 
     @PostConstruct
     public void init() {
