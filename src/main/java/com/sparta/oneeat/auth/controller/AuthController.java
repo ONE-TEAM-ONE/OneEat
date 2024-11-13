@@ -7,6 +7,7 @@ import com.sparta.oneeat.common.response.BaseResponseBody;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,7 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = " 실패")
     })
     @PostMapping("/signup")
-    public ResponseEntity<? extends BaseResponseBody> signup(@RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseEntity<? extends BaseResponseBody> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         return ResponseEntity
                 .status(200)
                 .body(BaseResponseBody.of(

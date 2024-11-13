@@ -23,9 +23,6 @@ public class AuthServiceImpl implements AuthService {
         String password = requestDto.getPassword();
         String nickname = requestDto.getNickname();
 
-        if (password == null || password.isEmpty())
-            throw new CustomException(ExceptionType.AUTH_INVALID_PASSWORD);
-
         password = passwordEncoder.encode(password);
 
         // 유저네임(아이디) 중복 체크

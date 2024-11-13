@@ -16,9 +16,8 @@ public enum ExceptionType {
     AUTH_NOT_FOUND_TOKEN(HttpStatus.NOT_FOUND, "A-005", "토큰을 확인할 수 없습니다."),
     AUTH_UNAUTHORIZED_TOKEN(HttpStatus.UNAUTHORIZED, "A-006", "유효하지 않은 토큰입니다."),
     AUTH_UNAUTHORIZED_ERROR(HttpStatus.UNAUTHORIZED, "A-007", "토큰 인증 과정에서 오류가 발생했습니다."),
-    AUTH_INVALID_PASSWORD(HttpStatus.UNPROCESSABLE_ENTITY, "A-008", "비밀번호가 유효하지 않습니다. 비밀번호를 입력해 주세요."),
-    AUTH_DUPLICATE_USERNAME(HttpStatus.CONFLICT,"A-009","중복된 아이디를 가진 사용자가 존재합니다."),
-    AUTH_DUPLICATE_NICKNAME(HttpStatus.CONFLICT,"A-010","중복된 닉네임을 가진 사용자가 존재합니다.");
+    AUTH_DUPLICATE_USERNAME(HttpStatus.CONFLICT,"A-008","중복된 아이디를 가진 사용자가 존재합니다."),
+    AUTH_DUPLICATE_NICKNAME(HttpStatus.CONFLICT,"A-009","중복된 닉네임을 가진 사용자가 존재합니다.");
 
     // 상태, 에러 코드, 메시지
     private final HttpStatus httpStatus;
