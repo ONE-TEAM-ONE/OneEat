@@ -11,8 +11,10 @@ public enum ExceptionType {
     // 주문
     ORDER_NOT_EXIST(HttpStatus.NOT_FOUND, "O-001", "해당 주문이 존재하지 않습니다."),
     MENU_PRICE_MISMATCH(HttpStatus.BAD_REQUEST, "O-002", "사용자가 제공한 메뉴가격과 DB에 저장된 메뉴가격이 일치하지 않습니다."),
-    ACCESS_DENIED(HttpStatus.FORBIDDEN, "O-003", "해당 자원에 대한 권한이 없습니다.")
-    ;
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "O-003", "해당 자원에 대한 권한이 없습니다."),
+
+    // 리뷰
+    REVIEW_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "R-001", "해당 주문의 리뷰가 존재합니다");
 
 
     // 상태, 에러 코드, 메시지
