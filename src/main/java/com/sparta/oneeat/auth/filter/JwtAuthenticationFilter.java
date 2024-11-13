@@ -59,10 +59,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         jwtUtil.addJwtToHeader(token, response);
         System.out.println("Response committed: " + response.isCommitted());
 
-        LoginResponseDto loginResponse = LoginResponseDto.builder()
-                .userId(userDetails.getUser().getId())
-                .nickname(userDetails.getUsername())
-                .build();
+        LoginResponseDto loginResponse = new LoginResponseDto(
+                userDetails.getUser().getId(),
+                userDetails.getUsername()
+        );
 
         // JSON 응답 설정
         response.setStatus(HttpStatus.OK.value());

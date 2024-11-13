@@ -1,7 +1,6 @@
 package com.sparta.oneeat.auth.controller;
 
 import com.sparta.oneeat.auth.dto.SignupRequestDto;
-import com.sparta.oneeat.auth.dto.SignupResponseDto;
 import com.sparta.oneeat.auth.service.AuthService;
 import com.sparta.oneeat.common.response.BaseResponseBody;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,10 +31,7 @@ public class AuthController {
         return ResponseEntity
                 .status(200)
                 .body(BaseResponseBody.of(
-                        0,
-                        SignupResponseDto.builder()
-                                .userId(authService.signup(signupRequestDto).getUserId())
-                                .build()
+                        0, authService.signup(signupRequestDto).getUserId()
                 ));
     }
 

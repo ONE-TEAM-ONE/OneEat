@@ -1,10 +1,10 @@
 package com.sparta.oneeat.auth.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Data
-@Builder
+@Getter
+@AllArgsConstructor
 public class LoginResponseDto {
     private Long userId;
     private String nickname;

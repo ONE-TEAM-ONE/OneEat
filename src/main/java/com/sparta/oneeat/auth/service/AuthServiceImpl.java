@@ -43,9 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        return SignupResponseDto.builder()
-                .userId(user.getId())
-                .build();
+        return new SignupResponseDto(user.getId());
     }
 }
 

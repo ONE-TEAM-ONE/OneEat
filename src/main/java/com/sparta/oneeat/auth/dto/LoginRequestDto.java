@@ -1,13 +1,8 @@
 package com.sparta.oneeat.auth.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@Builder
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
 public class LoginRequestDto {
     private String username;
