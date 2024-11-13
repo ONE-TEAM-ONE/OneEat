@@ -32,4 +32,11 @@ public class EnvTest {
         assertNotNull(dotenv.get("DB_PASSWORD"), "DB_PASSWORD 값이 존재하지 않습니다.");
     }
 
+    @Test
+    @Order(3)
+    @DisplayName("3. API key 확인")
+    void checkApiKey() {
+        assertNotNull(dotenv.get("API_KEY"), "API_KEY 값이 존재하지 않습니다.");
+    }
+
 }

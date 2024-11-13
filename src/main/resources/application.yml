@@ -18,6 +18,8 @@ spring:
         jdbc:
           time_zone: Asia/Seoul
 
+api:
+  key: ${API_KEY}
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
