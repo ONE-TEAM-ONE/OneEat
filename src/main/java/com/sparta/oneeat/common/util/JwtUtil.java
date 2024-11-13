@@ -1,7 +1,5 @@
 package com.sparta.oneeat.common.util;
 
-import com.sparta.oneeat.common.exception.CustomException;
-import com.sparta.oneeat.common.exception.ExceptionType;
 import com.sparta.oneeat.user.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -60,26 +58,25 @@ public class JwtUtil {
         return null;
     }
 
-    public String substringToken(String tokenValue) {
+    public String substringToken(String tokenValue, HttpServletResponse response) {
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(BEARER_PREFIX.length());
         }
-        throw new CustomException(ExceptionType.AUTH_NOT_FOUND_TOKEN);
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        return tokenValue;
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, HttpServletResponse response) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (SecurityException | MalformedJwtException | SignatureException e) {
-            throw new CustomException(ExceptionType.AUTH_INVALID_SIGNATURE_TOKEN);
-        } catch (ExpiredJwtException e) {
-            throw new CustomException(ExceptionType.AUTH_EXPIRED_TOKEN);
-        } catch (UnsupportedJwtException e) {
-            throw new CustomException(ExceptionType.AUTH_UNSUPPORTED_TOKEN);
+        } catch (SecurityException | MalformedJwtException | SignatureException | UnsupportedJwtException |
+                 ExpiredJwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (IllegalArgumentException e) {
-            throw new CustomException(ExceptionType.AUTH_EMPTY_CLAIMS_TOKEN);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
+        return false;
     }
 
     public Claims getUserInfoFromToken(String token) {

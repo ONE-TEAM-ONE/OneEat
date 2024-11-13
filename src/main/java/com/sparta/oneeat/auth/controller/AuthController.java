@@ -24,7 +24,8 @@ public class AuthController {
     @Operation(summary = "회원가입", description = "회원가입 합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원가입 성공"),
-            @ApiResponse(responseCode = "500", description = " 실패")
+            @ApiResponse(responseCode = "409", description = "존재하는 식별 값"),
+            @ApiResponse(responseCode = "500", description = "회원가입 실패")
     })
     @PostMapping("/signup")
     public ResponseEntity<? extends BaseResponseBody> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.oneeat.auth.dto.LoginRequestDto;
 import com.sparta.oneeat.auth.dto.LoginResponseDto;
 import com.sparta.oneeat.auth.service.UserDetailsImpl;
-import com.sparta.oneeat.common.exception.CustomException;
-import com.sparta.oneeat.common.exception.ExceptionType;
 import com.sparta.oneeat.common.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -43,8 +41,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                     )
             );
         } catch (IOException e) {
-            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
+        return null;
     }
 
     @Override

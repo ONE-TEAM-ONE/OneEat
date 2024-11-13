@@ -1,8 +1,6 @@
 package com.sparta.oneeat.auth.filter;
 
 import com.sparta.oneeat.auth.service.UserDetailsServiceImpl;
-import com.sparta.oneeat.common.exception.CustomException;
-import com.sparta.oneeat.common.exception.ExceptionType;
 import com.sparta.oneeat.common.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -30,32 +28,33 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-        String url = req.getRequestURI();
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String url = request.getRequestURI();
 
         if (url.startsWith("/api/auth/")) {
-            filterChain.doFilter(req, res);
+            filterChain.doFilter(request, response);
             return;
         }
 
-        String tokenValue = jwtUtil.getTokenFromRequest(req);
+        String tokenValue = jwtUtil.getTokenFromRequest(request);
 
         if (StringUtils.hasText(tokenValue)) {
-            tokenValue = jwtUtil.substringToken(tokenValue);
+            tokenValue = jwtUtil.substringToken(tokenValue, response);
 
-            if (!jwtUtil.validateToken(tokenValue))
-                throw new CustomException(ExceptionType.AUTH_UNAUTHORIZED_TOKEN);
+            if (!jwtUtil.validateToken(tokenValue, response)){
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
 
             try {
                 setAuthentication(info.getSubject());
             } catch (Exception e) {
-                throw new CustomException(ExceptionType.AUTH_UNAUTHORIZED_ERROR);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
         }
 
-        filterChain.doFilter(req, res);
+        filterChain.doFilter(request, response);
     }
 
     public void setAuthentication(String username) {
