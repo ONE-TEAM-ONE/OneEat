@@ -59,6 +59,10 @@ public class User extends BaseEntity {
         this.storeList = new ArrayList<>();
     }
 
+    public void modifyPassword(String password) {
+        this.password = password;
+    }
+
     public void softDelete(long id){
         this.deletedAt = LocalDateTime.now();
         this.deletedBy = id;

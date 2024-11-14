@@ -3,6 +3,7 @@ package com.sparta.oneeat.user.service;
 import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
+import com.sparta.oneeat.user.dto.PasswordRequestDto;
 import com.sparta.oneeat.user.dto.UserResponseDto;
 import com.sparta.oneeat.user.entity.User;
 import com.sparta.oneeat.user.repository.UserRepository;
@@ -67,4 +68,21 @@ public class UserServiceImpl implements UserService {
 
         userRepository.deleteById(userId);
     }
+
+    @Override
+    @Transactional
+    public void modifyPassword(UserDetailsImpl userDetails, PasswordRequestDto passwordRequestDto) {
+
+        User user = userRepository.findById(userDetails.getId()).orElseThrow(()->
+                new CustomException(ExceptionType.USER_NOT_EXIST)
+        );
+
+        if(passwordEncoder.matches(passwordRequestDto.getOldPassword(), user.getPassword())){
+            throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
+        };
+
+        user.modifyPassword(passwordRequestDto.getNewPassword());
+
+    }
+
 }

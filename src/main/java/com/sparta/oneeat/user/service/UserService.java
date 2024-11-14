@@ -1,6 +1,7 @@
 package com.sparta.oneeat.user.service;
 
 import com.sparta.oneeat.auth.service.UserDetailsImpl;
+import com.sparta.oneeat.user.dto.PasswordRequestDto;
 import com.sparta.oneeat.user.dto.UserResponseDto;
 
 public interface UserService {
@@ -9,4 +10,6 @@ public interface UserService {
     void softDeleteUser(UserDetailsImpl userDetails, String password);
 
     void hardDeleteUser(Long userId);
+
+    void modifyPassword(UserDetailsImpl userDetails, PasswordRequestDto passwordRequestDto);
 }
