@@ -18,7 +18,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/order")
+@RequestMapping("/")
 @Tag(name="Review", description="Review API")
 public class ReviewController {
 
@@ -29,7 +29,7 @@ public class ReviewController {
             @ApiResponse(responseCode = "201", description = "리뷰 등록 성공"),
             @ApiResponse(responseCode = "500", description = "리뷰 등록 실패")
     })
-    @PostMapping("/{order_id}/review")
+    @PostMapping("/order/{order_id}/review")
     public ResponseEntity<? extends BaseResponseBody> createReview(
 //            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "order_id") UUID orderId,
@@ -41,6 +41,29 @@ public class ReviewController {
         log.info("content : {}", createReviewReqDto.getContent());
 
         return ResponseEntity.status(201).body(BaseResponseBody.of(0, reviewService.createReview(2L, orderId, createReviewReqDto)));
+    }
+
+    @Operation(summary = "리뷰 조회", description = "가게의 리뷰를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "리뷰 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "리뷰 조회 실패")
+    })
+    @GetMapping("/store/{store_id}/reviews")
+    public ResponseEntity<? extends BaseResponseBody> getReviewList(
+            @PathVariable(name = "store_id") UUID storeId,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sort") String sort,
+            @RequestParam("isAsc") boolean isAsc
+    ){
+
+        log.info("storeId : {}", storeId);
+        log.info("page : {}", page);
+        log.info("size : {}", size);
+        log.info("sort : {}", sort);
+        log.info("isAsc : {}", isAsc);
+
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, reviewService.getReviewList(storeId, (page-1), size, sort, isAsc)));
     }
 
 }

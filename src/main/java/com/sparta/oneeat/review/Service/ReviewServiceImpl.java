@@ -6,12 +6,19 @@ import com.sparta.oneeat.order.entity.Order;
 import com.sparta.oneeat.order.repository.OrderRepository;
 import com.sparta.oneeat.review.dto.CreateReviewReqDto;
 import com.sparta.oneeat.review.dto.CreateReviewResDto;
+import com.sparta.oneeat.review.dto.ReviewListDto;
 import com.sparta.oneeat.review.entity.Review;
 import com.sparta.oneeat.review.repository.ReviewRepository;
+import com.sparta.oneeat.store.entity.Store;
+import com.sparta.oneeat.store.repository.StoreRepository;
 import com.sparta.oneeat.user.entity.User;
 import com.sparta.oneeat.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +34,7 @@ public class ReviewServiceImpl implements ReviewService{
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final ReviewRepository reviewRepository;
+    private final StoreRepository storeRepository;
 
     @Override
     @Transactional
@@ -49,5 +57,18 @@ public class ReviewServiceImpl implements ReviewService{
         Review saved = reviewRepository.save(new Review(user, order, createReviewReqDto));
 
         return new CreateReviewResDto(saved.getId());
+    }
+
+    @Override
+    public Page<ReviewListDto> getReviewList(UUID storeId, int page, int size, String sort, boolean isAsc) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort1 = Sort.by(direction, sort);
+        Pageable pageable = PageRequest.of(page, size, sort1);
+
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
+        Page<Review> reviewList = reviewRepository.findAllByStore(store, pageable);
+
+        return reviewList.map(ReviewListDto::new);
     }
 }
