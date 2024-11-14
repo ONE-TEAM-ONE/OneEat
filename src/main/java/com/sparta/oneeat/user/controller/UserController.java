@@ -2,6 +2,7 @@ package com.sparta.oneeat.user.controller;
 
 import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.response.BaseResponseBody;
+import com.sparta.oneeat.user.dto.EmailRequestDto;
 import com.sparta.oneeat.user.dto.NicknameRequestDto;
 import com.sparta.oneeat.user.dto.PasswordRequestDto;
 import com.sparta.oneeat.user.service.UserService;
@@ -93,4 +94,18 @@ public class UserController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
+
+    @Operation(summary = "이메일 변경", description = "자신의 이메일을 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이메일 변경 성공"),
+            @ApiResponse(responseCode = "500", description = "이메일 변경 실패")
+    })
+    @PutMapping("/email")
+    public ResponseEntity<? extends BaseResponseBody> modifyEmail(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Validated@RequestBody EmailRequestDto emailRequestDto
+    ){
+        userService.modifyEmail(userDetails, emailRequestDto);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
 }

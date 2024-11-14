@@ -3,6 +3,7 @@ package com.sparta.oneeat.user.service;
 import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
+import com.sparta.oneeat.user.dto.EmailRequestDto;
 import com.sparta.oneeat.user.dto.NicknameRequestDto;
 import com.sparta.oneeat.user.dto.PasswordRequestDto;
 import com.sparta.oneeat.user.dto.UserResponseDto;
@@ -80,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
         if(passwordEncoder.matches(passwordRequestDto.getOldPassword(), user.getPassword())){
             throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
-        };
+        }
 
         user.modifyPassword(passwordRequestDto.getNewPassword());
 
@@ -99,6 +100,22 @@ public class UserServiceImpl implements UserService {
             throw new CustomException(ExceptionType.USER_EXIST_NICKNAME);
 
         user.modifyNickname(nicknameRequestDto.getNickname());
+
+    }
+
+    @Override
+    @Transactional
+    public void modifyEmail(UserDetailsImpl userDetails, EmailRequestDto emailRequestDto) {
+
+        User user = userRepository.findById(userDetails.getId()).orElseThrow(()->
+                new CustomException(ExceptionType.USER_NOT_EXIST)
+        );
+
+        // 이메일 중복 확인
+        if(userRepository.findByEmail(emailRequestDto.getEmail()).isPresent())
+            throw new CustomException(ExceptionType.USER_EXIST_EMAIL);
+
+        user.modifyEmail(emailRequestDto.getEmail());
 
     }
 
