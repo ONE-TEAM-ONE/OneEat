@@ -20,6 +20,7 @@ import java.util.Date;
 public class JwtUtil {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
+    private final long TOKEN_TIME = 10 * 24 * 60 * 60 * 1000L; // 10일
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
     private Key key;
 
@@ -40,6 +41,7 @@ public class JwtUtil {
                 .setSubject(username)
                 .claim("role", role)
                 .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + TOKEN_TIME)) // 로그아웃 및 refresh 기능의 부재로 인해 10일로 설정해놓았습니다.
                 .signWith(key, signatureAlgorithm)
                 .compact();
     }
