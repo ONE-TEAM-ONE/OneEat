@@ -3,6 +3,7 @@ package com.sparta.oneeat.menu.entity;
 import com.sparta.oneeat.common.entity.BaseEntity;
 import com.sparta.oneeat.store.entity.Store;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,4 +46,10 @@ public class Menu extends BaseEntity {
     @Column(name="ITEM_STATUS")
     @Enumerated(EnumType.STRING)
     private MenuStatusEnum status;
+
+
+    public void delete(long userId) {
+        this.deletedBy = userId;
+        this.deletedAt = LocalDateTime.now();
+    }
 }

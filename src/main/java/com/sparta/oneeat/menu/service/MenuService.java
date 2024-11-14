@@ -1,5 +1,6 @@
 package com.sparta.oneeat.menu.service;
 
+import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
 import com.sparta.oneeat.menu.dto.request.AiRequestDto;
@@ -73,7 +74,8 @@ public class MenuService {
     }
 
     // 가게의 모든 메뉴를 조회 (가격 오름차순)
-    public Page<MenuResponseDto> getMenuList(long userId, UUID storeId, int page, int size, String sort) {
+    public Page<MenuResponseDto> getMenuList(long userId, UUID storeId, int page, int size,
+        String sort) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, sort));
 
@@ -98,6 +100,49 @@ public class MenuService {
         Page<Menu> menus = menuRepository.findAllByStore(store, pageable);
 
         return menus.map(MenuResponseDto::new);
+    }
+
+    @Transactional
+    public void hideMenu(UserDetailsImpl userDetails, UUID storeId, UUID menuId) {
+        // 유저 검증
+        User user = userRepository.findById(userDetails.getId())
+            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
+        Store store;
+
+        // 가게 검증 / 사장이라면 해당 유저에게 해당 가게가 있는지
+        if (user.getRole() == UserRoleEnum.OWNER) {
+            store = storeRepository.findByIdAndUser(storeId, user)
+                .orElseThrow(
+                    () -> new CustomException(
+                        ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음 (and 유저의 가게X)
+        } else {
+            store = storeRepository.findById(storeId).orElseThrow(
+                () -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음
+        }
+
+        Menu menu = menuRepository.findById(menuId)
+            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
+        menu.delete(user.getId());
+    }
+
+    @Transactional
+    public void deleteMenu(UserDetailsImpl userDetails, UUID storeId, UUID menuId) {
+        // 유저 검증
+        User user = userRepository.findById(userDetails.getId())
+            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
+        Store store = storeRepository.findById(storeId)
+            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
+        if (!(user.getRole() == UserRoleEnum.MASTER || user.getRole() == UserRoleEnum.MANAGER)) {
+            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); // 권한 없음
+        }
+
+        Menu menu = menuRepository.findByIdAndStore(menuId, store)
+            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
+
+        menuRepository.delete(menu);
     }
 }
 
