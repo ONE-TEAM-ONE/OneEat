@@ -37,7 +37,7 @@ public class PaymentController {
 
         log.info("orderId : {}", orderId);
 
-        return ResponseEntity.status(200).body(BaseResponseBody.of(0, paymentService.createPayment(3L, orderId)));
+        return ResponseEntity.status(201).body(BaseResponseBody.of(0, paymentService.createPayment(3L, orderId)));
 
     }
 
