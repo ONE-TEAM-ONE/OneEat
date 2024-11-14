@@ -38,10 +38,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String tokenValue = jwtUtil.getTokenFromRequest(request);
 
-        if (StringUtils.hasText(tokenValue)) {
-            tokenValue = jwtUtil.substringToken(tokenValue, response);
 
-            if (!jwtUtil.validateToken(tokenValue, response)){
+            if (!jwtUtil.validateToken(tokenValue)){
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
 
