@@ -63,9 +63,7 @@ public class WebSecurityConfig {
             // 회원가입, 로그인 허용
             authorizeHttpRequests.requestMatchers("/api/auth/**").permitAll();
 
-            // 그 외 요청은 인증 필요
-            authorizeHttpRequests.requestMatchers("/api/**").authenticated();
-
+            authorizeHttpRequests.requestMatchers("/error").permitAll();
 
             authorizeHttpRequests.requestMatchers(HttpMethod.DELETE, "/api/**")
                     .hasAnyAuthority(
@@ -108,7 +106,7 @@ public class WebSecurityConfig {
 
             authorizeHttpRequests.requestMatchers("/api/order/*/review", "/api/order/*/review/**")
                     .hasAnyAuthority(UserRoleEnum.CUSTOMER.getAuthority());
-
+            // 모든 요청은 인증 필요
             authorizeHttpRequests.anyRequest().authenticated();
 
 

@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -14,11 +15,12 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
+@Slf4j
 @Component
 public class JwtUtil {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
-    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
+    private final long TOKEN_TIME = 10 * 24 * 60 * 60 * 1000L; // 10일
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
     private Key key;
 
@@ -39,7 +41,7 @@ public class JwtUtil {
                 .setSubject(username)
                 .claim("role", role)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + TOKEN_TIME)) // 1시간
+                .setExpiration(new Date(now.getTime() + TOKEN_TIME)) // 로그아웃 및 refresh 기능의 부재로 인해 10일로 설정해놓았습니다.
                 .signWith(key, signatureAlgorithm)
                 .compact();
     }
@@ -58,23 +60,20 @@ public class JwtUtil {
         return null;
     }
 
-    public String substringToken(String tokenValue, HttpServletResponse response) {
-        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
-            return tokenValue.substring(BEARER_PREFIX.length());
-        }
-        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        return tokenValue;
-    }
-
-    public boolean validateToken(String token, HttpServletResponse response) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (SecurityException | MalformedJwtException | SignatureException | UnsupportedJwtException |
-                 ExpiredJwtException e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        } catch (ExpiredJwtException e) {
+            log.warn("만료된 JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            log.warn("지원되지 않는 JWT 토큰입니다.");
+        } catch (MalformedJwtException e) {
+            log.warn("잘못된 JWT 토큰입니다.");
+        } catch (SignatureException e) {
+            log.warn("유효하지 않은 JWT 서명입니다.");
         } catch (IllegalArgumentException e) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            log.warn("JWT 토큰이 비어있습니다.");
         }
         return false;
     }
