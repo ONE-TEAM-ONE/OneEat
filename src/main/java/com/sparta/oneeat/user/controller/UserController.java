@@ -34,7 +34,7 @@ public class UserController {
     public ResponseEntity<? extends BaseResponseBody> selectUserDetails(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        return ResponseEntity.status(201).body(BaseResponseBody.of(0,
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0,
                 userService.selectUserDetails(userDetails.getId())
         ));
     }
