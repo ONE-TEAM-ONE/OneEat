@@ -12,6 +12,10 @@ public enum ExceptionType {
     AUTH_DUPLICATE_USERNAME(HttpStatus.CONFLICT,"A-001","중복된 아이디를 가진 사용자가 존재합니다."),
     AUTH_DUPLICATE_NICKNAME(HttpStatus.CONFLICT,"A-002","중복된 닉네임을 가진 사용자가 존재합니다."),
 
+    // User
+    USER_PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED,"U-001","일치하지 않는 비밀번호 입니다."),
+    USER_NOT_EXIST(HttpStatus.NOT_FOUND, "U-002", "회원을 찾을 수 없습니다."),
+
     // Ai
     AI_ACCESS_DENIED(HttpStatus.FORBIDDEN, "A-001", "권한이 없습니다."),
     NOT_FOUND(HttpStatus.NOT_FOUND, "A-002", "리소스를 찾을 수 없습니다."),

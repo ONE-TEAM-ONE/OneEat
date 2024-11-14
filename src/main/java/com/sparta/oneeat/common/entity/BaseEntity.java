@@ -25,7 +25,7 @@ public abstract class BaseEntity {
     private LocalDateTime updatedAt;
 
     // 삭제시간
-    private LocalDateTime deletedAt;
+    protected LocalDateTime deletedAt;
 
     // 생성자
     @CreatedBy
@@ -37,6 +37,6 @@ public abstract class BaseEntity {
     private Long updatedBy;
 
     // 삭제자
-    private Long deletedBy;
+    protected Long deletedBy;
 
 }

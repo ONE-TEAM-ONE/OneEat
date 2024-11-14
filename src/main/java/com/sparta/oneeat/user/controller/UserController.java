@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -32,6 +34,20 @@ public class UserController {
         return ResponseEntity.status(201).body(BaseResponseBody.of(0,
                 userService.selectUserDetails(userDetails.getId())
         ));
+    }
+
+    @Operation(summary = "회원 숨김", description = "회원 정보를 숨김 처리 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 숨김 성공"),
+            @ApiResponse(responseCode = "500", description = "회원 숨김 실패")
+    })
+    @PatchMapping()
+    public ResponseEntity<? extends BaseResponseBody> softDeleteUser(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody String password
+    ){
+        userService.softDeleteUser(userDetails, password);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
 }
