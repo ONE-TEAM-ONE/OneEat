@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateReviewReqDto {
+public class ModifyReviewReqDto {
 
     @Min(value = 0, message = "별점은 0~5점 사이만 가능합니다.")
     @Max(value = 5, message = "별점은 0~5점 사이만 가능합니다.")
@@ -18,5 +18,4 @@ public class CreateReviewReqDto {
     private String content;
 
     private String image;
-
 }
