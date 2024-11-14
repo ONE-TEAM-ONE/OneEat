@@ -16,5 +16,5 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     Optional<Review> findByUserAndOrder(User user, Order order);
 
     // 가게 리뷰 목록 조회
-    Page<Review> findAllByStore(Store store, Pageable pageable);
+    Page<Review> findAllByStoreAndDeletedAtIsNull(Store store, Pageable pageable);
 }

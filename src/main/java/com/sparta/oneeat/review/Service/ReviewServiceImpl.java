@@ -69,7 +69,7 @@ public class ReviewServiceImpl implements ReviewService{
 
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
 
-        Page<Review> reviewList = reviewRepository.findAllByStore(store, pageable);
+        Page<Review> reviewList = reviewRepository.findAllByStoreAndDeletedAtIsNull(store, pageable);
 
         return reviewList.map(ReviewListDto::new);
     }
