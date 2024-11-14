@@ -1,4 +1,4 @@
-package com.sparta.oneeat.order.entity;
+package com.sparta.oneeat.payment.entity;
 
 public enum PaymentStatusEnum {
     NOT_PAID,
