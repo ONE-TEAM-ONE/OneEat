@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto selectUserDetails(Long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
-                new CustomException(ExceptionType.ACCESS_DENIED)
+                new CustomException(ExceptionType.USER_NOT_EXIST)
         );
 
         log.info("username" + user.getName());
