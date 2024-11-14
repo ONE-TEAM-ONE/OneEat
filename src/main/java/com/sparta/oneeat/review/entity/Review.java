@@ -1,7 +1,9 @@
 package com.sparta.oneeat.review.entity;
 
+import com.sparta.oneeat.common.entity.BaseEntity;
 import com.sparta.oneeat.order.entity.Order;
 import com.sparta.oneeat.review.dto.CreateReviewReqDto;
+import com.sparta.oneeat.review.dto.ModifyReviewReqDto;
 import com.sparta.oneeat.store.entity.Store;
 import com.sparta.oneeat.user.entity.User;
 import jakarta.persistence.*;
@@ -15,7 +17,7 @@ import java.util.UUID;
 @Table(name = "P_REVIEW")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
+public class Review extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="REVIEW_ID", nullable = false)
@@ -50,5 +52,12 @@ public class Review {
         this.content = createReviewReqDto.getContent();
         this.rating = createReviewReqDto.getRating();
         this.image = createReviewReqDto.getImage();
+    }
+
+    // 리뷰 수정 메서드
+    public void modifyReview(ModifyReviewReqDto modifyReviewReqDto) {
+        this.content = modifyReviewReqDto.getContent();
+        this.rating = modifyReviewReqDto.getRating();
+        this.image = modifyReviewReqDto.getImage();
     }
 }

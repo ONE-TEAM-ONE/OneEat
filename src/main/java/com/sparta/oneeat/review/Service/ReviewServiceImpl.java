@@ -6,6 +6,7 @@ import com.sparta.oneeat.order.entity.Order;
 import com.sparta.oneeat.order.repository.OrderRepository;
 import com.sparta.oneeat.review.dto.CreateReviewReqDto;
 import com.sparta.oneeat.review.dto.CreateReviewResDto;
+import com.sparta.oneeat.review.dto.ModifyReviewReqDto;
 import com.sparta.oneeat.review.dto.ReviewListDto;
 import com.sparta.oneeat.review.entity.Review;
 import com.sparta.oneeat.review.repository.ReviewRepository;
@@ -70,5 +71,20 @@ public class ReviewServiceImpl implements ReviewService{
         Page<Review> reviewList = reviewRepository.findAllByStore(store, pageable);
 
         return reviewList.map(ReviewListDto::new);
+    }
+
+    @Override
+    @Transactional
+    public void modifyReview(long userId, UUID orderId, UUID reviewId, ModifyReviewReqDto modifyReviewReqDto) {
+
+        // 유저 조회
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+        // 리뷰 조회
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ExceptionType.REVIEW_NOT_FOUND));
+
+        if(!Objects.equals(user.getId(), review.getUser().getId())) throw new CustomException(ExceptionType.REVIEW_ACCESS_DENIED);
+
+        review.modifyReview(modifyReviewReqDto);
+
     }
 }

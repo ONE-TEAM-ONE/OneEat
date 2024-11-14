@@ -3,6 +3,7 @@ package com.sparta.oneeat.review.controller;
 import com.sparta.oneeat.common.response.BaseResponseBody;
 import com.sparta.oneeat.review.Service.ReviewService;
 import com.sparta.oneeat.review.dto.CreateReviewReqDto;
+import com.sparta.oneeat.review.dto.ModifyReviewReqDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -64,6 +65,26 @@ public class ReviewController {
         log.info("isAsc : {}", isAsc);
 
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, reviewService.getReviewList(storeId, (page-1), size, sort, isAsc)));
+    }
+
+    @Operation(summary = "리뷰 수정", description = "자신이 작성한 리뷰를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "리뷰 수정 성공"),
+            @ApiResponse(responseCode = "500", description = "리뷰 수정 실패")
+    })
+    @PutMapping("/order/{order_id}/review/{review_id}")
+    public ResponseEntity<? extends BaseResponseBody> modifyReview(
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable(name = "order_id") UUID orderId,
+            @PathVariable(name = "review_id") UUID reviewId,
+            @RequestBody ModifyReviewReqDto modifyReviewReqDto
+            ){
+
+        log.info("orderId : {}", orderId);
+        log.info("reviewId : {}", reviewId);
+
+        reviewService.modifyReview(3L, orderId, reviewId, modifyReviewReqDto);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
 }

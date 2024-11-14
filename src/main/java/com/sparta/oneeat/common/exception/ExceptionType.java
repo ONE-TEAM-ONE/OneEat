@@ -30,7 +30,9 @@ public enum ExceptionType {
     MODIFY_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "O-006", "상태 수정이 가능한 주문이 아닙니다."),
 
     // 리뷰
-    REVIEW_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "R-001", "해당 주문의 리뷰가 존재합니다");
+    REVIEW_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "R-001", "해당 주문의 리뷰가 존재합니다"),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R-002", "해당 리뷰는 존재하지 않습니다."),
+    REVIEW_ACCESS_DENIED(HttpStatus.FORBIDDEN, "R-003", "해당 리뷰에 대한 권한이 없습니다.");
 
 
     // 상태, 에러 코드, 메시지
