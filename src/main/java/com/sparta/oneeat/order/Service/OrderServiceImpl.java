@@ -2,10 +2,16 @@ package com.sparta.oneeat.order.Service;
 
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
+import com.sparta.oneeat.menu.entity.Menu;
+import com.sparta.oneeat.menu.repository.MenuRepository;
+import com.sparta.oneeat.order.dto.CreateOrderReqDto;
+import com.sparta.oneeat.order.dto.CreateOrderResDto;
 import com.sparta.oneeat.order.dto.OrderDetailDto;
 import com.sparta.oneeat.order.dto.OrderListDto;
 import com.sparta.oneeat.order.entity.Order;
+import com.sparta.oneeat.order.entity.OrderMenu;
 import com.sparta.oneeat.order.entity.OrderStatusEnum;
+import com.sparta.oneeat.order.repository.OrderMenuRepository;
 import com.sparta.oneeat.order.repository.OrderRepository;
 import com.sparta.oneeat.store.entity.Store;
 import com.sparta.oneeat.store.repository.StoreRepository;
@@ -33,6 +39,8 @@ public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
+    private final OrderMenuRepository orderMenuRepository;
+    private final MenuRepository menuRepository;
 
     @Override
     public Page<OrderListDto> getOrderList(long userId, int page, int size, String sort, boolean isAsc) {
@@ -146,5 +154,41 @@ public class OrderServiceImpl implements OrderService{
             // 그 외의 상태일 경우 상태수정 불가
             throw new CustomException(ExceptionType.MODIFY_NOT_ALLOWED);
         }
+    }
+
+    @Override
+    @Transactional
+    public CreateOrderResDto createOrder(User user, CreateOrderReqDto createOrderReqDto) {
+        // 가게 정보 불러오기
+        Store store = storeRepository.findById(createOrderReqDto.getStoreId()).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+        log.info("가게 불러오기 성공");
+
+        // Order Entity 생성 및 정보 넣어주기 (총금액은 계산 후 갱신)
+        Order savedOrder = orderRepository.save(new Order(user, store, createOrderReqDto));
+        log.info("주문 UUID : {}", savedOrder.getId());
+
+        int totalPrice = 0;
+
+        // 메뉴 돌아가면서 주문 정보 테이블 넣어주기
+        for(CreateOrderReqDto.MenuDto menuDto : createOrderReqDto.getMenuList()){
+            Menu menu = menuRepository.findById(menuDto.getMenuId()).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+            log.info("요청 메뉴 가격 : {}", menuDto.getPrice());
+            log.info("DB 메뉴 가격 : {}", menu.getPrice());
+
+            if(menuDto.getPrice() != menu.getPrice()) throw new CustomException(ExceptionType.PRICE_MISMATCH);
+            totalPrice += menuDto.getPrice() * menuDto.getAmount();
+            log.info("요청 개수 : {}", menuDto.getAmount());
+            log.info("현재 메뉴 가격 : {}", menuDto.getPrice() * menuDto.getAmount());
+
+            orderMenuRepository.save(new OrderMenu(savedOrder, menu, menuDto));
+        }
+
+        log.info("총가격 : {}", totalPrice);
+        savedOrder.updateTotalPrice(totalPrice);
+        log.info("엔티티 총가격 : {}", savedOrder.getTotalPrice());
+
+        if(savedOrder.getTotalPrice() != totalPrice) throw new CustomException(ExceptionType.TOTAL_PRICE_MISMATCH);
+
+        return new CreateOrderResDto(savedOrder.getId());
     }
 }

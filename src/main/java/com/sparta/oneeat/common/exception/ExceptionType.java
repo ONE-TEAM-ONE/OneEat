@@ -28,9 +28,15 @@ public enum ExceptionType {
     CANCLE_NOT_ALLOW(HttpStatus.BAD_REQUEST, "O-004", "해당 주문을 취소할 수 없습니다."),
     ALREADY_CANCELLED(HttpStatus.BAD_REQUEST, "O-005", "이미 취소된 주문입니다."),
     MODIFY_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "O-006", "상태 수정이 가능한 주문이 아닙니다."),
+    PRICE_MISMATCH(HttpStatus.BAD_REQUEST, "O-007", "메뉴 가격이 일치하지 않습니다."),
+    TOTAL_PRICE_MISMATCH(HttpStatus.BAD_REQUEST, "O-008", "총 가격이 일치하지 않습니다."),
 
     // 리뷰
     REVIEW_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "R-001", "해당 주문의 리뷰가 존재합니다"),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R-002", "해당 리뷰는 존재하지 않습니다."),
+    REVIEW_ACCESS_DENIED(HttpStatus.FORBIDDEN, "R-003", "해당 리뷰에 대한 권한이 없습니다."),
+    SOFT_DELETE_ONLY(HttpStatus.BAD_REQUEST, "R-004", "숨김 처리된 리뷰만 삭제할 수 있습니다."),
+    ONLY_ADMIN_ACCESS(HttpStatus.FORBIDDEN, "R-005", "관리자만 접근할 수 있습니다."),
 
     // 결제
     PAYMENT_NOT_EXIST(HttpStatus.NOT_FOUND, "P-001", "해당 결제가 존재하지 않습니다."),
