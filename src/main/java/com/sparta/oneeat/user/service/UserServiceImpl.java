@@ -3,6 +3,7 @@ package com.sparta.oneeat.user.service;
 import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
+import com.sparta.oneeat.user.dto.NicknameRequestDto;
 import com.sparta.oneeat.user.dto.PasswordRequestDto;
 import com.sparta.oneeat.user.dto.UserResponseDto;
 import com.sparta.oneeat.user.entity.User;
@@ -82,6 +83,22 @@ public class UserServiceImpl implements UserService {
         };
 
         user.modifyPassword(passwordRequestDto.getNewPassword());
+
+    }
+
+    @Override
+    @Transactional
+    public void modifyNickname(UserDetailsImpl userDetails, NicknameRequestDto nicknameRequestDto) {
+
+        User user = userRepository.findById(userDetails.getId()).orElseThrow(()->
+                new CustomException(ExceptionType.USER_NOT_EXIST)
+        );
+
+        // 닉네임 중복 확인
+        if(userRepository.findByNickname(nicknameRequestDto.getNickname()).isPresent())
+            throw new CustomException(ExceptionType.USER_EXIST_NICKNAME);
+
+        user.modifyNickname(nicknameRequestDto.getNickname());
 
     }
 

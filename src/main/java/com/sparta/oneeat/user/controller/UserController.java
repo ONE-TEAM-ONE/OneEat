@@ -2,6 +2,7 @@ package com.sparta.oneeat.user.controller;
 
 import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.response.BaseResponseBody;
+import com.sparta.oneeat.user.dto.NicknameRequestDto;
 import com.sparta.oneeat.user.dto.PasswordRequestDto;
 import com.sparta.oneeat.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -75,6 +76,20 @@ public class UserController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
         userService.modifyPassword(userDetails, passwordRequestDto);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
+    @Operation(summary = "닉네임 변경", description = "자신의 닉네임을 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "닉네임 변경 성공"),
+            @ApiResponse(responseCode = "500", description = "닉네임 변경 실패")
+    })
+    @PutMapping("/nickname")
+    public ResponseEntity<? extends BaseResponseBody> modifyNickname(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Validated @RequestBody NicknameRequestDto nicknameRequestDto
+    ){
+        userService.modifyNickname(userDetails, nicknameRequestDto);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 

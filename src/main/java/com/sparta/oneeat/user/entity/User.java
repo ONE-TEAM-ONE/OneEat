@@ -68,4 +68,7 @@ public class User extends BaseEntity {
         this.deletedBy = id;
     }
 
+    public void modifyNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
