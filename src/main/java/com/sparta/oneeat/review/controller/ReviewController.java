@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -34,7 +35,7 @@ public class ReviewController {
     public ResponseEntity<? extends BaseResponseBody> createReview(
 //            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "order_id") UUID orderId,
-            @RequestBody CreateReviewReqDto createReviewReqDto
+            @Validated @RequestBody CreateReviewReqDto createReviewReqDto
     ){
 
         log.info("orderId : {}", orderId);
@@ -77,7 +78,7 @@ public class ReviewController {
 //            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "order_id") UUID orderId,
             @PathVariable(name = "review_id") UUID reviewId,
-            @RequestBody ModifyReviewReqDto modifyReviewReqDto
+            @Validated @RequestBody ModifyReviewReqDto modifyReviewReqDto
             ){
 
         log.info("orderId : {}", orderId);
