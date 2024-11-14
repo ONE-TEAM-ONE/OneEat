@@ -1,6 +1,7 @@
 package com.sparta.oneeat.order.entity;
 
 import com.sparta.oneeat.common.entity.BaseEntity;
+import com.sparta.oneeat.payment.entity.Payment;
 import com.sparta.oneeat.order.dto.CreateOrderReqDto;
 import com.sparta.oneeat.store.entity.Store;
 import com.sparta.oneeat.user.entity.User;
