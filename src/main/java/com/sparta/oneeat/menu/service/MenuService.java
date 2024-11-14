@@ -1,5 +1,6 @@
 package com.sparta.oneeat.menu.service;
 
+import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
 import com.sparta.oneeat.menu.dto.request.AiRequestDto;
@@ -65,5 +66,24 @@ public class MenuService {
         return (new MenuResponseDto(menuRepository.findById(menuId)
             .orElseThrow(() -> new CustomException(ExceptionType.MENU_NOT_FOUND))));
     }
+
+    // 메뉴 상세 조회
+    public MenuResponseDto getMenuDetail(UserDetailsImpl userDetails, UUID storeId, UUID menuId) {
+        // 유저 검증
+        if (userRepository.findById(userDetails.getId()).isEmpty()) {
+            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); // 유저 없음
+        }
+        // 가게 검증
+        Store store = storeRepository.findById(storeId)
+            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음
+
+        // 해당 가게 상세 메뉴 반환
+        Menu menu = menuRepository.findById(menuId)
+            .filter(m -> m.getStore().getId().equals(storeId))
+            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST)); // 잘못된 접근
+
+        return new MenuResponseDto(menu);
+    }
+
 }
 
