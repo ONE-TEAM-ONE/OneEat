@@ -13,6 +13,7 @@ import com.sparta.oneeat.review.repository.ReviewRepository;
 import com.sparta.oneeat.store.entity.Store;
 import com.sparta.oneeat.store.repository.StoreRepository;
 import com.sparta.oneeat.user.entity.User;
+import com.sparta.oneeat.user.entity.UserRoleEnum;
 import com.sparta.oneeat.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,6 +95,7 @@ public class ReviewServiceImpl implements ReviewService{
 
         // 유저 조회
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
         // 리뷰 조회
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ExceptionType.REVIEW_NOT_FOUND));
 
@@ -102,5 +104,26 @@ public class ReviewServiceImpl implements ReviewService{
 
         // 논리적 삭제
         review.softDelete(userId);
+    }
+
+    @Override
+    @Transactional
+    public void hardDeleteReview(long userId, UUID reviewId) {
+
+        // 유저 조회
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
+        // 관리자 권한 조회
+        if(user.getRole() == UserRoleEnum.CUSTOMER || user.getRole() == UserRoleEnum.OWNER) throw new CustomException(ExceptionType.ONLY_ADMIN_ACCESS);
+
+        // 리뷰 조회
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ExceptionType.REVIEW_NOT_FOUND));
+
+        // 숨김 처리 여부 조회
+        if(review.getDeletedAt() == null) throw new CustomException(ExceptionType.SOFT_DELETE_ONLY);
+
+        // 삭제
+        reviewRepository.delete(review);
+
     }
 }

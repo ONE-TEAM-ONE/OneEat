@@ -20,4 +20,7 @@ public interface ReviewService {
 
     // 리뷰 숨김(논리적 삭제)
     void softDeleteReview(long userId, UUID reviewId);
+
+    // 리뷰 삭제
+    void hardDeleteReview(long userId, UUID reviewId);
 }

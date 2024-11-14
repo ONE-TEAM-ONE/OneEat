@@ -104,4 +104,20 @@ public class ReviewController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
+    @Operation(summary = "리뷰 삭제", description = "숨김 처리된 리뷰를 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "리뷰 삭제 성공"),
+            @ApiResponse(responseCode = "500", description = "리뷰 삭제 실패")
+    })
+    @DeleteMapping("/order/{order_id}/review/{review_id}")
+    public ResponseEntity<? extends BaseResponseBody> hardDeleteReview(
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable(name = "review_id") UUID reviewId
+    ){
+
+        log.info("reviewId : {}", reviewId);
+
+        reviewService.hardDeleteReview(2L, reviewId);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
 }
