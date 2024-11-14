@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PasswordRequestDto {
+    @NotBlank
     private String oldPassword;
 
     @NotBlank
