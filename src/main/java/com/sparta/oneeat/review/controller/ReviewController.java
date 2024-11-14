@@ -46,7 +46,7 @@ public class ReviewController {
 
     @Operation(summary = "리뷰 조회", description = "가게의 리뷰를 조회합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "리뷰 조회 성공"),
+            @ApiResponse(responseCode = "200", description = "리뷰 조회 성공"),
             @ApiResponse(responseCode = "500", description = "리뷰 조회 실패")
     })
     @GetMapping("/store/{store_id}/reviews")
@@ -69,7 +69,7 @@ public class ReviewController {
 
     @Operation(summary = "리뷰 수정", description = "자신이 작성한 리뷰를 수정합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "리뷰 수정 성공"),
+            @ApiResponse(responseCode = "200", description = "리뷰 수정 성공"),
             @ApiResponse(responseCode = "500", description = "리뷰 수정 실패")
     })
     @PutMapping("/order/{order_id}/review/{review_id}")
