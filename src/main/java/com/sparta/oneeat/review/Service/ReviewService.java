@@ -17,4 +17,7 @@ public interface ReviewService {
 
     // 리뷰 수정
     void modifyReview(long userId, UUID orderId, UUID reviewId, ModifyReviewReqDto modifyReviewReqDto);
+
+    // 리뷰 숨김(논리적 삭제)
+    void softDeleteReview(long userId, UUID reviewId);
 }

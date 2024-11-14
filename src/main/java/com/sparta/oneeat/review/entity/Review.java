@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -59,5 +60,11 @@ public class Review extends BaseEntity {
         this.content = modifyReviewReqDto.getContent();
         this.rating = modifyReviewReqDto.getRating();
         this.image = modifyReviewReqDto.getImage();
+    }
+
+    // 리뷰 숨김 메서드
+    public void softDelete(long userId) {
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = userId;
     }
 }

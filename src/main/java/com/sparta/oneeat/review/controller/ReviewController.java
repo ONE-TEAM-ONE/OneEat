@@ -87,4 +87,21 @@ public class ReviewController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
+    @Operation(summary = "리뷰 숨김(논리적 삭제)", description = "리뷰를 숨김(논리적 삭제)를 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "리뷰 숨김 성공"),
+            @ApiResponse(responseCode = "500", description = "리뷰 숨김 실패")
+    })
+    @PatchMapping("/order/{order_id}/review/{review_id}")
+    public ResponseEntity<? extends BaseResponseBody> softDeleteReview(
+//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable(name = "review_id") UUID reviewId
+    ){
+
+        log.info("reviewId : {}", reviewId);
+
+        reviewService.softDeleteReview(3L, reviewId);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
 }

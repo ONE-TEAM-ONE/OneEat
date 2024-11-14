@@ -87,4 +87,20 @@ public class ReviewServiceImpl implements ReviewService{
         review.modifyReview(modifyReviewReqDto);
 
     }
+
+    @Override
+    @Transactional
+    public void softDeleteReview(long userId, UUID reviewId) {
+
+        // 유저 조회
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+        // 리뷰 조회
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ExceptionType.REVIEW_NOT_FOUND));
+
+        // 권한 조회
+        if(!Objects.equals(user.getId(), review.getUser().getId())) throw new CustomException(ExceptionType.REVIEW_ACCESS_DENIED);
+
+        // 논리적 삭제
+        review.softDelete(userId);
+    }
 }
