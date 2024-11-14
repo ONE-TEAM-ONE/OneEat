@@ -15,6 +15,7 @@ public enum ExceptionType {
     // User
     USER_PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED,"U-001","일치하지 않는 비밀번호 입니다."),
     USER_NOT_EXIST(HttpStatus.NOT_FOUND, "U-002", "회원을 찾을 수 없습니다."),
+    USER_NOT_SOFT_DELETE(HttpStatus.BAD_REQUEST, "U-003", "회원이 숨김처리 되어있지 않습니다."),
 
     // Ai
     AI_ACCESS_DENIED(HttpStatus.FORBIDDEN, "A-001", "권한이 없습니다."),

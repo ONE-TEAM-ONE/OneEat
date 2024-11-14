@@ -52,4 +52,19 @@ public class UserServiceImpl implements UserService {
         user.softDelete(userDetails.getId());
 
     }
+
+    @Override
+    @Transactional
+    public void hardDeleteUser(Long userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new CustomException(ExceptionType.USER_NOT_EXIST)
+        );
+
+        // 숨김 처리가 되었는지 확인
+        if(user.getDeletedAt() == null)
+            throw new CustomException(ExceptionType.USER_NOT_SOFT_DELETE);
+
+        userRepository.deleteById(userId);
+    }
 }

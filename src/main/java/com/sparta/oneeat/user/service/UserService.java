@@ -7,4 +7,6 @@ public interface UserService {
     UserResponseDto selectUserDetails(Long id);
 
     void softDeleteUser(UserDetailsImpl userDetails, String password);
+
+    void hardDeleteUser(Long userId);
 }

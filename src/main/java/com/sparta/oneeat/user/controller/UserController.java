@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api/user")
@@ -47,6 +44,19 @@ public class UserController {
             @RequestBody String password
     ){
         userService.softDeleteUser(userDetails, password);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
+    @Operation(summary = "회원 삭제", description = "회원 정보를 물리적으로 삭제 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 삭제 성공"),
+            @ApiResponse(responseCode = "500", description = "회원 삭제 실패")
+    })
+    @DeleteMapping("/{user_id}")
+    public ResponseEntity<? extends BaseResponseBody> hardDeleteUser(
+            @PathVariable(name = "user_id") Long userId
+    ){
+        userService.hardDeleteUser(userId);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
