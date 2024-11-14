@@ -1,6 +1,7 @@
 package com.sparta.oneeat.payment.entity;
 
 import com.sparta.oneeat.order.entity.Order;
+import com.sparta.oneeat.payment.dto.ModifyPaymentStatusDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,5 +33,10 @@ public class Payment {
     public Payment(Order order){
         this.order = order;
         this.status = PaymentStatusEnum.NOT_PAID;
+    }
+
+    // 상태 변경
+    public void modifyStatus(ModifyPaymentStatusDto modifyPaymentStatusDto) {
+        this.status = modifyPaymentStatusDto.getStatus();
     }
 }
