@@ -141,7 +141,7 @@ public class AiService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 유저 없음
 
-        List<Store> stores = storeRepository.findByUser(user);
+        List<Store> stores = storeRepository.findAllByUser(user);
 
         // 해당 storeId와 일치하는 가게 찾기
         Store store = stores.stream()
