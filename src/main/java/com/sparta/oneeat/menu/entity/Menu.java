@@ -52,4 +52,8 @@ public class Menu extends BaseEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
+    public void updateStatus(MenuStatusEnum status) {
+        this.status = status;
+    }
+
 }

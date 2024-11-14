@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -64,7 +65,7 @@ public class MenuController {
         @PathVariable UUID storeId) {
 
         return ResponseEntity.status(200)
-            .body(BaseResponseBody.of(0, menuService.createMenu(requestDto, 1L, storeId)));
+            .body(BaseResponseBody.of(0, menuService.createMenu(requestDto, 2L, storeId)));
     }
 
     @Operation(summary = "메뉴 목록 조회", description = "메뉴 목록을 요청합니다")
@@ -81,7 +82,7 @@ public class MenuController {
         @RequestParam(defaultValue = "price") String sort) {
 
         return ResponseEntity.status(200)
-            .body(BaseResponseBody.of(0, menuService.getMenuList(1L, storeId, page, size, sort)));
+            .body(BaseResponseBody.of(0, menuService.getMenuList(2L, storeId, page, size, sort)));
     }
 
     @Operation(summary = "메뉴 수정", description = "메뉴를 수정합니다")
@@ -97,7 +98,24 @@ public class MenuController {
         @Valid @RequestBody MenuRequestDto requestDto) {
 
         return ResponseEntity.status(200)
-            .body(BaseResponseBody.of(0, menuService.updateMenu(userDetails, requestDto, storeId, menuId)));
+            .body(BaseResponseBody.of(0,
+                menuService.updateMenu(userDetails, requestDto, storeId, menuId)));
+    }
+
+    @Operation(summary = "메뉴 상태 변경", description = "메뉴의 상태를 변경합니다")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "메뉴 상태 변경 성공"),
+        @ApiResponse(responseCode = "500", description = "메뉴 상태 변경 실패")
+    })
+    @PatchMapping("/store/{storeId}/menu/{menuId}/status")
+    public ResponseEntity<? extends BaseResponseBody> updateMenuStatus(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable UUID storeId,
+        @PathVariable UUID menuId) {
+
+        menuService.updateMenuStatus(userDetails, storeId, menuId);
+
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
 }
