@@ -1,7 +1,9 @@
 package com.sparta.oneeat.order.controller;
 
+import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.response.BaseResponseBody;
 import com.sparta.oneeat.order.Service.OrderService;
+import com.sparta.oneeat.order.dto.CreateOrderReqDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -9,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -92,6 +96,29 @@ public class OrderController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
+    @Operation(summary = "주문 생성", description = "주문 정보를 저장합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "주문 생성 성공"),
+            @ApiResponse(responseCode = "500", description = "주문 생성 실패")
+    })
+    @PostMapping("")
+    public ResponseEntity<? extends BaseResponseBody> createOrder(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Validated  @RequestBody CreateOrderReqDto createOrderReqDto
+    ){
+
+        log.info("userId : {}", userDetails.getId());
+        log.info("storeId : {}", createOrderReqDto.getStoreId());
+        log.info("type : {}", createOrderReqDto.getType());
+        log.info("address : {}", createOrderReqDto.getAddress());
+        log.info("menu 개수 : {}", createOrderReqDto.getMenuList().size());
+
+        for(CreateOrderReqDto.MenuDto menuDto : createOrderReqDto.getMenuList()){
+            log.info("menuId : {}, amount : {}", menuDto.getMenuId(), menuDto.getAmount());
+        }
+
+        return ResponseEntity.status(201).body(BaseResponseBody.of(0, orderService.createOrder(userDetails.getUser(), createOrderReqDto)));
+    }
 }
 
 
