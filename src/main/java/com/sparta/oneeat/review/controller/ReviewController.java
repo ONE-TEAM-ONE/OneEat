@@ -83,8 +83,7 @@ public class ReviewController {
         log.info("orderId : {}", orderId);
         log.info("reviewId : {}", reviewId);
 
-        reviewService.modifyReview(3L, orderId, reviewId, modifyReviewReqDto);
-        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, reviewService.modifyReview(3L, orderId, reviewId, modifyReviewReqDto)));
     }
 
     @Operation(summary = "리뷰 숨김(논리적 삭제)", description = "리뷰를 숨김(논리적 삭제)를 합니다.")

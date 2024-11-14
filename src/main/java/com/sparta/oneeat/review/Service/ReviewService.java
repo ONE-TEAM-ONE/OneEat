@@ -1,9 +1,6 @@
 package com.sparta.oneeat.review.Service;
 
-import com.sparta.oneeat.review.dto.CreateReviewReqDto;
-import com.sparta.oneeat.review.dto.CreateReviewResDto;
-import com.sparta.oneeat.review.dto.ModifyReviewReqDto;
-import com.sparta.oneeat.review.dto.ReviewListDto;
+import com.sparta.oneeat.review.dto.*;
 import org.springframework.data.domain.Page;
 
 import java.util.UUID;
@@ -16,7 +13,7 @@ public interface ReviewService {
     Page<ReviewListDto> getReviewList(UUID storeId, int page, int size, String sort, boolean isAsc);
 
     // 리뷰 수정
-    void modifyReview(long userId, UUID orderId, UUID reviewId, ModifyReviewReqDto modifyReviewReqDto);
+    ModifyReviewResDto modifyReview(long userId, UUID orderId, UUID reviewId, ModifyReviewReqDto modifyReviewReqDto);
 
     // 리뷰 숨김(논리적 삭제)
     void softDeleteReview(long userId, UUID reviewId);

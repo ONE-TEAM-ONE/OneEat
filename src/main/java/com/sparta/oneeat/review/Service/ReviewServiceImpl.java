@@ -4,10 +4,7 @@ import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
 import com.sparta.oneeat.order.entity.Order;
 import com.sparta.oneeat.order.repository.OrderRepository;
-import com.sparta.oneeat.review.dto.CreateReviewReqDto;
-import com.sparta.oneeat.review.dto.CreateReviewResDto;
-import com.sparta.oneeat.review.dto.ModifyReviewReqDto;
-import com.sparta.oneeat.review.dto.ReviewListDto;
+import com.sparta.oneeat.review.dto.*;
 import com.sparta.oneeat.review.entity.Review;
 import com.sparta.oneeat.review.repository.ReviewRepository;
 import com.sparta.oneeat.store.entity.Store;
@@ -76,7 +73,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     @Transactional
-    public void modifyReview(long userId, UUID orderId, UUID reviewId, ModifyReviewReqDto modifyReviewReqDto) {
+    public ModifyReviewResDto modifyReview(long userId, UUID orderId, UUID reviewId, ModifyReviewReqDto modifyReviewReqDto) {
 
         // 유저 조회
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
@@ -87,6 +84,7 @@ public class ReviewServiceImpl implements ReviewService{
 
         review.modifyReview(modifyReviewReqDto);
 
+        return new ModifyReviewResDto(review);
     }
 
     @Override
