@@ -1,5 +1,6 @@
 package com.sparta.oneeat.review.controller;
 
+import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.response.BaseResponseBody;
 import com.sparta.oneeat.review.Service.ReviewService;
 import com.sparta.oneeat.review.dto.CreateReviewReqDto;
@@ -33,16 +34,17 @@ public class ReviewController {
     })
     @PostMapping("/order/{order_id}/review")
     public ResponseEntity<? extends BaseResponseBody> createReview(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "order_id") UUID orderId,
             @Validated @RequestBody CreateReviewReqDto createReviewReqDto
     ){
 
+        log.info("userId : {}", userDetails.getId());
         log.info("orderId : {}", orderId);
         log.info("rating : {}", createReviewReqDto.getRating());
         log.info("content : {}", createReviewReqDto.getContent());
 
-        return ResponseEntity.status(201).body(BaseResponseBody.of(0, reviewService.createReview(2L, orderId, createReviewReqDto)));
+        return ResponseEntity.status(201).body(BaseResponseBody.of(0, reviewService.createReview(userDetails.getId(), orderId, createReviewReqDto)));
     }
 
     @Operation(summary = "리뷰 조회", description = "가게의 리뷰를 조회합니다.")
@@ -75,16 +77,17 @@ public class ReviewController {
     })
     @PutMapping("/order/{order_id}/review/{review_id}")
     public ResponseEntity<? extends BaseResponseBody> modifyReview(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "order_id") UUID orderId,
             @PathVariable(name = "review_id") UUID reviewId,
             @Validated @RequestBody ModifyReviewReqDto modifyReviewReqDto
             ){
 
+        log.info("userId : {}", userDetails.getId());
         log.info("orderId : {}", orderId);
         log.info("reviewId : {}", reviewId);
 
-        return ResponseEntity.status(200).body(BaseResponseBody.of(0, reviewService.modifyReview(3L, orderId, reviewId, modifyReviewReqDto)));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, reviewService.modifyReview(userDetails.getId(), orderId, reviewId, modifyReviewReqDto)));
     }
 
     @Operation(summary = "리뷰 숨김(논리적 삭제)", description = "리뷰를 숨김(논리적 삭제)를 합니다.")
@@ -94,13 +97,14 @@ public class ReviewController {
     })
     @PatchMapping("/order/{order_id}/review/{review_id}")
     public ResponseEntity<? extends BaseResponseBody> softDeleteReview(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "review_id") UUID reviewId
     ){
 
+        log.info("userId : {}", userDetails.getId());
         log.info("reviewId : {}", reviewId);
 
-        reviewService.softDeleteReview(3L, reviewId);
+        reviewService.softDeleteReview(userDetails.getId(), reviewId);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
@@ -111,13 +115,14 @@ public class ReviewController {
     })
     @DeleteMapping("/order/{order_id}/review/{review_id}")
     public ResponseEntity<? extends BaseResponseBody> hardDeleteReview(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "review_id") UUID reviewId
     ){
 
+        log.info("userId : {}", userDetails.getId());
         log.info("reviewId : {}", reviewId);
 
-        reviewService.hardDeleteReview(2L, reviewId);
+        reviewService.hardDeleteReview(userDetails.getId(), reviewId);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 }
