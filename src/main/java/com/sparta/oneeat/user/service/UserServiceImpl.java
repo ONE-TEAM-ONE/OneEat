@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void softDeleteUser(UserDetailsImpl userDetails, String password) {
         // 암호화된 비밀번호 비교
-        if(!passwordEncoder.matches(password, userDetails.getPassword())){
+        if(passwordEncoder.matches(password, userDetails.getPassword())){
             throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
         }
 
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
             throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
         }
 
-        user.modifyPassword(passwordRequestDto.getNewPassword());
+        user.modifyPassword(passwordEncoder.encode(passwordRequestDto.getNewPassword()));
 
     }
 
@@ -94,10 +94,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userDetails.getId()).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST)
         );
-
-        // 닉네임 중복 확인
-        if(userRepository.findByNickname(nicknameRequestDto.getNickname()).isPresent())
-            throw new CustomException(ExceptionType.USER_EXIST_NICKNAME);
 
         user.modifyNickname(nicknameRequestDto.getNickname());
 
