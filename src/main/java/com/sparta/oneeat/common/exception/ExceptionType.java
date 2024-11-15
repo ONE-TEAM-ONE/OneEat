@@ -47,7 +47,11 @@ public enum ExceptionType {
     // 결제
     PAYMENT_NOT_EXIST(HttpStatus.NOT_FOUND, "P-001", "해당 결제가 존재하지 않습니다."),
     ORDER_PAYMENT_MISMATCHED(HttpStatus.BAD_REQUEST, "P-002", "해당 주문의 결제가 아닙니다."),
-    PAYMENT_ALREADY_PROCESSED(HttpStatus.BAD_REQUEST, "P-003", "이미 처리된 결제입니다.");
+    PAYMENT_ALREADY_PROCESSED(HttpStatus.BAD_REQUEST, "P-003", "이미 처리된 결제입니다."),
+
+    // 카테고리
+    CATEGORY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "C-001", "관리자만 접근할 수 있습니다."),
+    CATEGORY_DUPLICATED(HttpStatus.BAD_REQUEST, "C-002", "중복된 카테고리명 입니다.");
 
 
     // 상태, 에러 코드, 메시지
