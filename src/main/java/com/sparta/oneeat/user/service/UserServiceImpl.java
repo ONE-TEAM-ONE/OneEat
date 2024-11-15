@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
             throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
         }
 
-        user.modifyPassword(passwordRequestDto.getNewPassword());
+        user.modifyPassword(passwordEncoder.encode(passwordRequestDto.getNewPassword()));
 
     }
 
