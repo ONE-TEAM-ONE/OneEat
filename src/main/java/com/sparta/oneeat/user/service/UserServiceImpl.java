@@ -95,10 +95,6 @@ public class UserServiceImpl implements UserService {
                 new CustomException(ExceptionType.USER_NOT_EXIST)
         );
 
-        // 닉네임 중복 확인
-        if(userRepository.findByNickname(nicknameRequestDto.getNickname()).isPresent())
-            throw new CustomException(ExceptionType.USER_EXIST_NICKNAME);
-
         user.modifyNickname(nicknameRequestDto.getNickname());
 
     }
