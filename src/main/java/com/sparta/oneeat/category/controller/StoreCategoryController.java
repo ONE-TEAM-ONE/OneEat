@@ -8,11 +8,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,5 +45,19 @@ public class StoreCategoryController {
         log.info("category : {}", createCategoryReqDto.getCategory());
 
         return ResponseEntity.status(201).body(BaseResponseBody.of(0, storeCategoryService.createCategory(userDetails.getId(), createCategoryReqDto)));
+    }
+
+    @Operation(summary = "가게 카테고리 삭제", description = "가게 카테고리를 삭제 처리합니다.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "카테고리 삭제 성공"),
+        @ApiResponse(responseCode = "500", description = "카테고리 삭제 실패")
+    })
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<? extends BaseResponseBody> hideCategory(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable UUID categoryId) {
+
+        storeCategoryService.deleteCategory(userDetails.getUser(), categoryId);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 }

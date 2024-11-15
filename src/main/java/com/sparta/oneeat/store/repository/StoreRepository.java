@@ -1,6 +1,6 @@
 package com.sparta.oneeat.store.repository;
 
-import com.sparta.oneeat.store.entity.Category;
+import com.sparta.oneeat.category.entity.Category;
 import com.sparta.oneeat.store.entity.Store;
 import com.sparta.oneeat.user.entity.User;
 import java.util.List;
