@@ -10,5 +10,6 @@ public interface StoreCategoryService {
     CreateCategoryResDto createCategory(Long id, CreateCategoryReqDto createCategoryReqDto);
 
     void updateCategory(User user, UpdateCategoryReqDto createCategoryReqDto, UUID categoryId);
-
+  
+    void deleteCategory(User user, UUID categoryId);
 }
