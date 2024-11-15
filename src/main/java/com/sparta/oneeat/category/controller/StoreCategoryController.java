@@ -15,14 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -92,6 +85,29 @@ public class StoreCategoryController {
 
         storeCategoryService.hideCategory(userDetails.getUser(), categoryId);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
+    @Operation(summary = "가게 카테고리 목록 조회", description = "가게 카테고리 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "가게 카테고리 목록 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "가게 카테고리 목록 조회 실패")
+    })
+    @GetMapping("")
+    public ResponseEntity<? extends BaseResponseBody> getStoreCategoryList(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", defaultValue = "categoryName") String sort,
+            @RequestParam(value = "isAsc", defaultValue = "true") boolean isAsc
+    ){
+
+        log.info("userId : {}", userDetails.getId());
+        log.info("page : {}", page);
+        log.info("size : {}", size);
+        log.info("sort : {}", sort);
+        log.info("isAsc : {}", isAsc);
+
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, storeCategoryService.getStoreCategoryList(userDetails.getId(), (page-1), size, sort, isAsc)));
     }
   
 }

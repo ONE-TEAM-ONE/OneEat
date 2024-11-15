@@ -1,5 +1,6 @@
 package com.sparta.oneeat.category.service;
 
+import com.sparta.oneeat.category.dto.CategoryListResDto;
 import com.sparta.oneeat.category.dto.CreateCategoryReqDto;
 import com.sparta.oneeat.category.dto.CreateCategoryResDto;
 import com.sparta.oneeat.category.dto.UpdateCategoryReqDto;
@@ -14,6 +15,10 @@ import com.sparta.oneeat.user.repository.UserRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -107,5 +112,16 @@ public class StoreCategoryServiceImpl implements StoreCategoryService{
 
         //Todo 카테고리 숨김 처리 -> deleteAt, deleteBy 처리
         category.deleteCategory(user.getId());
-    } 
+    }
+
+    @Override
+    public Page<CategoryListResDto> getStoreCategoryList(Long id, int page, int size, String sort, boolean isAsc) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort1 = Sort.by(direction, sort);
+        Pageable pageable = PageRequest.of(page, size, sort1);
+
+        Page<Category> categories = storeCategotyRepository.findAll(pageable);
+
+        return categories.map(CategoryListResDto::new);
+    }
 }
