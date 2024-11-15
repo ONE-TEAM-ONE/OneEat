@@ -1,6 +1,8 @@
 package com.sparta.oneeat.order.entity;
 
 import com.sparta.oneeat.common.entity.BaseEntity;
+import com.sparta.oneeat.payment.entity.Payment;
+import com.sparta.oneeat.order.dto.CreateOrderReqDto;
 import com.sparta.oneeat.store.entity.Store;
 import com.sparta.oneeat.user.entity.User;
 import jakarta.persistence.*;
@@ -49,11 +51,26 @@ public class Order extends BaseEntity {
     @Column(name = "ORDER_ADDRESS")
     private String address;
 
+    // 주문 생성
+    public Order(User user, Store store, CreateOrderReqDto createOrderReqDto) {
+        this.user = user;
+        this.store = store;
+        this.type = createOrderReqDto.getType();
+        this.status = OrderStatusEnum.PAYMENT_PENDING;
+        this.totalPrice = 0;
+        this.address =createOrderReqDto.getAddress();
+    }
+
     public void cancle(){
         this.status = OrderStatusEnum.PAYMENT_CANCELLED;
     }
 
     public void modifyStatus(OrderStatusEnum status){
         this.status = status;
+    }
+
+    // 총가격 업데이트
+    public void updateTotalPrice(int totalPrice){
+        this.totalPrice = totalPrice;
     }
 }

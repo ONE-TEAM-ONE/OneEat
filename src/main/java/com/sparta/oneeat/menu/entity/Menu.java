@@ -47,9 +47,13 @@ public class Menu extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MenuStatusEnum status;
 
-
     public void delete(long userId) {
         this.deletedBy = userId;
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void updateStatus(MenuStatusEnum status) {
+        this.status = status;
+    }
+
 }

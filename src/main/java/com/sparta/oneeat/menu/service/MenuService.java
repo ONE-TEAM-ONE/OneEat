@@ -17,6 +17,7 @@ import com.sparta.oneeat.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MenuService {
@@ -34,7 +36,7 @@ public class MenuService {
     private final StoreRepository storeRepository;
 
     @Transactional
-    public MenuResponseDto createMenu(MenuRequestDto menuRequestDto, Long userId, UUID storeId) {
+    public MenuResponseDto createMenu(MenuRequestDto menuRequestDto, long userId, UUID storeId) {
         // 검증
         if (menuRequestDto.getAiRequestDto().getMenuId() != null
             || menuRequestDto.getAiRequestDto().getUserId() != null) {
@@ -103,46 +105,40 @@ public class MenuService {
     }
 
     @Transactional
-    public void hideMenu(UserDetailsImpl userDetails, UUID storeId, UUID menuId) {
-        // 유저 검증
-        User user = userRepository.findById(userDetails.getId())
-            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+    public MenuResponseDto updateMenu(long userId, MenuRequestDto updateRequestDto,
+        UUID storeId, UUID menuId) {
 
-        Store store;
+        log.info("userId {}", userId);
 
-        // 가게 검증 / 사장이라면 해당 유저에게 해당 가게가 있는지
-        if (user.getRole() == UserRoleEnum.OWNER) {
-            store = storeRepository.findByIdAndUser(storeId, user)
-                .orElseThrow(
-                    () -> new CustomException(
-                        ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음 (and 유저의 가게X)
-        } else {
-            store = storeRepository.findById(storeId).orElseThrow(
-                () -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음
-        }
-
+        // 기존 메뉴는 숨김처리한다
         Menu menu = menuRepository.findById(menuId)
-            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
-        menu.delete(user.getId());
+            .orElseThrow(() -> new CustomException(ExceptionType.MENU_NOT_FOUND));
+        log.info("mene {}", menu.toString());
+        menu.delete(userId);
+
+        // 새로 추가된 메뉴를 반환한다
+        return createMenu(updateRequestDto, userId, storeId);
     }
 
     @Transactional
-    public void deleteMenu(UserDetailsImpl userDetails, UUID storeId, UUID menuId) {
-        // 유저 검증
-        User user = userRepository.findById(userDetails.getId())
-            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+    public void updateMenuStatus(User user, UUID storeId, UUID menuId) {
+        Store store;
 
-        Store store = storeRepository.findById(storeId)
-            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
-
-        if (!(user.getRole() == UserRoleEnum.MASTER || user.getRole() == UserRoleEnum.MANAGER)) {
-            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); // 권한 없음
+        // 권한 확인 본인 가게인지 확인
+        if (user.getRole() == UserRoleEnum.OWNER) {
+          store = storeRepository.findByIdAndUser(storeId, user).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+        } else {
+            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); // 권한 X
         }
 
-        Menu menu = menuRepository.findByIdAndStore(menuId, store)
-            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
-
-        menuRepository.delete(menu);
+        // 상태 변경
+        Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new CustomException(ExceptionType.MENU_NOT_FOUND));
+        if (menu.getStatus() == MenuStatusEnum.ON_SALE) {
+            menu.updateStatus(MenuStatusEnum.SOLD_OUT);
+        } else {
+            menu.updateStatus(MenuStatusEnum.ON_SALE);
+        }
+        menuRepository.save(menu);
     }
 }
 
