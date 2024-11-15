@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void softDeleteUser(UserDetailsImpl userDetails, String password) {
         // 암호화된 비밀번호 비교
-        if(!passwordEncoder.matches(password, userDetails.getPassword())){
+        if(passwordEncoder.matches(password, userDetails.getPassword())){
             throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
         }
 
