@@ -20,7 +20,6 @@ public class Category extends BaseEntity {
     private UUID id;
 
     @Column(name = "STORE_CATEGORY_CATEGORY", nullable = false)
-    @Enumerated(EnumType.STRING)
     private String categoryName;
 
     public void deleteCategory(long userId) {
