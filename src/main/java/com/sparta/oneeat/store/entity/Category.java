@@ -1,5 +1,6 @@
 package com.sparta.oneeat.store.entity;
 
+import com.sparta.oneeat.store.dto.request.CategoryRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,6 +19,9 @@ public class Category {
     private UUID id;
 
     @Column(name = "STORE_CATEGORY_CATEGORY", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private StoreCategoryEnum category;
+    private String categoryName;
+
+    public void updateCategoryName(CategoryRequestDto requestDto) {
+        this.categoryName = requestDto.getCategoryName();
+    }
 }
