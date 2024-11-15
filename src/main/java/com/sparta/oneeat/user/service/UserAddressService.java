@@ -15,4 +15,6 @@ public interface UserAddressService {
     void modifyCurrentAddress(UserDetailsImpl userDetails, UUID addressId);
 
     void modifyAddress(UserDetailsImpl userDetails, UUID addressId, String address);
+
+    void softDeleteAddress(UserDetailsImpl userDetails, UUID addressId);
 }

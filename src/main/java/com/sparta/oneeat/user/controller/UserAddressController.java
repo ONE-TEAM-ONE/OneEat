@@ -82,4 +82,18 @@ public class UserAddressController {
         userAddressService.modifyAddress(userDetails, addressId, addressRequestDto.getAddress());
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
+
+    @Operation(summary = "주소록 주소 숨김", description = "자신의 주소록의 주소를 숨김처리 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "주소 숨김 성공"),
+            @ApiResponse(responseCode = "500", description = "주소 숨김 실패")
+    })
+    @PatchMapping(value = "/{addressId}")
+    public ResponseEntity<? extends BaseResponseBody> softDeleteAddress(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable UUID addressId
+    ){
+        userAddressService.softDeleteAddress(userDetails, addressId);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
 }

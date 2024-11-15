@@ -91,4 +91,16 @@ public class UserAddressServiceImpl implements UserAddressService {
         userAddress.modifyAddress(address);
     }
 
+    @Override
+    @Transactional
+    public void softDeleteAddress(UserDetailsImpl userDetails, UUID addressId) {
+        // 주소록에 주소가 있는지 확인
+        UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userDetails.getId()).orElseThrow(()->
+                new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
+        );
+
+        // 숨김처리
+        userAddress.softDelete(userDetails.getId());
+    }
+
 }
