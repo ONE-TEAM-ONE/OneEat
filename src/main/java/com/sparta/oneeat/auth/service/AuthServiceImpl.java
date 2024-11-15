@@ -28,24 +28,19 @@ public class AuthServiceImpl implements AuthService {
         password = passwordEncoder.encode(password);
 
         // 유저네임(아이디) 중복 체크
-        if(userRepository.findByName(username).isPresent())
+        if (userRepository.findByName(username).isPresent())
             throw new CustomException(ExceptionType.AUTH_DUPLICATE_USERNAME);
 
         // 닉네임 중복 체크
         if (userRepository.findByNickname(username).isPresent())
             throw new CustomException(ExceptionType.AUTH_DUPLICATE_NICKNAME);
 
-        User user = User.builder()
-                .name(username)
-                .password(password)
-                .nickname(nickname)
-                .email(requestDto.getEmail())
-                .currentAddress(requestDto.getAddress())
-                .build();
+        User user = new User(username, password, nickname, requestDto.getEmail(), requestDto.getAddress());
 
         userRepository.save(user);
 
         return new SignupResponseDto(user.getId());
     }
+
 }
 
