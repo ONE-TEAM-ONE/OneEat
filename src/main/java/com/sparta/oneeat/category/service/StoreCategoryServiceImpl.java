@@ -2,6 +2,7 @@ package com.sparta.oneeat.category.service;
 
 import com.sparta.oneeat.category.dto.CreateCategoryReqDto;
 import com.sparta.oneeat.category.dto.CreateCategoryResDto;
+import com.sparta.oneeat.category.dto.UpdateCategoryReqDto;
 import com.sparta.oneeat.category.entity.Category;
 import com.sparta.oneeat.category.repository.StoreCategotyRepository;
 import com.sparta.oneeat.common.exception.CustomException;
@@ -50,7 +51,24 @@ public class StoreCategoryServiceImpl implements StoreCategoryService{
 
         return new CreateCategoryResDto(saved.getId());
     }
-
+  
+    @Override
+    @Transactional
+    public void updateCategory(User user, UpdateCategoryReqDto updateCategoryReqDto, UUID categoryId) {
+        checkRole(user.getRole());
+        //Todo 수정할 카테고리 존재 여부 검증
+        log.info("카테고리 검증 : ");
+        Category category = storeCategotyRepository.findById(categoryId).orElseThrow(() -> new CustomException(
+            ExceptionType.INTERNAL_SERVER_ERROR)); //Todo 카테고리 관련 타입으로 수정 필요함
+        //Todo 카테고리 수정 -> 이미 존재하는 카테고리면 예외
+        if (storeCategotyRepository.findByCategoryName(updateCategoryReqDto.getCategoryName()).isPresent()) {
+            log.info("이미 존재하는 카테고리 : ");
+            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); //Todo 이미 존재하는 카테고리 타입 수정 필요
+        }
+        //Todo 카테고리 수정 처리
+        category.updateCategoryName(updateCategoryReqDto);
+    }
+  
     @Transactional
     public void deleteCategory(User user, UUID categoryId) {
         checkRole(user.getRole());
