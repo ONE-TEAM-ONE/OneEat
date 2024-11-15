@@ -11,4 +11,6 @@ public interface UserAddressService {
     UUID creatAddress(UserDetailsImpl userDetails, String address);
 
     List<AddressResponseDto> selectAddressList(UserDetailsImpl userDetails);
+
+    void modifyCurrentAddress(UserDetailsImpl userDetails, UUID addressId);
 }

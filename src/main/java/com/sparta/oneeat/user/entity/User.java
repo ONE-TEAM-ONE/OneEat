@@ -73,4 +73,8 @@ public class User extends BaseEntity {
         this.deletedAt = LocalDateTime.now();
         this.deletedBy = id;
     }
+
+    public void modifyCurrentAddress(String address) {
+        this.currentAddress = address;
+    }
 }

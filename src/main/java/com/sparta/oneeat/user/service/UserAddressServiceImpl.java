@@ -4,6 +4,7 @@ import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
 import com.sparta.oneeat.user.dto.AddressResponseDto;
+import com.sparta.oneeat.user.entity.User;
 import com.sparta.oneeat.user.entity.UserAddress;
 import com.sparta.oneeat.user.repository.UserAddressRepository;
 import com.sparta.oneeat.user.repository.UserRepository;
@@ -63,4 +64,24 @@ public class UserAddressServiceImpl implements UserAddressService {
                 .map(address -> new AddressResponseDto(address.getId(), address.getAddress()))
                 .toList();
     }
+
+    @Override
+    @Transactional
+    public void modifyCurrentAddress(UserDetailsImpl userDetails, UUID addressId) {
+        // 새로운 주소가 유저의 주소록에 존재하는지 확인
+        userAddressRepository.findByIdAndUserId(addressId, userDetails.getId()).orElseThrow(()->
+                new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
+        );
+
+        // 주소 찾아오기
+        UserAddress userAddress = userAddressRepository.findById(addressId).orElseThrow(()->
+                new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
+        );
+
+        // 유저의 기본 주소에 반영하기
+        User user = userDetails.getUser();
+        user.modifyCurrentAddress(userAddress.getAddress());
+
+    }
+
 }
