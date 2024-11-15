@@ -1,5 +1,6 @@
 package com.sparta.oneeat.payment.controller;
 
+import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.response.BaseResponseBody;
 import com.sparta.oneeat.payment.dto.ModifyPaymentStatusDto;
 import com.sparta.oneeat.payment.service.PaymentService;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,13 +33,14 @@ public class PaymentController {
     })
     @PostMapping("/{order_id}/payment")
     public ResponseEntity<? extends BaseResponseBody> createPayment(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "order_id") UUID orderId
     ){
 
+        log.info("userId : {}", userDetails.getId());
         log.info("orderId : {}", orderId);
 
-        return ResponseEntity.status(201).body(BaseResponseBody.of(0, paymentService.createPayment(3L, orderId)));
+        return ResponseEntity.status(201).body(BaseResponseBody.of(0, paymentService.createPayment(userDetails.getId(), orderId)));
 
     }
 
@@ -48,16 +51,17 @@ public class PaymentController {
     })
     @PutMapping("/{order_id}/payment/{payment_id}")
     public ResponseEntity<? extends BaseResponseBody> modifyPaymentStatus(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "order_id") UUID orderId,
             @PathVariable(name = "payment_id") UUID paymentId,
             @Validated  @RequestBody ModifyPaymentStatusDto modifyPaymentStatusDto
     ){
 
+        log.info("userId : {}", userDetails.getId());
         log.info("paymentId : {}", paymentId);
         log.info("status : {}", modifyPaymentStatusDto.getStatus());
 
-        paymentService.modifyPaymentStatus(2L, orderId, paymentId, modifyPaymentStatusDto);
+        paymentService.modifyPaymentStatus(userDetails.getId(), orderId, paymentId, modifyPaymentStatusDto);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
 
     }
