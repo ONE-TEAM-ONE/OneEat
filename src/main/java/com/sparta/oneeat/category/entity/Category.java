@@ -1,8 +1,8 @@
-package com.sparta.oneeat.store.entity;
+package com.sparta.oneeat.category.entity;
 
+import com.sparta.oneeat.category.dto.CreateCategoryReqDto;
 import com.sparta.oneeat.common.entity.BaseEntity;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +22,7 @@ public class Category extends BaseEntity {
     @Column(name = "STORE_CATEGORY_CATEGORY", nullable = false)
     private String categoryName;
 
-    public void deleteCategory(long userId) {
-        this.deletedAt = LocalDateTime.now();
-        this.deletedBy = userId;
+    public Category(CreateCategoryReqDto createCategoryReqDto){
+        this.categoryName = createCategoryReqDto.getCategory();
     }
 }
