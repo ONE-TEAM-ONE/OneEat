@@ -20,7 +20,6 @@ public interface StoreRepository extends JpaRepository <Store, UUID> {
     // 지정된 유저와 연관된 가게 조회
     Optional<Store> findByUser(User user);
 
-    @Query("SELECT s FROM Store s WHERE s.id IN :storeIds")
-    Page<Store> findAllByStoreIds(@Param("storeIds") List<UUID> storeIds, Pageable pageable);
+    Page<Store> findAllByIdIn(List<UUID> storeIds, Pageable pageable);
 
 }

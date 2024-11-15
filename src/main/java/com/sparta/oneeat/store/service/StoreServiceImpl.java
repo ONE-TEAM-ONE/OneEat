@@ -46,15 +46,14 @@ public class StoreServiceImpl implements StoreService{
         // 사용자의 주소를 가져옵니다.
         String userAddress = user.getCurrentAddress();
 
-        List<DeliveryRegion> deliveryRegions = deliveryRegionRepository.findAllByUserAddress(userAddress);
+        List<DeliveryRegion> deliveryRegions = deliveryRegionRepository.findAllByDeliveryRegion(userAddress);
         List<UUID> storeIds = deliveryRegions.stream()
                 .map(DeliveryRegion::getStore)
                 .map(Store::getId)
                 .collect(Collectors.toList());
 
-        Page<Store> storeList = storeRepository.findAllByStoreIds(storeIds, pageable);
-        
+        Page<Store> storeList = storeRepository.findAllByIdIn(storeIds, pageable);
+
         return storeList.map(StoreListDto::new);
     }
-
 }

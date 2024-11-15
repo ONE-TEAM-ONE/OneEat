@@ -22,6 +22,6 @@ public class DeliveryRegion {
     @JoinColumn(name = "STORE_ID", nullable = false)
     private Store store;
 
-    @Column(name = "DELIVERY_REGIONS", columnDefinition = "text[]")
-    private String[] deliveryRegions;
+    @Column(name = "DELIVERY_REGION")
+    private String deliveryRegion;
 }
