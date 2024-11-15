@@ -2,6 +2,7 @@ package com.sparta.oneeat.menu.repository;
 
 import com.sparta.oneeat.menu.entity.Menu;
 import com.sparta.oneeat.store.entity.Store;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,5 +13,5 @@ import org.springframework.stereotype.Repository;
 public interface MenuRepository extends JpaRepository<Menu, UUID> {
 
     Page<Menu> findAllByStore(Store store, Pageable pageable);
-
+    Optional<Menu> findByIdAndStore(UUID menuId, Store store);
 }

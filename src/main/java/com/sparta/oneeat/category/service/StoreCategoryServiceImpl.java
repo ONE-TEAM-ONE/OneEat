@@ -2,6 +2,7 @@ package com.sparta.oneeat.category.service;
 
 import com.sparta.oneeat.category.dto.CreateCategoryReqDto;
 import com.sparta.oneeat.category.dto.CreateCategoryResDto;
+import com.sparta.oneeat.category.dto.UpdateCategoryReqDto;
 import com.sparta.oneeat.category.entity.Category;
 import com.sparta.oneeat.category.repository.StoreCategotyRepository;
 import com.sparta.oneeat.common.exception.CustomException;
@@ -50,7 +51,44 @@ public class StoreCategoryServiceImpl implements StoreCategoryService{
 
         return new CreateCategoryResDto(saved.getId());
     }
+  
+    @Override
+    @Transactional
+    public void updateCategory(User user, UpdateCategoryReqDto updateCategoryReqDto, UUID categoryId) {
+        checkRole(user.getRole());
+        //Todo 수정할 카테고리 존재 여부 검증
+        log.info("카테고리 검증 : ");
+        Category category = storeCategotyRepository.findById(categoryId).orElseThrow(() -> new CustomException(
+            ExceptionType.INTERNAL_SERVER_ERROR)); //Todo 카테고리 관련 타입으로 수정 필요함
+        //Todo 카테고리 수정 -> 이미 존재하는 카테고리면 예외
+        if (storeCategotyRepository.findByCategoryName(updateCategoryReqDto.getCategoryName()).isPresent()) {
+            log.info("이미 존재하는 카테고리 : ");
+            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); //Todo 이미 존재하는 카테고리 타입 수정 필요
+        }
+        //Todo 카테고리 수정 처리
+        category.updateCategoryName(updateCategoryReqDto);
+    }
+  
+    @Override
+    @Transactional
+    public void deleteCategory(User user, UUID categoryId) {
+        checkRole(user.getRole());
 
+        //Todo 카테고리 존재 여부 검증
+        log.info("카테고리 검증 : ");
+        Category category = storeCategotyRepository.findById(categoryId).orElseThrow(() -> new CustomException(
+            ExceptionType.INTERNAL_SERVER_ERROR)); //Todo 카테고리 관련 타입으로 수정 필요함
+
+        if (!storeRepository.findByCategory(category).isEmpty()) {
+            log.info("카테고리 사용 중");
+            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); //Todo 카테고리 관련 타입으로 수정 필요함
+        }
+
+        //Todo 카테고리 삭제 처리
+        storeCategotyRepository.delete(category);
+    }
+
+    @Override
     @Transactional
     public void hideCategory(User user, UUID categoryId) {
         //Todo 권한 검증
@@ -69,5 +107,5 @@ public class StoreCategoryServiceImpl implements StoreCategoryService{
 
         //Todo 카테고리 숨김 처리 -> deleteAt, deleteBy 처리
         category.deleteCategory(user.getId());
-    }
+    } 
 }

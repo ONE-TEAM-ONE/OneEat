@@ -48,8 +48,8 @@ public class AiService {
     }
 
     // ai 요청이 들어오면 질문 조합
-    public AiResponseDto generateQuestion(long userID, AiCallRequestDto requestDto) {
-        String category = validationAndGetStoreCategory(userID, requestDto.getStoreId());
+    public AiResponseDto generateQuestion(long userId, AiCallRequestDto requestDto) {
+        String category = validationAndGetStoreCategory(userId, requestDto.getStoreId());
 
         String question = "메뉴 이름 : " + requestDto.getMenuName() + "카테고리 : " + category
             + " 를 가지고 해당 메뉴에 대한 설명을 만들어줘. 답변을 최대한 간결하게 50자 이하로";
