@@ -150,10 +150,10 @@ public class AiService {
             .orElseThrow(
                 () -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 일치하는 가게 없음
 
-        log.info(store.getCategory().getCategory().name());
+        log.info(store.getCategory().getCategoryName());
 
         // 해당 가게의 카테고리 반환
-        return store.getCategory().getCategory().name();
+        return store.getCategory().getCategoryName();
     }
 
 }
