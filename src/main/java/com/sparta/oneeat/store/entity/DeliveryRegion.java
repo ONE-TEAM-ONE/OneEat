@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+
 @Entity
 @Table(name="P_DELIVERY_REGION")
 @Getter
@@ -17,11 +18,10 @@ public class DeliveryRegion {
     @Column(name="DELIVERY_REGION_ID", nullable = false)
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STORE_ID", nullable = false)
     private Store store;
 
-//    @ManyToOne
-//    @JoinColumn(name = "ADDRESS_CODE_ID", nullable = false)
-//    private AddressCode addressCode;
+    @Column(name = "DELIVERY_REGIONS", columnDefinition = "text[]")
+    private String[] deliveryRegions;
 }

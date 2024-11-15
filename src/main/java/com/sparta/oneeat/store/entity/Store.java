@@ -1,5 +1,6 @@
 package com.sparta.oneeat.store.entity;
 
+import com.sparta.oneeat.common.entity.BaseEntity;
 import com.sparta.oneeat.menu.entity.Menu;
 import com.sparta.oneeat.review.entity.Review;
 import com.sparta.oneeat.user.entity.User;
@@ -16,17 +17,17 @@ import java.util.UUID;
 @Table(name="P_STORE")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Store {
+public class Store extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="STORE_ID", nullable = false)
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USERS_ID", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STORE_CATEGORY_ID", nullable = false)
     private Category category;
 
