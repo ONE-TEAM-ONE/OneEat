@@ -1,5 +1,6 @@
 package com.sparta.oneeat.store.repository;
 
+import com.sparta.oneeat.store.entity.Category;
 import com.sparta.oneeat.store.entity.Store;
 import com.sparta.oneeat.user.entity.User;
 import java.util.List;
@@ -15,4 +16,5 @@ public interface StoreRepository extends JpaRepository <Store, UUID> {
     // 지정된 유저와 연관된 가게 조회
     Optional<Store> findByUser(User user);
 
+    List<Store> findByCategory(Category category);
 }
