@@ -3,12 +3,8 @@ package com.sparta.oneeat.category.entity;
 import com.sparta.oneeat.category.dto.CreateCategoryReqDto;
 import com.sparta.oneeat.category.dto.UpdateCategoryReqDto;
 import com.sparta.oneeat.common.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,5 +29,10 @@ public class Category extends BaseEntity {
 
     public void updateCategoryName(UpdateCategoryReqDto requestDto) {
         this.categoryName = requestDto.getCategoryName();
+    }
+
+    public void deleteCategory(long userId) {
+      this.deletedAt = LocalDateTime.now();
+      this.deletedBy = userId;
     }
 }

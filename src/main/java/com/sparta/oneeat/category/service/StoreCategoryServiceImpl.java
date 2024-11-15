@@ -69,6 +69,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService{
         category.updateCategoryName(updateCategoryReqDto);
     }
   
+    @Override
     @Transactional
     public void deleteCategory(User user, UUID categoryId) {
         checkRole(user.getRole());
@@ -86,4 +87,25 @@ public class StoreCategoryServiceImpl implements StoreCategoryService{
         //Todo 카테고리 삭제 처리
         storeCategotyRepository.delete(category);
     }
+
+    @Override
+    @Transactional
+    public void hideCategory(User user, UUID categoryId) {
+        //Todo 권한 검증
+        checkRole(user.getRole());
+
+
+        //Todo 카테고리 존재 여부 검증
+        log.info("카테고리 검증 : ");
+        Category category = storeCategotyRepository.findById(categoryId).orElseThrow(() -> new CustomException(
+            ExceptionType.INTERNAL_SERVER_ERROR)); //Todo 카테고리 관련 타입으로 수정 필요함
+
+        if (!storeRepository.findByCategory(category).isEmpty()) {
+            log.info("카테고리 사용 중");
+            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); //Todo 카테고리 관련 타입으로 수정 필요함
+        }
+
+        //Todo 카테고리 숨김 처리 -> deleteAt, deleteBy 처리
+        category.deleteCategory(user.getId());
+    } 
 }

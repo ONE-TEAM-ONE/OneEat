@@ -12,4 +12,6 @@ public interface StoreCategoryService {
     void updateCategory(User user, UpdateCategoryReqDto createCategoryReqDto, UUID categoryId);
   
     void deleteCategory(User user, UUID categoryId);
+
+    void hideCategory(User user, UUID categoryId);
 }
