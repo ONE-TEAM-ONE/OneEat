@@ -1,6 +1,7 @@
-package com.sparta.oneeat.store.entity;
+package com.sparta.oneeat.category.entity;
 
-import com.sparta.oneeat.store.dto.request.CategoryRequestDto;
+import com.sparta.oneeat.category.dto.CreateCategoryReqDto;
+import com.sparta.oneeat.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Table(name="P_STORE_CATEGORY")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Category {
+public class Category extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="STORE_CATEGORY_ID", nullable = false)
@@ -21,7 +22,7 @@ public class Category {
     @Column(name = "STORE_CATEGORY_CATEGORY", nullable = false)
     private String categoryName;
 
-    public void updateCategoryName(CategoryRequestDto requestDto) {
-        this.categoryName = requestDto.getCategoryName();
+    public Category(CreateCategoryReqDto createCategoryReqDto){
+        this.categoryName = createCategoryReqDto.getCategory();
     }
 }
