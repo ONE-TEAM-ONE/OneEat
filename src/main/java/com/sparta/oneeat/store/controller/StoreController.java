@@ -2,6 +2,7 @@ package com.sparta.oneeat.store.controller;
 
 import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.response.BaseResponseBody;
+import com.sparta.oneeat.store.dto.CreateStoreReqDto;
 import com.sparta.oneeat.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,10 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -48,4 +47,23 @@ public class StoreController {
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, storeService.getStoreList(userId,(page-1), size, sort, isAsc)));
     }
 
+    @Operation(summary = "가게 생성", description = "가게 정보를 저장합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "가게 생성 성공"),
+            @ApiResponse(responseCode = "500", description = "가게 생성 실패")
+    })
+    @PostMapping("/store")
+    public ResponseEntity<? extends BaseResponseBody> createStore(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @Validated @RequestBody CreateStoreReqDto createStoreReqDto
+    ){
+
+        log.info("userId : {}", userDetails.getId());
+        log.info("storeName : {}", createStoreReqDto.getName());
+        log.info("category : {}", createStoreReqDto.getCategory());
+        log.info("address : {}", createStoreReqDto.getAddress());
+        log.info("DeliveryRegions : {}", createStoreReqDto.getDeliveryRegions());
+
+        return ResponseEntity.status(201).body(BaseResponseBody.of(0, storeService.createStore(userDetails.getUser(), createStoreReqDto)));
+    }
 }

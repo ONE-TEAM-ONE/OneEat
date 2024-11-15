@@ -6,8 +6,6 @@ import com.sparta.oneeat.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +22,6 @@ public interface StoreRepository extends JpaRepository <Store, UUID> {
     Page<Store> findAllByIdIn(List<UUID> storeIds, Pageable pageable);
 
     List<Store> findByCategory(Category category);
+
+    boolean existsByNameAndCategoryAndAddress(String name, Category category, String address);
 }
