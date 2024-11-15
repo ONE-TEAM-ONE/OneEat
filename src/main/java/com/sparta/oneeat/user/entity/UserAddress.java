@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -18,14 +19,29 @@ public class UserAddress extends BaseEntity {
     @Column(name="USER_ADDRESS_ID")
     private UUID id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "USERS_ID")
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USERS_ID")
+    private User user;
 
 //    @ManyToOne
 //    @JoinColumn(name = "ADDRESS_CODE_ID", nullable = false)
 //    private AddressCode addressCode;
 
     @Column(name="USER_ADDRESS_DATAIL")
-    private String detail;
+    private String address;
+
+    public UserAddress(User user, String address) {
+        this.user = user;
+        this.address = address;
+    }
+
+    public void modifyAddress(String address) {
+        this.address = address;
+    }
+
+    public void softDelete(Long userId) {
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = userId;
+    }
+
 }

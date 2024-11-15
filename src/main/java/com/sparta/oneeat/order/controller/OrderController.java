@@ -33,19 +33,20 @@ public class OrderController {
     })
     @GetMapping("")
     public ResponseEntity<? extends BaseResponseBody> getOrderList(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @RequestParam("sort") String sort,
             @RequestParam("isAsc") boolean isAsc
     ){
 
+        log.info("userId : {}", userDetails.getId());
         log.info("page : {}", page);
         log.info("size : {}", size);
         log.info("sort : {}", sort);
         log.info("isAsc : {}", isAsc);
 
-        return ResponseEntity.status(200).body(BaseResponseBody.of(0, orderService.getOrderList(2L, (page-1), size, sort, isAsc)));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, orderService.getOrderList(userDetails.getId(), (page-1), size, sort, isAsc)));
     }
 
 
@@ -56,13 +57,14 @@ public class OrderController {
     })
     @GetMapping("/{order_id}")
     public ResponseEntity<? extends BaseResponseBody> getOrderDetail(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "order_id") UUID orderId
     ){
 
+        log.info("userId : {}", userDetails.getId());
         log.info("orderId : {}", orderId);
 
-        return ResponseEntity.status(200).body(BaseResponseBody.of(0, orderService.getOrderDetail(1L, orderId)));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, orderService.getOrderDetail(userDetails.getId(), orderId)));
     }
 
     @Operation(summary = "주문 취소", description = "배달을 시작하지 않은 주문을 취소합니다.")
@@ -72,12 +74,13 @@ public class OrderController {
     })
     @PatchMapping("/{order_id}")
     public ResponseEntity<? extends BaseResponseBody> cancelOrder(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "order_id") UUID orderId
     ){
 
+        log.info("userId : {}", userDetails.getId());
         log.info("orderId : {}", orderId);
-        orderService.cancelOrder(1L, orderId);
+        orderService.cancelOrder(userDetails.getId(), orderId);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
@@ -88,11 +91,13 @@ public class OrderController {
     })
     @PutMapping("/{order_id}")
     public ResponseEntity<? extends BaseResponseBody> modifyStatus(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable(name = "order_id") UUID orderId
     ){
 
-        orderService.modifyOrderStatus(1L, orderId);
+        log.info("userId : {}", userDetails.getId());
+
+        orderService.modifyOrderStatus(userDetails.getId(), orderId);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
@@ -117,7 +122,7 @@ public class OrderController {
             log.info("menuId : {}, amount : {}", menuDto.getMenuId(), menuDto.getAmount());
         }
 
-        return ResponseEntity.status(201).body(BaseResponseBody.of(0, orderService.createOrder(userDetails.getUser(), createOrderReqDto)));
+        return ResponseEntity.status(201).body(BaseResponseBody.of(0, orderService.createOrder(userDetails.getId(), createOrderReqDto)));
     }
 }
 

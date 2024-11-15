@@ -158,7 +158,9 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     @Transactional
-    public CreateOrderResDto createOrder(User user, CreateOrderReqDto createOrderReqDto) {
+    public CreateOrderResDto createOrder(Long userId, CreateOrderReqDto createOrderReqDto) {
+        // 유저 확인
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
         // 가게 정보 불러오기
         Store store = storeRepository.findById(createOrderReqDto.getStoreId()).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
         log.info("가게 불러오기 성공");

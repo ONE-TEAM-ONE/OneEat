@@ -1,5 +1,6 @@
 package com.sparta.oneeat.store.repository;
 
+import com.sparta.oneeat.category.entity.Category;
 import com.sparta.oneeat.store.entity.Store;
 import com.sparta.oneeat.user.entity.User;
 import org.springframework.data.domain.Page;
@@ -22,4 +23,5 @@ public interface StoreRepository extends JpaRepository <Store, UUID> {
 
     Page<Store> findAllByIdIn(List<UUID> storeIds, Pageable pageable);
 
+    List<Store> findByCategory(Category category);
 }
