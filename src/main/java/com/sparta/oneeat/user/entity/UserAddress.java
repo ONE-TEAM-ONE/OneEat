@@ -33,4 +33,8 @@ public class UserAddress extends BaseEntity {
         this.user = user;
         this.address = address;
     }
+
+    public void modifyAddress(String address) {
+        this.address = address;
+    }
 }

@@ -13,4 +13,6 @@ public interface UserAddressService {
     List<AddressResponseDto> selectAddressList(UserDetailsImpl userDetails);
 
     void modifyCurrentAddress(UserDetailsImpl userDetails, UUID addressId);
+
+    void modifyAddress(UserDetailsImpl userDetails, UUID addressId, String address);
 }

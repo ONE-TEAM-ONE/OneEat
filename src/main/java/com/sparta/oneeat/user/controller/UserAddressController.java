@@ -15,6 +15,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Controller
 @RequestMapping("/api/user/address")
 @RequiredArgsConstructor
@@ -63,6 +65,21 @@ public class UserAddressController {
             @RequestBody AddressModifyRequestDto addressModifyRequestDto
     ){
         userAddressService.modifyCurrentAddress(userDetails, addressModifyRequestDto.getAddressId());
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
+    @Operation(summary = "주소록 주소 수정", description = "자신의 주소록의 주소를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "주소 수정 성공"),
+            @ApiResponse(responseCode = "500", description = "주소 수정 실패")
+    })
+    @PutMapping(value = "/{addressId}")
+    public ResponseEntity<? extends BaseResponseBody> modifyAddress(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable UUID addressId,
+            @RequestBody AddressRequestDto addressRequestDto
+    ){
+        userAddressService.modifyAddress(userDetails, addressId, addressRequestDto.getAddress());
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 }

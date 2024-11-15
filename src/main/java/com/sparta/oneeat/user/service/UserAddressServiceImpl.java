@@ -68,13 +68,8 @@ public class UserAddressServiceImpl implements UserAddressService {
     @Override
     @Transactional
     public void modifyCurrentAddress(UserDetailsImpl userDetails, UUID addressId) {
-        // 새로운 주소가 유저의 주소록에 존재하는지 확인
-        userAddressRepository.findByIdAndUserId(addressId, userDetails.getId()).orElseThrow(()->
-                new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
-        );
-
-        // 주소 찾아오기
-        UserAddress userAddress = userAddressRepository.findById(addressId).orElseThrow(()->
+        // 새로운 주소가 유저의 주소록에 존재하는지 확인하고 찾아오기
+        UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userDetails.getId()).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
         );
 
@@ -82,6 +77,18 @@ public class UserAddressServiceImpl implements UserAddressService {
         User user = userDetails.getUser();
         user.modifyCurrentAddress(userAddress.getAddress());
 
+    }
+
+    @Override
+    @Transactional
+    public void modifyAddress(UserDetailsImpl userDetails, UUID addressId, String address) {
+        // 주소록에 주소가 있는지 확인
+        UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userDetails.getId()).orElseThrow(()->
+                new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
+        );
+
+        // 주소 수정
+        userAddress.modifyAddress(address);
     }
 
 }
