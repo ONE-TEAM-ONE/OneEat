@@ -16,8 +16,7 @@ public enum ExceptionType {
     USER_PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED,"U-001","일치하지 않는 비밀번호 입니다."),
     USER_NOT_EXIST(HttpStatus.NOT_FOUND, "U-002", "회원을 찾을 수 없습니다."),
     USER_NOT_SOFT_DELETE(HttpStatus.BAD_REQUEST, "U-003", "회원이 숨김처리 되어있지 않습니다."),
-    USER_EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "U-004", "이미 사용하고 있는 닉네임 입니다."),
-    USER_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "U-005", "이미 사용하고 있는 이메일 입니다."),
+    USER_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "U-004", "이미 사용하고 있는 이메일 입니다."),
 
     // Ai
     AI_ACCESS_DENIED(HttpStatus.FORBIDDEN, "A-001", "권한이 없습니다."),
@@ -48,7 +47,11 @@ public enum ExceptionType {
     // 결제
     PAYMENT_NOT_EXIST(HttpStatus.NOT_FOUND, "P-001", "해당 결제가 존재하지 않습니다."),
     ORDER_PAYMENT_MISMATCHED(HttpStatus.BAD_REQUEST, "P-002", "해당 주문의 결제가 아닙니다."),
-    PAYMENT_ALREADY_PROCESSED(HttpStatus.BAD_REQUEST, "P-003", "이미 처리된 결제입니다.");
+    PAYMENT_ALREADY_PROCESSED(HttpStatus.BAD_REQUEST, "P-003", "이미 처리된 결제입니다."),
+
+    // 카테고리
+    CATEGORY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "C-001", "관리자만 접근할 수 있습니다."),
+    CATEGORY_DUPLICATED(HttpStatus.BAD_REQUEST, "C-002", "중복된 카테고리명 입니다.");
 
 
     // 상태, 에러 코드, 메시지
