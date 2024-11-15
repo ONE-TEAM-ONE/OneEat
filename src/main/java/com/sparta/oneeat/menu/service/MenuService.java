@@ -133,5 +133,48 @@ public class MenuService {
         }
         menuRepository.save(menu);
     }
+
+    @Transactional
+    public void hideMenu(long userId, UUID storeId, UUID menuId) {
+        // 유저 검증
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
+        Store store;
+
+        // 가게 검증 / 사장이라면 해당 유저에게 해당 가게가 있는지
+        if (user.getRole() == UserRoleEnum.OWNER) {
+            store = storeRepository.findByIdAndUser(storeId, user)
+                .orElseThrow(
+                    () -> new CustomException(
+                        ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음 (and 유저의 가게X)
+        } else {
+            store = storeRepository.findById(storeId).orElseThrow(
+                () -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음
+        }
+
+        Menu menu = menuRepository.findById(menuId)
+            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
+        menu.delete(user.getId());
+    }
+
+    @Transactional
+    public void deleteMenu(long userId, UUID storeId, UUID menuId) {
+        // 유저 검증
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
+        Store store = storeRepository.findById(storeId)
+            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
+        if (!(user.getRole() == UserRoleEnum.MASTER || user.getRole() == UserRoleEnum.MANAGER)) {
+            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); // 권한 없음
+        }
+
+        Menu menu = menuRepository.findByIdAndStore(menuId, store)
+            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
+
+        menuRepository.delete(menu);
+    }
 }
 

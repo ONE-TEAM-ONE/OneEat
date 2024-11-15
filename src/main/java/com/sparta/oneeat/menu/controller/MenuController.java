@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -115,6 +116,36 @@ public class MenuController {
 
         menuService.updateMenuStatus(userDetails.getUser(), storeId, menuId);
 
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
+    @Operation(summary = "메뉴 숨김", description = "메뉴 숨김을 요청합니다")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "메뉴 숨김 성공"),
+        @ApiResponse(responseCode = "500", description = "메뉴 숨김 실패")
+    })
+    @PatchMapping("/store/{storeId}/menu/{menuId}")
+    public ResponseEntity<? extends BaseResponseBody> hideMenu(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable UUID storeId,
+        @PathVariable UUID menuId) {
+
+        menuService.hideMenu(userDetails.getId(), storeId, menuId);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
+    @Operation(summary = "메뉴 삭제", description = "메뉴 삭제를 요청합니다")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "메뉴 삭제 성공"),
+        @ApiResponse(responseCode = "500", description = "메뉴 삭제 실패")
+    })
+    @DeleteMapping("/store/{storeId}/menu/{menuId}")
+    public ResponseEntity<? extends BaseResponseBody> deleteMenu(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable UUID storeId,
+        @PathVariable UUID menuId) {
+
+        menuService.deleteMenu(userDetails.getId(), storeId, menuId);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
