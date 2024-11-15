@@ -44,13 +44,13 @@ public class MenuController {
     })
     @PostMapping("/ai")
     public ResponseEntity<? extends BaseResponseBody> aiCall(
-        //@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody AiCallRequestDto requestDto
     ) {
         log.info("requestDto : {}", requestDto);
 
         return ResponseEntity.status(200)
-            .body(BaseResponseBody.of(0, aiService.generateQuestion(1L, requestDto)));
+            .body(BaseResponseBody.of(0, aiService.generateQuestion(userDetails.getId(), requestDto)));
     }
 
     @Operation(summary = "메뉴 생성", description = "메뉴 생성을 요청합니다")
@@ -60,12 +60,12 @@ public class MenuController {
     })
     @PostMapping("/store/{storeId}/menu")
     public ResponseEntity<? extends BaseResponseBody> createMenu(
-        //@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @Valid @RequestBody MenuRequestDto requestDto,
         @PathVariable UUID storeId) {
 
         return ResponseEntity.status(200)
-            .body(BaseResponseBody.of(0, menuService.createMenu(requestDto, 2L, storeId)));
+            .body(BaseResponseBody.of(0, menuService.createMenu(userDetails.getUser(), requestDto, storeId)));
     }
 
     @Operation(summary = "메뉴 목록 조회", description = "메뉴 목록을 요청합니다")
@@ -75,14 +75,14 @@ public class MenuController {
     })
     @GetMapping("/store/{storeId}/menus")
     public ResponseEntity<? extends BaseResponseBody> getMenu(
-        //@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable UUID storeId,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size,
         @RequestParam(defaultValue = "price") String sort) {
 
         return ResponseEntity.status(200)
-            .body(BaseResponseBody.of(0, menuService.getMenuList(2L, storeId, page, size, sort)));
+            .body(BaseResponseBody.of(0, menuService.getMenuList(userDetails.getUser(), storeId, page, size, sort)));
     }
 
     @Operation(summary = "메뉴 수정", description = "메뉴를 수정합니다")
@@ -99,7 +99,7 @@ public class MenuController {
 
         return ResponseEntity.status(200)
             .body(BaseResponseBody.of(0,
-                menuService.updateMenu(userDetails.getId(), requestDto, storeId, menuId)));
+                menuService.updateMenu(userDetails.getUser(), requestDto, storeId, menuId)));
     }
 
     @Operation(summary = "메뉴 상태 변경", description = "메뉴의 상태를 변경합니다")

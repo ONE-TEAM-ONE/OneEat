@@ -36,16 +36,13 @@ public class MenuService {
     private final StoreRepository storeRepository;
 
     @Transactional
-    public MenuResponseDto createMenu(MenuRequestDto menuRequestDto, long userId, UUID storeId) {
+    public MenuResponseDto createMenu(User user, MenuRequestDto menuRequestDto, UUID storeId) {
         // 검증
         if (menuRequestDto.getAiRequestDto().getMenuId() != null
             || menuRequestDto.getAiRequestDto().getUserId() != null) {
             throw new CustomException(ExceptionType.MENU_INVALID_REQUEST);
         }
 
-        User user = userRepository.findById(userId)
-            .orElseThrow(
-                () -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 유저 없음
         Store store = storeRepository.findByIdAndUser(storeId, user)
             .orElseThrow(
                 () -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음 (유저의 가게X)
@@ -67,7 +64,7 @@ public class MenuService {
         if (menuRequestDto.getAi()) {
             AiRequestDto aiRequestDto = menuRequestDto.getAiRequestDto();
             aiRequestDto.setMenuId(menuId);
-            aiRequestDto.setUserId(userId);
+            aiRequestDto.setUserId(user.getId());
             aiService.saveAi(aiRequestDto);
         }
 
@@ -76,14 +73,10 @@ public class MenuService {
     }
 
     // 가게의 모든 메뉴를 조회 (가격 오름차순)
-    public Page<MenuResponseDto> getMenuList(long userId, UUID storeId, int page, int size,
+    public Page<MenuResponseDto> getMenuList(User user, UUID storeId, int page, int size,
         String sort) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, sort));
-
-        // 유저 검증
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
 
         Store store;
 
@@ -105,19 +98,19 @@ public class MenuService {
     }
 
     @Transactional
-    public MenuResponseDto updateMenu(long userId, MenuRequestDto updateRequestDto,
+    public MenuResponseDto updateMenu(User user, MenuRequestDto updateRequestDto,
         UUID storeId, UUID menuId) {
 
-        log.info("userId {}", userId);
+        log.info("userId {}", user.getId());
 
         // 기존 메뉴는 숨김처리한다
         Menu menu = menuRepository.findById(menuId)
             .orElseThrow(() -> new CustomException(ExceptionType.MENU_NOT_FOUND));
         log.info("mene {}", menu.toString());
-        menu.delete(userId);
+        menu.delete(user.getId());
 
         // 새로 추가된 메뉴를 반환한다
-        return createMenu(updateRequestDto, userId, storeId);
+        return createMenu(user, updateRequestDto, storeId);
     }
 
     @Transactional
