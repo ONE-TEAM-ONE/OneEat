@@ -105,10 +105,9 @@ public class MenuService {
     }
 
     @Transactional
-    public MenuResponseDto updateMenu(UserDetailsImpl userDetails, MenuRequestDto updateRequestDto,
+    public MenuResponseDto updateMenu(long userId, MenuRequestDto updateRequestDto,
         UUID storeId, UUID menuId) {
 
-        long userId = userDetails.getId();
         log.info("userId {}", userId);
 
         // 기존 메뉴는 숨김처리한다

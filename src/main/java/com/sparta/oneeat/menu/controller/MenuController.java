@@ -99,7 +99,7 @@ public class MenuController {
 
         return ResponseEntity.status(200)
             .body(BaseResponseBody.of(0,
-                menuService.updateMenu(userDetails, requestDto, storeId, menuId)));
+                menuService.updateMenu(userDetails.getId(), requestDto, storeId, menuId)));
     }
 
     @Operation(summary = "메뉴 상태 변경", description = "메뉴의 상태를 변경합니다")
