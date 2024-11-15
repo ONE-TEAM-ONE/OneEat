@@ -2,6 +2,7 @@ package com.sparta.oneeat.user.controller;
 
 import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.response.BaseResponseBody;
+import com.sparta.oneeat.user.dto.AddressRequestDto;
 import com.sparta.oneeat.user.service.UserAddressService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,11 +33,24 @@ public class UserAddressController {
     @PostMapping
     public ResponseEntity<? extends BaseResponseBody> creatAddress(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody String address
+            @RequestBody AddressRequestDto addressRequestDto
     ){
         return ResponseEntity.status(200).body(BaseResponseBody.of(0,
-                userAddressService.creatAddress(userDetails, address)
+                userAddressService.creatAddress(userDetails, addressRequestDto.getAddress())
         ));
     }
 
+    @Operation(summary = "주소 목록 조회", description = "자신의 주소록을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "목록 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "목록 조회 실패")
+    })
+    @GetMapping
+    public ResponseEntity<? extends BaseResponseBody> selcectAddressList(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0,
+                userAddressService.selectAddressList(userDetails)
+        ));
+    }
 }

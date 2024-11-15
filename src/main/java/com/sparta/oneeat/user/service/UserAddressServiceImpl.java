@@ -3,6 +3,7 @@ package com.sparta.oneeat.user.service;
 import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
+import com.sparta.oneeat.user.dto.AddressResponseDto;
 import com.sparta.oneeat.user.entity.UserAddress;
 import com.sparta.oneeat.user.repository.UserAddressRepository;
 import com.sparta.oneeat.user.repository.UserRepository;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -40,5 +42,25 @@ public class UserAddressServiceImpl implements UserAddressService {
         userAddressRepository.save(userAddress);
 
         return userAddress.getId();
+    }
+
+    @Override
+    public List<AddressResponseDto> selectAddressList(UserDetailsImpl userDetails) {
+        // FK로 사용되는 유저가 존재하는지
+        userRepository.findById(userDetails.getId()).orElseThrow(()->
+                new CustomException(ExceptionType.USER_NOT_EXIST)
+        );
+
+        List<UserAddress> userAddressList =
+                userAddressRepository.findByUserId(userDetails.getId());
+
+        // 등록된 주소가 없다면 예외처리
+        if (userAddressList.isEmpty()) {
+            throw new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS);
+        }
+
+        return userAddressList.stream()
+                .map(address -> new AddressResponseDto(address.getId(), address.getAddress()))
+                .toList();
     }
 }

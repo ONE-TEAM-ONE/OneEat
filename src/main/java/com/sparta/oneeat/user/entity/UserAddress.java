@@ -18,7 +18,7 @@ public class UserAddress extends BaseEntity {
     @Column(name="USER_ADDRESS_ID")
     private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USERS_ID")
     private User user;
 
