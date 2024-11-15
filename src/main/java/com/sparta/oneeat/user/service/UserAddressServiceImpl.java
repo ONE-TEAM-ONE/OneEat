@@ -68,7 +68,7 @@ public class UserAddressServiceImpl implements UserAddressService {
     @Override
     @Transactional
     public void modifyCurrentAddress(UserDetailsImpl userDetails, UUID addressId) {
-        // 새로운 주소가 유저의 주소록에 존재하는지 확인하고 찾아오기
+        // 자신의 주소록에 주소가 있는지 확인
         UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userDetails.getId()).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
         );
@@ -82,7 +82,7 @@ public class UserAddressServiceImpl implements UserAddressService {
     @Override
     @Transactional
     public void modifyAddress(UserDetailsImpl userDetails, UUID addressId, String address) {
-        // 주소록에 주소가 있는지 확인
+        // 자신의 주소록에 주소가 있는지 확인
         UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userDetails.getId()).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
         );
@@ -94,7 +94,7 @@ public class UserAddressServiceImpl implements UserAddressService {
     @Override
     @Transactional
     public void softDeleteAddress(UserDetailsImpl userDetails, UUID addressId) {
-        // 주소록에 주소가 있는지 확인
+        // 자신의 주소록에 주소가 있는지 확인
         UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userDetails.getId()).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
         );
@@ -103,4 +103,19 @@ public class UserAddressServiceImpl implements UserAddressService {
         userAddress.softDelete(userDetails.getId());
     }
 
+    @Override
+    @Transactional
+    public void hardDeleteAddress(UserDetailsImpl userDetails, UUID addressId) {
+        // 전체 회원 주소록에 주소가 있는지 확인
+        UserAddress userAddress = userAddressRepository.findById(addressId).orElseThrow(()->
+                new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
+        );
+        // 숨김처리 상태인지 확인
+        if(userAddress.getDeletedAt() == null){
+            throw new CustomException(ExceptionType.USER_NOT_SOFT_DELETE_ADDRESS);
+        }
+
+        // 삭제 처리
+        userAddressRepository.deleteById(addressId);
+    }
 }

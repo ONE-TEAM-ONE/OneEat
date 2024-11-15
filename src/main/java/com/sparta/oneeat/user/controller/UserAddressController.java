@@ -96,4 +96,18 @@ public class UserAddressController {
         userAddressService.softDeleteAddress(userDetails, addressId);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
+
+    @Operation(summary = "주소록 주소 삭제", description = "회원 주소록의 주소를 삭제처리 합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "주소 삭제 성공"),
+            @ApiResponse(responseCode = "500", description = "주소 삭제 실패")
+    })
+    @DeleteMapping(value = "/{addressId}")
+    public ResponseEntity<? extends BaseResponseBody> hardDeleteAddress(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable UUID addressId
+    ){
+        userAddressService.hardDeleteAddress(userDetails, addressId);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
 }
