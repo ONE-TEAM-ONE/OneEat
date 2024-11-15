@@ -1,5 +1,6 @@
 package com.sparta.oneeat.store.entity;
 
+import com.sparta.oneeat.category.entity.Category;
 import com.sparta.oneeat.menu.entity.Menu;
 import com.sparta.oneeat.review.entity.Review;
 import com.sparta.oneeat.user.entity.User;
