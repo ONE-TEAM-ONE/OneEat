@@ -113,7 +113,7 @@ public class MenuController {
         @PathVariable UUID storeId,
         @PathVariable UUID menuId) {
 
-        menuService.updateMenuStatus(userDetails, storeId, menuId);
+        menuService.updateMenuStatus(userDetails.getUser(), storeId, menuId);
 
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }

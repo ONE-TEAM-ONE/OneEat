@@ -122,11 +122,7 @@ public class MenuService {
     }
 
     @Transactional
-    public void updateMenuStatus(UserDetailsImpl userDetails, UUID storeId, UUID menuId) {
-        //Todo 유저 확인
-        User user = userRepository.findById(userDetails.getId())
-            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
-
+    public void updateMenuStatus(User user, UUID storeId, UUID menuId) {
         Store store;
 
         // 권한 확인 본인 가게인지 확인
@@ -136,7 +132,7 @@ public class MenuService {
             throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); // 권한 X
         }
 
-        //Todo 상태 변경
+        // 상태 변경
         Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new CustomException(ExceptionType.MENU_NOT_FOUND));
         if (menu.getStatus() == MenuStatusEnum.ON_SALE) {
             menu.updateStatus(MenuStatusEnum.SOLD_OUT);
