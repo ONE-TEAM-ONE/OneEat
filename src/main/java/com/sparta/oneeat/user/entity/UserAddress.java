@@ -18,14 +18,19 @@ public class UserAddress extends BaseEntity {
     @Column(name="USER_ADDRESS_ID")
     private UUID id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "USERS_ID")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "USERS_ID")
+    private User user;
 
 //    @ManyToOne
 //    @JoinColumn(name = "ADDRESS_CODE_ID", nullable = false)
 //    private AddressCode addressCode;
 
     @Column(name="USER_ADDRESS_DATAIL")
-    private String detail;
+    private String address;
+
+    public UserAddress(User user, String address) {
+        this.user = user;
+        this.address = address;
+    }
 }
