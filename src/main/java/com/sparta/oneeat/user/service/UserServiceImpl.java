@@ -106,7 +106,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Transactional
     protected User validateUserExist(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST)
