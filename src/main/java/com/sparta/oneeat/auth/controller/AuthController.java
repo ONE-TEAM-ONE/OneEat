@@ -31,8 +31,10 @@ public class AuthController {
     public ResponseEntity<? extends BaseResponseBody> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         return ResponseEntity
                 .status(200)
-                .body(BaseResponseBody.of(
-                        0, authService.signup(signupRequestDto).getUserId()
+                .body(BaseResponseBody.of(0,
+                        authService.signup(
+                                signupRequestDto.getUsername(), signupRequestDto.getPassword(), signupRequestDto.getNickname(), signupRequestDto.getEmail(), signupRequestDto.getAddress()
+                        ).getUserId()
                 ));
     }
 
