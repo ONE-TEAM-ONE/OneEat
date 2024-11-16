@@ -8,9 +8,11 @@ import com.sparta.oneeat.user.entity.User;
 import com.sparta.oneeat.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -26,18 +28,22 @@ public class AuthServiceImpl implements AuthService {
         String nickname = requestDto.getNickname();
 
         password = passwordEncoder.encode(password);
+        log.info("비밀번호를 암호화 했습니다: {}", password);
 
-        // 유저네임(아이디) 중복 체크
-        if (userRepository.findByName(username).isPresent())
+        if (userRepository.findByName(username).isPresent()) {
+            log.warn("중복된 ID 입니다: {}", username);
             throw new CustomException(ExceptionType.AUTH_DUPLICATE_USERNAME);
+        }
 
-        // 닉네임 중복 체크
-        if (userRepository.findByNickname(username).isPresent())
+        if (userRepository.findByNickname(username).isPresent()) {
+            log.warn("이미 존재하는 닉네임 입니다: {}", nickname);
             throw new CustomException(ExceptionType.AUTH_DUPLICATE_NICKNAME);
+        }
 
         User user = new User(username, password, nickname, requestDto.getEmail(), requestDto.getAddress());
 
         userRepository.save(user);
+        log.info("회원가입이 성공적으로 되었습니다. ID: {}", user.getName());
 
         return new SignupResponseDto(user.getId());
     }
