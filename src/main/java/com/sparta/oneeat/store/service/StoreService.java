@@ -2,9 +2,12 @@ package com.sparta.oneeat.store.service;
 
 import com.sparta.oneeat.store.dto.CreateStoreReqDto;
 import com.sparta.oneeat.store.dto.CreateStoreResDto;
+import com.sparta.oneeat.store.dto.StoreDetailDto;
 import com.sparta.oneeat.store.dto.StoreListDto;
 import com.sparta.oneeat.user.entity.User;
 import org.springframework.data.domain.Page;
+
+import java.util.UUID;
 
 public interface StoreService {
 
@@ -13,4 +16,9 @@ public interface StoreService {
 
     // 가게 생성
     CreateStoreResDto createStore(User user, CreateStoreReqDto createStoreReqDto);
+
+    // 가게 상세 조회
+    StoreDetailDto getStoreDetail(UUID storeId,
+                                  Integer menuPage, Integer menuSize, String menuSort, Boolean menuIsAsc,
+                                  Integer reviewPage, Integer reviewSize, String reviewSort, Boolean reviewIsAsc);
 }

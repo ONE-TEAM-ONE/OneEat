@@ -15,6 +15,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequestMapping("/api")
@@ -65,5 +67,30 @@ public class StoreController {
         log.info("DeliveryRegions : {}", createStoreReqDto.getDeliveryRegions());
 
         return ResponseEntity.status(201).body(BaseResponseBody.of(0, storeService.createStore(userDetails.getUser(), createStoreReqDto)));
+    }
+
+    @Operation(summary = "가게 상세 조회", description = "가게를 상세 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "가게 상세 조회 성공"),
+            @ApiResponse(responseCode = "500", description = "가게 상세 조회 실패")
+    })
+    @GetMapping("/store/{store_id}")
+    public ResponseEntity<? extends BaseResponseBody> getStoreDetail(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable(name = "store_id") UUID storeId,
+            @RequestParam(required = false) Integer menuPage,
+            @RequestParam(required = false) Integer menuSize,
+            @RequestParam(required = false) String menuSort,
+            @RequestParam(required = false) Boolean menuIsAsc,
+            @RequestParam(required = false) Integer reviewPage,
+            @RequestParam(required = false) Integer reviewSize,
+            @RequestParam(required = false) String reviewSort,
+            @RequestParam(required = false) Boolean reviewIsAsc
+    ) {
+        log.info("userId : {}", userDetails.getId());
+        log.info("storeId : {}", storeId);
+
+        return ResponseEntity.ok(BaseResponseBody.of(0, storeService.getStoreDetail(storeId, menuPage, menuSize, menuSort, menuIsAsc,
+                reviewPage, reviewSize, reviewSort, reviewIsAsc)));
     }
 }
