@@ -16,7 +16,11 @@ public enum ExceptionType {
     USER_PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED,"U-001","일치하지 않는 비밀번호 입니다."),
     USER_NOT_EXIST(HttpStatus.NOT_FOUND, "U-002", "회원을 찾을 수 없습니다."),
     USER_NOT_SOFT_DELETE(HttpStatus.BAD_REQUEST, "U-003", "회원이 숨김처리 되어있지 않습니다."),
-    USER_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "U-004", "이미 사용하고 있는 이메일 입니다."),
+    USER_EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "U-004", "이미 사용하고 있는 닉네임 입니다."),
+    USER_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "U-005", "이미 사용하고 있는 이메일 입니다."),
+    USER_EXIST_ADDRESS(HttpStatus.BAD_REQUEST, "U-006", "이미 등록된 주소 입니다."),
+    USER_NOT_EXIST_ADDRESS(HttpStatus.BAD_REQUEST, "U-007", "등록된 주소가 존재하지 않습니다."),
+    USER_NOT_SOFT_DELETE_ADDRESS(HttpStatus.BAD_REQUEST, "U-008", "주소가 숨김처리 되어있지 않습니다."),
 
     // Ai
     AI_ACCESS_DENIED(HttpStatus.FORBIDDEN, "A-001", "권한이 없습니다."),

@@ -26,8 +26,8 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Store> storeList;
 
-//    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-//    private List<UserAddress> userAddress;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserAddress> userAddress;
 
     @Column(name = "USERS_USERNAME", nullable = false)
     private String name;
@@ -67,5 +67,9 @@ public class User extends BaseEntity {
     public void softDelete(long id) {
         this.deletedAt = LocalDateTime.now();
         this.deletedBy = id;
+    }
+
+    public void modifyCurrentAddress(String address) {
+        this.currentAddress = address;
     }
 }
