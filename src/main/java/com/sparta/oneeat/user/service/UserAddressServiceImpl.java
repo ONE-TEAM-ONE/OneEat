@@ -112,7 +112,6 @@ public class UserAddressServiceImpl implements UserAddressService {
         log.info("주소가 삭제되었습니다. DeletedAt: {}", userAddress.getDeletedAt());
     }
 
-    @Transactional
     protected User validateUserExist(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new CustomException(ExceptionType.USER_NOT_EXIST)
@@ -122,7 +121,6 @@ public class UserAddressServiceImpl implements UserAddressService {
         return user;
     }
 
-    @Transactional
     protected UserAddress validateAddressExist(Long userId, UUID addressId) {
         UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userId).orElseThrow(() ->
                 new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
