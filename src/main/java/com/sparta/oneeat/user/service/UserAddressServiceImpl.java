@@ -1,6 +1,5 @@
 package com.sparta.oneeat.user.service;
 
-import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
 import com.sparta.oneeat.user.dto.AddressResponseDto;
@@ -26,34 +25,34 @@ public class UserAddressServiceImpl implements UserAddressService {
 
     @Override
     @Transactional
-    public UUID creatAddress(UserDetailsImpl userDetails, String address) {
+    public UUID creatAddress(User user, String address) {
 
         // 회원 아이디 가져와서 유저 검증
-        userRepository.findById(userDetails.getId()).orElseThrow(()->
+        userRepository.findById(user.getId()).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST)
         );
 
         // 이미 같은 주소가 등록되어있는지 확인
-        if(userAddressRepository.findByUserIdAndAddress(userDetails.getId(), address).isPresent()){
+        if(userAddressRepository.findByUserIdAndAddress(user.getId(), address).isPresent()){
             throw new CustomException(ExceptionType.USER_EXIST_ADDRESS);
         }
 
 
-        UserAddress userAddress = new UserAddress(userDetails.getUser(), address);
+        UserAddress userAddress = new UserAddress(user, address);
         userAddressRepository.save(userAddress);
 
         return userAddress.getId();
     }
 
     @Override
-    public List<AddressResponseDto> selectAddressList(UserDetailsImpl userDetails) {
+    public List<AddressResponseDto> selectAddressList(Long userId) {
         // FK로 사용되는 유저가 존재하는지
-        userRepository.findById(userDetails.getId()).orElseThrow(()->
+        userRepository.findById(userId).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST)
         );
 
         List<UserAddress> userAddressList =
-                userAddressRepository.findByUserId(userDetails.getId());
+                userAddressRepository.findByUserId(userId);
 
         // 등록된 주소가 없다면 예외처리
         if (userAddressList.isEmpty()) {
@@ -67,23 +66,22 @@ public class UserAddressServiceImpl implements UserAddressService {
 
     @Override
     @Transactional
-    public void modifyCurrentAddress(UserDetailsImpl userDetails, UUID addressId) {
+    public void modifyCurrentAddress(User user, UUID addressId) {
         // 자신의 주소록에 주소가 있는지 확인
-        UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userDetails.getId()).orElseThrow(()->
+        UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, user.getId()).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
         );
 
         // 유저의 기본 주소에 반영하기
-        User user = userDetails.getUser();
         user.modifyCurrentAddress(userAddress.getAddress());
 
     }
 
     @Override
     @Transactional
-    public void modifyAddress(UserDetailsImpl userDetails, UUID addressId, String address) {
+    public void modifyAddress(Long userId, UUID addressId, String address) {
         // 자신의 주소록에 주소가 있는지 확인
-        UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userDetails.getId()).orElseThrow(()->
+        UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userId).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
         );
 
@@ -93,19 +91,19 @@ public class UserAddressServiceImpl implements UserAddressService {
 
     @Override
     @Transactional
-    public void softDeleteAddress(UserDetailsImpl userDetails, UUID addressId) {
+    public void softDeleteAddress(Long userId, UUID addressId) {
         // 자신의 주소록에 주소가 있는지 확인
-        UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userDetails.getId()).orElseThrow(()->
+        UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userId).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
         );
 
         // 숨김처리
-        userAddress.softDelete(userDetails.getId());
+        userAddress.softDelete(userId);
     }
 
     @Override
     @Transactional
-    public void hardDeleteAddress(UserDetailsImpl userDetails, UUID addressId) {
+    public void hardDeleteAddress(UUID addressId) {
         // 전체 회원 주소록에 주소가 있는지 확인
         UserAddress userAddress = userAddressRepository.findById(addressId).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)

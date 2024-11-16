@@ -36,7 +36,7 @@ public class UserAddressController {
             @RequestBody AddressRequestDto addressRequestDto
     ){
         return ResponseEntity.status(200).body(BaseResponseBody.of(0,
-                userAddressService.creatAddress(userDetails, addressRequestDto.getAddress())
+                userAddressService.creatAddress(userDetails.getUser(), addressRequestDto.getAddress())
         ));
     }
 
@@ -50,7 +50,7 @@ public class UserAddressController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
         return ResponseEntity.status(200).body(BaseResponseBody.of(0,
-                userAddressService.selectAddressList(userDetails)
+                userAddressService.selectAddressList(userDetails.getId())
         ));
     }
 
@@ -64,7 +64,7 @@ public class UserAddressController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody AddressModifyRequestDto addressModifyRequestDto
     ){
-        userAddressService.modifyCurrentAddress(userDetails, addressModifyRequestDto.getAddressId());
+        userAddressService.modifyCurrentAddress(userDetails.getUser(), addressModifyRequestDto.getAddressId());
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
@@ -79,7 +79,7 @@ public class UserAddressController {
             @PathVariable UUID addressId,
             @RequestBody AddressRequestDto addressRequestDto
     ){
-        userAddressService.modifyAddress(userDetails, addressId, addressRequestDto.getAddress());
+        userAddressService.modifyAddress(userDetails.getId(), addressId, addressRequestDto.getAddress());
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
@@ -93,7 +93,7 @@ public class UserAddressController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID addressId
     ){
-        userAddressService.softDeleteAddress(userDetails, addressId);
+        userAddressService.softDeleteAddress(userDetails.getId(), addressId);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
@@ -104,10 +104,9 @@ public class UserAddressController {
     })
     @DeleteMapping(value = "/{addressId}")
     public ResponseEntity<? extends BaseResponseBody> hardDeleteAddress(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID addressId
     ){
-        userAddressService.hardDeleteAddress(userDetails, addressId);
+        userAddressService.hardDeleteAddress(addressId);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 }
