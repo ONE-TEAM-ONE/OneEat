@@ -1,11 +1,8 @@
+
 package com.sparta.oneeat.user.service;
 
-import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
-import com.sparta.oneeat.user.dto.EmailRequestDto;
-import com.sparta.oneeat.user.dto.NicknameRequestDto;
-import com.sparta.oneeat.user.dto.PasswordRequestDto;
 import com.sparta.oneeat.user.dto.UserResponseDto;
 import com.sparta.oneeat.user.entity.User;
 import com.sparta.oneeat.user.repository.UserRepository;
@@ -42,17 +39,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void softDeleteUser(UserDetailsImpl userDetails, String password) {
+    public void softDeleteUser(Long userId, String password, String receivedPassword) {
         // 암호화된 비밀번호 비교
-        if(passwordEncoder.matches(password, userDetails.getPassword())){
+        if(passwordEncoder.matches(receivedPassword, password)){
             throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
         }
 
-        User user = userRepository.findById(userDetails.getId()).orElseThrow(() ->
-               new CustomException(ExceptionType.USER_NOT_EXIST)
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new CustomException(ExceptionType.USER_NOT_EXIST)
         );
 
-        user.softDelete(userDetails.getId());
+        user.softDelete(userId);
 
     }
 
@@ -73,45 +70,45 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void modifyPassword(UserDetailsImpl userDetails, PasswordRequestDto passwordRequestDto) {
+    public void modifyPassword(Long userId, String oldPassword, String newPassword) {
 
-        User user = userRepository.findById(userDetails.getId()).orElseThrow(()->
+        User user = userRepository.findById(userId).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST)
         );
 
-        if(passwordEncoder.matches(passwordRequestDto.getOldPassword(), user.getPassword())){
+        if(passwordEncoder.matches(oldPassword, user.getPassword())){
             throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
         }
 
-        user.modifyPassword(passwordEncoder.encode(passwordRequestDto.getNewPassword()));
+        user.modifyPassword(passwordEncoder.encode(newPassword));
 
     }
 
     @Override
     @Transactional
-    public void modifyNickname(UserDetailsImpl userDetails, NicknameRequestDto nicknameRequestDto) {
+    public void modifyNickname(Long userId, String nickname) {
 
-        User user = userRepository.findById(userDetails.getId()).orElseThrow(()->
+        User user = userRepository.findById(userId).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST)
         );
 
-        user.modifyNickname(nicknameRequestDto.getNickname());
+        user.modifyNickname(nickname);
 
     }
 
     @Override
     @Transactional
-    public void modifyEmail(UserDetailsImpl userDetails, EmailRequestDto emailRequestDto) {
+    public void modifyEmail(Long userId, String email) {
 
-        User user = userRepository.findById(userDetails.getId()).orElseThrow(()->
+        User user = userRepository.findById(userId).orElseThrow(()->
                 new CustomException(ExceptionType.USER_NOT_EXIST)
         );
 
         // 이메일 중복 확인
-        if(userRepository.findByEmail(emailRequestDto.getEmail()).isPresent())
+        if(userRepository.findByEmail(email).isPresent())
             throw new CustomException(ExceptionType.USER_EXIST_EMAIL);
 
-        user.modifyEmail(emailRequestDto.getEmail());
+        user.modifyEmail(email);
 
     }
 
