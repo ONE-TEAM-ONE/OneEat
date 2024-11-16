@@ -28,12 +28,17 @@ public class AuthServiceImpl implements AuthService {
 
         if (userRepository.findByName(username).isPresent()) {
             log.warn("중복된 유저 네임 입니다: {}", username);
-            throw new CustomException(ExceptionType.AUTH_DUPLICATE_USERNAME);
+            throw new CustomException(ExceptionType.USER_EXIST_USERNAME);
         }
 
         if (userRepository.findByNickname(username).isPresent()) {
             log.warn("중복된 닉네임 입니다: {}", nickname);
-            throw new CustomException(ExceptionType.AUTH_DUPLICATE_NICKNAME);
+            throw new CustomException(ExceptionType.USER_EXIST_NICKNAME);
+        }
+
+        if (userRepository.findByEmail(email).isPresent()) {
+            log.warn("중복된 이메일 입니다: {}", email);
+            throw new CustomException(ExceptionType.USER_EXIST_EMAIL);
         }
 
         User user = new User(username, password, nickname, email, address);
