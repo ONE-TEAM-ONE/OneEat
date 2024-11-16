@@ -100,8 +100,13 @@ public class UserServiceImpl implements UserService {
         );
         log.info("회원의 정보가 확인되었습니다. ID: {}", userId);
 
+        if(userRepository.findByNickname(nickname).isPresent()){
+            log.warn("이미 존재하는 닉네임 입니다. Nickname: {}", nickname);
+            throw new CustomException(ExceptionType.USER_EXIST_NICKNAME);
+        }
+
         user.modifyNickname(nickname);
-        log.info("회원의 닉네임이 변경되었습니다. nickname: {}", user.getNickname());
+        log.info("회원의 닉네임이 변경되었습니다. Nickname: {}", user.getNickname());
 
     }
 
