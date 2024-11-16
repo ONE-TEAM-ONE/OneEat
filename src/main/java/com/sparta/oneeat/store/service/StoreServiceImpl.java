@@ -102,11 +102,6 @@ public class StoreServiceImpl implements StoreService{
 
         deliveryRegionRepository.saveAll(deliveryRegions);
 
-        // 응답 DTO 생성 및 반환
-        List<String> deliveryRegionStrings = deliveryRegions.stream()
-                .map(DeliveryRegion::getDeliveryRegion)
-                .collect(Collectors.toList());
-
-        return new CreateStoreResDto(store.getId(), deliveryRegionStrings);
+        return new CreateStoreResDto(store.getId());
     }
 }

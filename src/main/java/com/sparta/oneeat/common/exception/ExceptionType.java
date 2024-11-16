@@ -59,7 +59,7 @@ public enum ExceptionType {
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "C-003", "해당 카테고리명이 존재하지 않습니다."),
 
     // 가게
-    STORE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "T-001", "이미 등록되 가게입니다.");
+    STORE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "T-001", "이미 등록된 가게입니다.");
 
     // 상태, 에러 코드, 메시지
     private final HttpStatus httpStatus;

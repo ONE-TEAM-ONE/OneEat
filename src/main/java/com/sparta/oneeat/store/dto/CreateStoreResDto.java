@@ -3,7 +3,6 @@ package com.sparta.oneeat.store.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -11,10 +10,8 @@ import java.util.UUID;
 public class CreateStoreResDto {
 
     private UUID storeId;
-    private List<String> deliveryRegions;
 
-    public CreateStoreResDto(UUID storeId, List<String> deliveryRegionStrings) {
+    public CreateStoreResDto(UUID storeId) {
         this.storeId = storeId;
-        this.deliveryRegions = deliveryRegionStrings;
     }
 }
