@@ -10,11 +10,8 @@ import com.sparta.oneeat.menu.repository.MenuRepository;
 import com.sparta.oneeat.review.dto.ReviewListDto;
 import com.sparta.oneeat.review.entity.Review;
 import com.sparta.oneeat.review.repository.ReviewRepository;
-import com.sparta.oneeat.store.dto.CreateStoreReqDto;
-import com.sparta.oneeat.store.dto.CreateStoreResDto;
-import com.sparta.oneeat.store.dto.StoreDetailDto;
+import com.sparta.oneeat.store.dto.*;
 import com.sparta.oneeat.store.entity.Store;
-import com.sparta.oneeat.store.dto.StoreListDto;
 import com.sparta.oneeat.store.entity.DeliveryRegion;
 import com.sparta.oneeat.store.entity.StoreStatusEnum;
 import com.sparta.oneeat.store.repository.DeliveryRegionRepository;
@@ -154,4 +151,51 @@ public class StoreServiceImpl implements StoreService{
         return new StoreDetailDto(store, deliveryRegions, menuDtos, reviewDtos);
     }
 
+    @Override
+    @Transactional
+    public UpdateStoreResDto updateStore(User user, UUID storeId, UpdateStoreReqDto updateStoreReqDto) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new CustomException(ExceptionType.STORE_NOT_EXIST));
+
+        if (!store.getUser().getId().equals(user.getId())) {
+            throw new CustomException(ExceptionType.STORE_ACCESS_DENIED);
+        }
+
+        Category category = null;
+        if (updateStoreReqDto.getCategory() != null) {
+            category = storeCategotyRepository.findByCategoryName(updateStoreReqDto.getCategory())
+                    .orElseThrow(() -> new CustomException(ExceptionType.CATEGORY_NOT_FOUND));
+        }
+
+        StoreStatusEnum status = null;
+        if (updateStoreReqDto.getStatus() != null) {
+            try {
+                status = StoreStatusEnum.valueOf(updateStoreReqDto.getStatus());
+            } catch (IllegalArgumentException e) {
+                throw new CustomException(ExceptionType.INVALID_STORE_STATUS);
+            }
+        }
+
+        store.updateStore(
+                category,
+                status,
+                updateStoreReqDto.getName(),
+                updateStoreReqDto.getAddress(),
+                updateStoreReqDto.getDescription(),
+                updateStoreReqDto.getStartTime(),
+                updateStoreReqDto.getEndTime(),
+                updateStoreReqDto.getOwner(),
+                updateStoreReqDto.getMinPrice()
+        );
+
+        if (updateStoreReqDto.getDeliveryRegions() != null) {
+            deliveryRegionRepository.deleteByStore(store);
+            List<DeliveryRegion> newDeliveryRegions = updateStoreReqDto.getDeliveryRegions().stream()
+                    .map(region -> new DeliveryRegion(store, region))
+                    .collect(Collectors.toList());
+            deliveryRegionRepository.saveAll(newDeliveryRegions);
+        }
+
+        return new UpdateStoreResDto(store.getId(), store.getName());
+    }
 }
