@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/api/order")
 @RequiredArgsConstructor
 @Tag(name="Payment", description="Payment API")
 public class PaymentController {
