@@ -84,14 +84,14 @@ public class MenuService {
     }
 
     // 가게의 모든 메뉴를 조회 (가격 내림)
-
-    public Page<MenuResponseDto> getMenuList(User user, UUID storeId, int page, int size,
+    public Page<MenuResponseDto> getMenuList(UUID storeId, int page, int size,
         String sort) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, sort));
 
-        // 가게 검증 / 사장이라면 해당 유저에게 해당 가게가 있는지
-        Store store = validateStore(user, storeId);
+        // 가게 검증
+        Store store = storeRepository.findById(storeId)
+            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음
 
         // 정렬 조건에 맞게 해당 가게의 메뉴 전체를 가져온다
         Page<Menu> menus = menuRepository.findAllByStoreAndDeletedAtIsNull(store, pageable);
