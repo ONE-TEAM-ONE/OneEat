@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/api/category")
 @RequiredArgsConstructor
 @Tag(name="Category", description="Category API")
 public class StoreCategoryController {

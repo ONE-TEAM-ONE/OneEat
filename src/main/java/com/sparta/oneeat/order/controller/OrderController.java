@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/api/order")
 @RequiredArgsConstructor
 @Tag(name="Order", description="Order API")
 public class OrderController {
