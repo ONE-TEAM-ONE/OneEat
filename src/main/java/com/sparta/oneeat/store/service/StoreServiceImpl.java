@@ -111,45 +111,15 @@ public class StoreServiceImpl implements StoreService{
     }
 
     @Override
-    public StoreDetailDto getStoreDetail(UUID storeId,
-                                         Integer menuPage, Integer menuSize, String menuSort, Boolean menuIsAsc,
-                                         Integer reviewPage, Integer reviewSize, String reviewSort, Boolean reviewIsAsc) {
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new CustomException(ExceptionType.STORE_NOT_EXIST));
+    public StoreDetailDto getStoreDetail(UUID storeId) {
+        // 가게 조회
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ExceptionType.STORE_NOT_EXIST));
 
         List<String> deliveryRegions = deliveryRegionRepository.findAllByStoreId(storeId).stream()
                 .map(DeliveryRegion::getDeliveryRegion)
                 .collect(Collectors.toList());
 
-        // 메뉴 페이징 및 정렬 처리
-        menuPage = (menuPage == null) ? 0 : menuPage;
-        menuSize = (menuSize == null) ? 10 : menuSize;
-        menuSort = (menuSort == null) ? "createdAt" : menuSort;
-        menuIsAsc = (menuIsAsc == null) ? false : menuIsAsc;
-
-        Sort menuSortObj = Sort.by(menuIsAsc ? Sort.Direction.ASC : Sort.Direction.DESC, menuSort);
-        PageRequest menuPageRequest = PageRequest.of(menuPage, menuSize, menuSortObj);
-
-        Page<Menu> menus = menuRepository.findAllByStore(store, menuPageRequest);
-        List<MenuResponseDto> menuDtos = menus.getContent().stream()
-                .map(MenuResponseDto::new)
-                .collect(Collectors.toList());
-
-        // 리뷰 페이징 및 정렬 처리(파라미터 값이 없으면 생성일 기준 최신순으로 10개씩 정렬된 페이지의 첫번째 페이지를 반환한다)
-        reviewPage = (reviewPage == null) ? 0 : reviewPage;
-        reviewSize = (reviewSize == null) ? 10 : reviewSize;
-        reviewSort = (reviewSort == null) ? "createdAt" : reviewSort;
-        reviewIsAsc = (reviewIsAsc == null) ? false : reviewIsAsc;
-
-        Sort reviewSortObj = Sort.by(reviewIsAsc ? Sort.Direction.ASC : Sort.Direction.DESC, reviewSort);
-        PageRequest reviewPageRequest = PageRequest.of(reviewPage, reviewSize, reviewSortObj);
-
-        Page<Review> reviews = reviewRepository.findAllByStoreAndDeletedAtIsNull(store, reviewPageRequest);
-        List<ReviewListDto> reviewDtos = reviews.getContent().stream()
-                .map(ReviewListDto::new)
-                .collect(Collectors.toList());
-
-        return new StoreDetailDto(store, deliveryRegions, menuDtos, reviewDtos);
+        return new StoreDetailDto(store, deliveryRegions);
     }
 
     @Override

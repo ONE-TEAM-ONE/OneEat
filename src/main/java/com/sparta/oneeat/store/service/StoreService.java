@@ -20,9 +20,7 @@ public interface StoreService {
     CreateStoreResDto createStore(User user, CreateStoreReqDto createStoreReqDto);
 
     // 가게 상세 조회
-    StoreDetailDto getStoreDetail(UUID storeId,
-                                  Integer menuPage, Integer menuSize, String menuSort, Boolean menuIsAsc,
-                                  Integer reviewPage, Integer reviewSize, String reviewSort, Boolean reviewIsAsc);
+    StoreDetailDto getStoreDetail(UUID storeId);
 
     // 가게 수정
     UpdateStoreResDto updateStore(long userId, UUID storeId, UpdateStoreReqDto updateStoreReqDto);

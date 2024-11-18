@@ -78,21 +78,12 @@ public class StoreController {
     @GetMapping("/store/{store_id}")
     public ResponseEntity<? extends BaseResponseBody> getStoreDetail(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable(name = "store_id") UUID storeId,
-            @RequestParam(required = false) Integer menuPage,
-            @RequestParam(required = false) Integer menuSize,
-            @RequestParam(required = false) String menuSort,
-            @RequestParam(required = false) Boolean menuIsAsc,
-            @RequestParam(required = false) Integer reviewPage,
-            @RequestParam(required = false) Integer reviewSize,
-            @RequestParam(required = false) String reviewSort,
-            @RequestParam(required = false) Boolean reviewIsAsc
-    ) {
+            @PathVariable(name = "store_id") UUID storeId
+    ){
         log.info("userId : {}", userDetails.getId());
         log.info("storeId : {}", storeId);
 
-        return ResponseEntity.ok(BaseResponseBody.of(0, storeService.getStoreDetail(storeId, menuPage, menuSize, menuSort, menuIsAsc,
-                reviewPage, reviewSize, reviewSort, reviewIsAsc)));
+        return ResponseEntity.ok(BaseResponseBody.of(0, storeService.getStoreDetail(storeId)));
     }
 
     @Operation(summary = "가게 수정", description = "가게 정보를 수정합니다.")
