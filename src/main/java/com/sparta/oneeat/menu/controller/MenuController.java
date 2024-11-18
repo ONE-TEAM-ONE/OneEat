@@ -74,7 +74,7 @@ public class MenuController {
         @ApiResponse(responseCode = "200", description = "메뉴 조회 성공"),
         @ApiResponse(responseCode = "500", description = "메뉴 조회 실패")
     })
-    @PostMapping("/store/{storeId}/menu/{menuId}")
+    @GetMapping("/store/{storeId}/menu/{menuId}")
     public ResponseEntity<? extends BaseResponseBody> getMenuDetail(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable UUID storeId,
@@ -98,7 +98,7 @@ public class MenuController {
         @RequestParam(defaultValue = "price") String sort) {
 
         return ResponseEntity.status(200)
-            .body(BaseResponseBody.of(0, menuService.getMenuList(userDetails.getUser(), storeId, page, size, sort)));
+            .body(BaseResponseBody.of(0, menuService.getMenuList(storeId, page, size, sort)));
     }
 
     @Operation(summary = "메뉴 수정", description = "메뉴를 수정합니다")

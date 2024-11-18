@@ -174,6 +174,10 @@ public class OrderServiceImpl implements OrderService{
         // 메뉴 돌아가면서 주문 정보 테이블 넣어주기
         for(CreateOrderReqDto.MenuDto menuDto : createOrderReqDto.getMenuList()){
             Menu menu = menuRepository.findById(menuDto.getMenuId()).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
+            // 해당 메뉴의 가게인지 확인
+            if(!Objects.equals(menu.getStore().getId(), store.getId())) throw new CustomException(ExceptionType.INVALID_MENU_ORDER);
+
             log.info("요청 메뉴 가격 : {}", menuDto.getPrice());
             log.info("DB 메뉴 가격 : {}", menu.getPrice());
 

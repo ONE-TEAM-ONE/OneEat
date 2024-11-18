@@ -36,11 +36,6 @@ public class MenuService {
 
     @Transactional
     public MenuResponseDto createMenu(User user, MenuRequestDto menuRequestDto, UUID storeId) {
-        // 검증
-        if (menuRequestDto.getAiRequestDto().getMenuId() != null
-            || menuRequestDto.getAiRequestDto().getUserId() != null) {
-            throw new CustomException(ExceptionType.MENU_INVALID_REQUEST);
-        }
 
         Store store = validateStore(user, storeId);
 
@@ -60,9 +55,7 @@ public class MenuService {
         // ai 플래그를 확인하여 true 라면 생성된 메뉴 Id와 함께 ai 질문, 응답을 저장
         if (menuRequestDto.getAi()) {
             AiRequestDto aiRequestDto = menuRequestDto.getAiRequestDto();
-            aiRequestDto.setMenuId(menuId);
-            aiRequestDto.setUserId(user.getId());
-            aiService.saveAi(aiRequestDto);
+            aiService.saveAi(aiRequestDto, user.getId(), menuId);
         }
 
         return (new MenuResponseDto(validateMenu(menuId)));
@@ -84,14 +77,14 @@ public class MenuService {
     }
 
     // 가게의 모든 메뉴를 조회 (가격 내림)
-
-    public Page<MenuResponseDto> getMenuList(User user, UUID storeId, int page, int size,
+    public Page<MenuResponseDto> getMenuList(UUID storeId, int page, int size,
         String sort) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, sort));
 
-        // 가게 검증 / 사장이라면 해당 유저에게 해당 가게가 있는지
-        Store store = validateStore(user, storeId);
+        // 가게 검증
+        Store store = storeRepository.findById(storeId)
+            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음
 
         // 정렬 조건에 맞게 해당 가게의 메뉴 전체를 가져온다
         Page<Menu> menus = menuRepository.findAllByStoreAndDeletedAtIsNull(store, pageable);

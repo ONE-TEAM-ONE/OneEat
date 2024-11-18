@@ -103,7 +103,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService{
         Sort sort1 = Sort.by(direction, sort);
         Pageable pageable = PageRequest.of(page, size, sort1);
 
-        Page<Category> categories = storeCategotyRepository.findAll(pageable);
+        Page<Category> categories = storeCategotyRepository.findAllByDeletedAtIsNull(pageable);
 
         return categories.map(CategoryListResDto::new);
     }
