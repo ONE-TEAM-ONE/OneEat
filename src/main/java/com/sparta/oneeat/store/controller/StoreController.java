@@ -114,7 +114,7 @@ public class StoreController {
         log.info("address : {}", updateStoreReqDto.getAddress());
         log.info("DeliveryRegions : {}", updateStoreReqDto.getDeliveryRegions());
 
-        return ResponseEntity.ok(BaseResponseBody.of(0, storeService.updateStore(userDetails.getUser(), storeId, updateStoreReqDto)));
+        return ResponseEntity.ok(BaseResponseBody.of(0, storeService.updateStore(userDetails.getId(), storeId, updateStoreReqDto)));
     }
 
     @Operation(summary = "가게 숨김", description = "가게 숨김을 요청합니다")

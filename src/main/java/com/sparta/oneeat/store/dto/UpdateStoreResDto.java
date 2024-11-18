@@ -8,10 +8,8 @@ import java.util.UUID;
 @Getter
 public class UpdateStoreResDto {
     private UUID storeId;
-    private String name;
 
-    public UpdateStoreResDto(UUID storeId, String name) {
+    public UpdateStoreResDto(UUID storeId) {
         this.storeId = storeId;
-        this.name = name;
     }
 }

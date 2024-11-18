@@ -25,7 +25,7 @@ public interface StoreService {
                                   Integer reviewPage, Integer reviewSize, String reviewSort, Boolean reviewIsAsc);
 
     // 가게 수정
-    UpdateStoreResDto updateStore(User user, UUID storeId, UpdateStoreReqDto updateStoreReqDto);
+    UpdateStoreResDto updateStore(long userId, UUID storeId, UpdateStoreReqDto updateStoreReqDto);
 
     // 가게 숨김
     void hideStore(long userId, UUID storeId);

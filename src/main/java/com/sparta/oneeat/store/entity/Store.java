@@ -81,15 +81,15 @@ public class Store extends BaseEntity {
     public void updateStore(Category category, StoreStatusEnum status,
                             String name, String address, String description,
                        LocalTime startTime, LocalTime endTime, String owner, Integer minPrice) {
-        if (category != null) this.category = category;
-        if (status != null) this.status = status;
-        if (name != null) this.name = name;
-        if (address != null) this.address = address;
-        if (description != null) this.description = description;
-        if (startTime != null) this.startTime = startTime;
-        if (endTime != null) this.endTime = endTime;
-        if (owner != null) this.owner = owner;
-        if (minPrice != null) this.minPrice = minPrice;
+        this.category = category;
+        this.status = status;
+        this.name = name;
+        this.address = address;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.owner = owner;
+        this.minPrice = minPrice;
     }
 
     public void hideStore(long userId) {

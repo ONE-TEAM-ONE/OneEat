@@ -154,27 +154,24 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     @Transactional
-    public UpdateStoreResDto updateStore(User user, UUID storeId, UpdateStoreReqDto updateStoreReqDto) {
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new CustomException(ExceptionType.STORE_NOT_EXIST));
+    public UpdateStoreResDto updateStore(long userId, UUID storeId, UpdateStoreReqDto updateStoreReqDto) {
+        // 유저 조회
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
 
-        if (!store.getUser().getId().equals(user.getId())) {
-            throw new CustomException(ExceptionType.STORE_ACCESS_DENIED);
-        }
+        // 가게 조회
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ExceptionType.STORE_NOT_EXIST));
 
-        Category category = null;
-        if (updateStoreReqDto.getCategory() != null) {
-            category = storeCategotyRepository.findByCategoryName(updateStoreReqDto.getCategory())
-                    .orElseThrow(() -> new CustomException(ExceptionType.CATEGORY_NOT_FOUND));
-        }
+        // 권한 조회
+        if(!Objects.equals(user.getId(), store.getUser().getId())) throw new CustomException(ExceptionType.STORE_ACCESS_DENIED);
 
-        StoreStatusEnum status = null;
-        if (updateStoreReqDto.getStatus() != null) {
-            try {
-                status = StoreStatusEnum.valueOf(updateStoreReqDto.getStatus());
-            } catch (IllegalArgumentException e) {
-                throw new CustomException(ExceptionType.INVALID_STORE_STATUS);
-            }
+        Category category = storeCategotyRepository.findByCategoryName(updateStoreReqDto.getCategory())
+                .orElseThrow(() -> new CustomException(ExceptionType.CATEGORY_NOT_FOUND));
+
+        StoreStatusEnum status;
+        try {
+            status = StoreStatusEnum.valueOf(updateStoreReqDto.getStatus());
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(ExceptionType.INVALID_STORE_STATUS);
         }
 
         store.updateStore(
@@ -189,15 +186,13 @@ public class StoreServiceImpl implements StoreService{
                 updateStoreReqDto.getMinPrice()
         );
 
-        if (updateStoreReqDto.getDeliveryRegions() != null) {
-            deliveryRegionRepository.deleteByStore(store);
-            List<DeliveryRegion> newDeliveryRegions = updateStoreReqDto.getDeliveryRegions().stream()
-                    .map(region -> new DeliveryRegion(store, region))
-                    .collect(Collectors.toList());
-            deliveryRegionRepository.saveAll(newDeliveryRegions);
-        }
+        deliveryRegionRepository.deleteByStore(store);
+        List<DeliveryRegion> newDeliveryRegions = updateStoreReqDto.getDeliveryRegions().stream()
+                .map(region -> new DeliveryRegion(store, region))
+                .collect(Collectors.toList());
+        deliveryRegionRepository.saveAll(newDeliveryRegions);
 
-        return new UpdateStoreResDto(store.getId(), store.getName());
+        return new UpdateStoreResDto(store.getId());
     }
 
     @Override
