@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
@@ -76,4 +77,24 @@ public class Store extends BaseEntity {
         this.owner = owner;
         this.minPrice = minPrice;
     }
+
+    public void updateStore(Category category, StoreStatusEnum status,
+                            String name, String address, String description,
+                       LocalTime startTime, LocalTime endTime, String owner, Integer minPrice) {
+        this.category = category;
+        this.status = status;
+        this.name = name;
+        this.address = address;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.owner = owner;
+        this.minPrice = minPrice;
+    }
+
+    public void hideStore(long userId) {
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = userId;
+    }
+
 }
