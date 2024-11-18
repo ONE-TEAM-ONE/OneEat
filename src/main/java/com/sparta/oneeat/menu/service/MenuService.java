@@ -78,9 +78,8 @@ public class MenuService {
             .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음
 
         // 해당 가게 상세 메뉴 반환
-        Menu menu = menuRepository.findById(menuId)
-            .filter(m -> m.getStore().getId().equals(storeId))
-            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST)); // 잘못된 접근
+        Menu menu = menuRepository.findByIdAndStoreIdAndDeletedAtIsNull(menuId, storeId)
+            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
 
         return new MenuResponseDto(menu);
     }
