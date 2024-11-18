@@ -108,12 +108,6 @@ public class ReviewServiceImpl implements ReviewService{
     @Transactional
     public void hardDeleteReview(long userId, UUID reviewId) {
 
-        // 유저 조회
-        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
-
-        // 관리자 권한 조회
-        if(user.getRole() == UserRoleEnum.CUSTOMER || user.getRole() == UserRoleEnum.OWNER) throw new CustomException(ExceptionType.ONLY_ADMIN_ACCESS);
-
         // 리뷰 조회
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new CustomException(ExceptionType.REVIEW_NOT_FOUND));
 
