@@ -10,9 +10,5 @@ public class AiRequestDto {
 
     private String response;
 
-    private Long userId;
-
-    private UUID menuId;
-
 }
 
