@@ -46,7 +46,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 
         this.validateUserExist(userId);
 
-        List<UserAddress> userAddressList = userAddressRepository.findByUserId(userId);
+        List<UserAddress> userAddressList = userAddressRepository.findByUserIdAndDeletedAtIsNull(userId);
         if (userAddressList.isEmpty()) {
             log.warn("회원의 주소록에 주소가 존재하지 않습니다.");
             throw new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS);
@@ -122,7 +122,7 @@ public class UserAddressServiceImpl implements UserAddressService {
     }
 
     protected UserAddress validateAddressExist(Long userId, UUID addressId) {
-        UserAddress userAddress = userAddressRepository.findByIdAndUserId(addressId, userId).orElseThrow(() ->
+        UserAddress userAddress = userAddressRepository.findByIdAndUserIdAndDeletedAtIsNull(addressId, userId).orElseThrow(() ->
                 new CustomException(ExceptionType.USER_NOT_EXIST_ADDRESS)
         );
         log.info("회원의 주소록에 주소가 존재합니다. Address: {}", userAddress.getAddress());
