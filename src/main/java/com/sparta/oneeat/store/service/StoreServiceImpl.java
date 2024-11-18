@@ -4,12 +4,6 @@ import com.sparta.oneeat.category.entity.Category;
 import com.sparta.oneeat.category.repository.StoreCategotyRepository;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
-import com.sparta.oneeat.menu.dto.response.MenuResponseDto;
-import com.sparta.oneeat.menu.entity.Menu;
-import com.sparta.oneeat.menu.repository.MenuRepository;
-import com.sparta.oneeat.review.dto.ReviewListDto;
-import com.sparta.oneeat.review.entity.Review;
-import com.sparta.oneeat.review.repository.ReviewRepository;
 import com.sparta.oneeat.store.dto.*;
 import com.sparta.oneeat.store.entity.Store;
 import com.sparta.oneeat.store.entity.DeliveryRegion;
@@ -43,8 +37,6 @@ public class StoreServiceImpl implements StoreService{
     private final DeliveryRegionRepository deliveryRegionRepository;
     private final UserRepository userRepository;
     private final StoreCategotyRepository storeCategotyRepository;
-    private final MenuRepository menuRepository;
-    private final ReviewRepository reviewRepository;
 
     @Override
     public Page<StoreListDto> getStoreList(long userId, int page, int size, String sort, boolean isAsc) {
@@ -72,7 +64,9 @@ public class StoreServiceImpl implements StoreService{
 
     @Override
     @Transactional
-    public CreateStoreResDto createStore(User user, CreateStoreReqDto createStoreReqDto) {
+    public CreateStoreResDto createStore(long userId, CreateStoreReqDto createStoreReqDto) {
+        // 유저 조회
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
         // 카테고리 조회
         Category category = storeCategotyRepository.findByCategoryName(createStoreReqDto.getCategory())
                 .orElseThrow(() -> new CustomException(ExceptionType.CATEGORY_NOT_FOUND));

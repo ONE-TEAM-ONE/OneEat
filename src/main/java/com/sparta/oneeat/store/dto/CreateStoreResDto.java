@@ -1,12 +1,10 @@
 package com.sparta.oneeat.store.dto;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.UUID;
 
 @Getter
-@Setter
 public class CreateStoreResDto {
 
     private UUID storeId;

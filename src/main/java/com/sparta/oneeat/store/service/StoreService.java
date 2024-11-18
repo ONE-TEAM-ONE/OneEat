@@ -17,7 +17,7 @@ public interface StoreService {
     Page<StoreListDto> getStoreList(long userId, int page, int size, String sort, boolean isAsc);
 
     // 가게 생성
-    CreateStoreResDto createStore(User user, CreateStoreReqDto createStoreReqDto);
+    CreateStoreResDto createStore(long userId, CreateStoreReqDto createStoreReqDto);
 
     // 가게 상세 조회
     StoreDetailDto getStoreDetail(UUID storeId);

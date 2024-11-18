@@ -24,6 +24,4 @@ public interface StoreRepository extends JpaRepository <Store, UUID> {
     List<Store> findByCategory(Category category);
 
     boolean existsByNameAndCategoryAndAddress(String name, Category category, String address);
-
-    Optional<Store> findById(UUID storeId);
 }

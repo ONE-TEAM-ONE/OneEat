@@ -67,7 +67,7 @@ public class StoreController {
         log.info("address : {}", createStoreReqDto.getAddress());
         log.info("DeliveryRegions : {}", createStoreReqDto.getDeliveryRegions());
 
-        return ResponseEntity.status(201).body(BaseResponseBody.of(0, storeService.createStore(userDetails.getUser(), createStoreReqDto)));
+        return ResponseEntity.status(201).body(BaseResponseBody.of(0, storeService.createStore(userDetails.getId(), createStoreReqDto)));
     }
 
     @Operation(summary = "가게 상세 조회", description = "가게를 상세 조회합니다.")
