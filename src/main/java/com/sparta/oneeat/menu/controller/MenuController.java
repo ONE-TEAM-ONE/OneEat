@@ -16,10 +16,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -40,13 +45,13 @@ public class MenuController {
     })
     @PostMapping("/ai")
     public ResponseEntity<? extends BaseResponseBody> aiCall(
-        //@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody AiCallRequestDto requestDto
     ) {
         log.info("requestDto : {}", requestDto);
 
         return ResponseEntity.status(200)
-            .body(BaseResponseBody.of(0, aiService.generateQuestion(2L, requestDto)));
+            .body(BaseResponseBody.of(0, aiService.generateQuestion(userDetails.getId(), requestDto)));
     }
 
     @Operation(summary = "메뉴 생성", description = "메뉴 생성을 요청합니다")
@@ -56,12 +61,12 @@ public class MenuController {
     })
     @PostMapping("/store/{storeId}/menu")
     public ResponseEntity<? extends BaseResponseBody> createMenu(
-        //@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @Valid @RequestBody MenuRequestDto requestDto,
         @PathVariable UUID storeId) {
 
         return ResponseEntity.status(200)
-            .body(BaseResponseBody.of(0, menuService.createMenu(requestDto, 1L, storeId)));
+            .body(BaseResponseBody.of(0, menuService.createMenu(userDetails.getUser(), requestDto, storeId)));
     }
 
     @Operation(summary = "메뉴 상세 조회", description = "메뉴 상세 조회를 요청합니다")
@@ -76,8 +81,87 @@ public class MenuController {
         @PathVariable UUID menuId) {
 
         return ResponseEntity.status(200)
-            .body(BaseResponseBody.of(0, menuService.getMenuDetail(userDetails, storeId, menuId)));
+            .body(BaseResponseBody.of(0, menuService.getMenuDetail(userDetails.getUser(), storeId, menuId)));
     }
 
+    @Operation(summary = "메뉴 목록 조회", description = "메뉴 목록을 요청합니다")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "메뉴 목록 조회 성공"),
+        @ApiResponse(responseCode = "500", description = "메뉴 목록 조회 실패")
+    })
+    @GetMapping("/store/{storeId}/menus")
+    public ResponseEntity<? extends BaseResponseBody> getMenu(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable UUID storeId,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(defaultValue = "price") String sort) {
+
+        return ResponseEntity.status(200)
+            .body(BaseResponseBody.of(0, menuService.getMenuList(userDetails.getUser(), storeId, page, size, sort)));
+    }
+
+    @Operation(summary = "메뉴 수정", description = "메뉴를 수정합니다")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "메뉴 수정 성공"),
+        @ApiResponse(responseCode = "500", description = "메뉴 수정 실패")
+    })
+    @PutMapping("/store/{storeId}/menu/{menuId}")
+    public ResponseEntity<? extends BaseResponseBody> updateMenu(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable UUID storeId,
+        @PathVariable UUID menuId,
+        @Valid @RequestBody MenuRequestDto requestDto) {
+
+        return ResponseEntity.status(200)
+            .body(BaseResponseBody.of(0,
+                menuService.updateMenu(userDetails.getUser(), requestDto, storeId, menuId)));
+    }
+
+    @Operation(summary = "메뉴 상태 변경", description = "메뉴의 상태를 변경합니다")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "메뉴 상태 변경 성공"),
+        @ApiResponse(responseCode = "500", description = "메뉴 상태 변경 실패")
+    })
+    @PatchMapping("/store/{storeId}/menu/{menuId}/status")
+    public ResponseEntity<? extends BaseResponseBody> updateMenuStatus(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable UUID storeId,
+        @PathVariable UUID menuId) {
+
+        menuService.updateMenuStatus(userDetails.getUser(), storeId, menuId);
+
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
+    @Operation(summary = "메뉴 숨김", description = "메뉴 숨김을 요청합니다")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "메뉴 숨김 성공"),
+        @ApiResponse(responseCode = "500", description = "메뉴 숨김 실패")
+    })
+    @PatchMapping("/store/{storeId}/menu/{menuId}")
+    public ResponseEntity<? extends BaseResponseBody> hideMenu(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable UUID storeId,
+        @PathVariable UUID menuId) {
+
+        menuService.hideMenu(userDetails.getId(), storeId, menuId);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
+    @Operation(summary = "메뉴 삭제", description = "메뉴 삭제를 요청합니다")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "메뉴 삭제 성공"),
+        @ApiResponse(responseCode = "500", description = "메뉴 삭제 실패")
+    })
+    @DeleteMapping("/store/{storeId}/menu/{menuId}")
+    public ResponseEntity<? extends BaseResponseBody> deleteMenu(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable UUID storeId,
+        @PathVariable UUID menuId) {
+
+        menuService.deleteMenu(userDetails.getId(), storeId, menuId);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
 
 }
