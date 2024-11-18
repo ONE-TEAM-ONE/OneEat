@@ -36,11 +36,6 @@ public class MenuService {
 
     @Transactional
     public MenuResponseDto createMenu(User user, MenuRequestDto menuRequestDto, UUID storeId) {
-        // 검증
-        if (menuRequestDto.getAiRequestDto().getMenuId() != null
-            || menuRequestDto.getAiRequestDto().getUserId() != null) {
-            throw new CustomException(ExceptionType.MENU_INVALID_REQUEST);
-        }
 
         Store store = validateStore(user, storeId);
 
@@ -60,9 +55,7 @@ public class MenuService {
         // ai 플래그를 확인하여 true 라면 생성된 메뉴 Id와 함께 ai 질문, 응답을 저장
         if (menuRequestDto.getAi()) {
             AiRequestDto aiRequestDto = menuRequestDto.getAiRequestDto();
-            aiRequestDto.setMenuId(menuId);
-            aiRequestDto.setUserId(user.getId());
-            aiService.saveAi(aiRequestDto);
+            aiService.saveAi(aiRequestDto, user.getId(), menuId);
         }
 
         return (new MenuResponseDto(validateMenu(menuId)));

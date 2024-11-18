@@ -31,10 +31,10 @@ public class Ai extends BaseEntity {
     @Column(name="MENU_ID", nullable = false)
     private UUID menuId;
 
-    public Ai(AiRequestDto requestDto) {
+    public Ai(AiRequestDto requestDto, long userId, UUID menuId) {
         this.request = requestDto.getRequest();
         this.response = requestDto.getResponse();
-        this.userId = requestDto.getUserId();
-        this.menuId = requestDto.getMenuId();
+        this.userId = userId;
+        this.menuId = menuId;
     }
 }

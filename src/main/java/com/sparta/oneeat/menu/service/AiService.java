@@ -124,15 +124,14 @@ public class AiService {
     }
 
     // ai 데이터 저장
-    public void saveAi(AiRequestDto aiRequestDto) {
+    public void saveAi(AiRequestDto aiRequestDto, long userId, UUID menuId) {
         // 메뉴 유효성
         // 유저 유효성
-        if(!userRepository.existsById(aiRequestDto.getUserId())) {
-            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); // 유저 없음
-        }
+        userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_EXIST));
 
         log.info("aiRequest : {}", aiRequestDto);
-        Ai ai = new Ai(aiRequestDto);
+        Ai ai = new Ai(aiRequestDto, userId, menuId);
         aiRepository.save(ai);
     }
 
