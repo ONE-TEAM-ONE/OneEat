@@ -74,7 +74,7 @@ public class MenuController {
         @ApiResponse(responseCode = "200", description = "메뉴 조회 성공"),
         @ApiResponse(responseCode = "500", description = "메뉴 조회 실패")
     })
-    @PostMapping("/store/{storeId}/menu/{menuId}")
+    @GetMapping("/store/{storeId}/menu/{menuId}")
     public ResponseEntity<? extends BaseResponseBody> getMenuDetail(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable UUID storeId,
