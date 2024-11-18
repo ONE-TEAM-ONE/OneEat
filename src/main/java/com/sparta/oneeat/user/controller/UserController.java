@@ -18,6 +18,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Controller
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
@@ -48,9 +50,9 @@ public class UserController {
     @PatchMapping()
     public ResponseEntity<? extends BaseResponseBody> softDeleteUser(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody String password
+            @RequestBody Map<String, String> passwordDto
     ){
-        userService.softDeleteUser(userDetails.getId(), userDetails.getPassword(), password);
+        userService.softDeleteUser(userDetails.getId(), passwordDto.get("password"));
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 

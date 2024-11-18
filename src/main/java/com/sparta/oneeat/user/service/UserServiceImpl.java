@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validatePasswordMatches(String rawPassword, String encodedPassword) {
-        if(passwordEncoder.matches(rawPassword, encodedPassword)){
+        if(!passwordEncoder.matches(rawPassword, encodedPassword)){
             log.warn("회원의 비밀번호가 일치하지 않습니다.");
             throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
         }
