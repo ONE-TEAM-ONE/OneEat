@@ -6,7 +6,6 @@ import com.sparta.oneeat.store.dto.UpdateStoreReqDto;
 import com.sparta.oneeat.store.dto.UpdateStoreResDto;
 import com.sparta.oneeat.store.dto.StoreDetailDto;
 import com.sparta.oneeat.store.dto.StoreListDto;
-import com.sparta.oneeat.user.entity.User;
 import org.springframework.data.domain.Page;
 
 import java.util.UUID;

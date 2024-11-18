@@ -46,7 +46,6 @@ public class StoreServiceImpl implements StoreService{
 
         // 유저 권한 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
-        UserRoleEnum userRole = user.getRole();
 
         // 사용자의 주소를 가져옵니다.
         String userAddress = user.getCurrentAddress();

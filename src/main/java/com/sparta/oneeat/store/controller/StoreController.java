@@ -47,7 +47,7 @@ public class StoreController {
         log.info("sort : {}", sort);
         log.info("isAsc : {}", isAsc);
 
-        return ResponseEntity.status(200).body(BaseResponseBody.of(0, storeService.getStoreList(userId,(page-1), size, sort, isAsc)));
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, storeService.getStoreList(userId, page, size, sort, isAsc)));
     }
 
     @Operation(summary = "가게 생성", description = "가게 정보를 저장합니다.")

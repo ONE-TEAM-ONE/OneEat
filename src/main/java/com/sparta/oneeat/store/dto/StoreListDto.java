@@ -1,17 +1,12 @@
 package com.sparta.oneeat.store.dto;
 
-import com.sparta.oneeat.category.entity.Category;
 import com.sparta.oneeat.store.entity.Store;
 import com.sparta.oneeat.store.entity.StoreStatusEnum;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.UUID;
 
 @Getter
-@Setter
-@NoArgsConstructor
 public class StoreListDto {
     private UUID storeId;
     private String storeName;
