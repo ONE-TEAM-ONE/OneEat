@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -198,4 +199,21 @@ public class StoreServiceImpl implements StoreService{
 
         return new UpdateStoreResDto(store.getId(), store.getName());
     }
+
+    @Override
+    @Transactional
+    public void hideStore(long userId, UUID storeId) {
+        // 유저 조회
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
+        // 가게 조회
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ExceptionType.STORE_NOT_EXIST));
+
+        // 권한 조회
+        if(!Objects.equals(user.getId(), store.getUser().getId())) throw new CustomException(ExceptionType.STORE_ACCESS_DENIED);
+
+        // 가게 숨김
+        store.hideStore(userId);
+    }
+
 }

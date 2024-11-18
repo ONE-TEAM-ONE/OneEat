@@ -26,4 +26,8 @@ public interface StoreService {
 
     // 가게 수정
     UpdateStoreResDto updateStore(User user, UUID storeId, UpdateStoreReqDto updateStoreReqDto);
+
+    // 가게 숨김
+    void hideStore(long userId, UUID storeId);
+
 }
