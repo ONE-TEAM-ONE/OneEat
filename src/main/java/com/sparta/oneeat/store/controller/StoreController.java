@@ -116,4 +116,22 @@ public class StoreController {
 
         return ResponseEntity.ok(BaseResponseBody.of(0, storeService.updateStore(userDetails.getUser(), storeId, updateStoreReqDto)));
     }
+
+    @Operation(summary = "가게 숨김", description = "가게 숨김을 요청합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "가게 숨김 성공"),
+            @ApiResponse(responseCode = "500", description = "가게 숨김 실패")
+    })
+    @PatchMapping("/store/{store_id}")
+    public ResponseEntity<? extends BaseResponseBody> hideStore(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable(name = "store_id") UUID storeId
+    ){
+        log.info("userId : {}", userDetails.getId());
+        log.info("storeId : {}", storeId);
+
+        storeService.hideStore(userDetails.getId(), storeId);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
 }

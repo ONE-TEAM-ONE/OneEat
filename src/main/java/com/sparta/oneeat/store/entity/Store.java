@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
@@ -89,6 +90,11 @@ public class Store extends BaseEntity {
         if (endTime != null) this.endTime = endTime;
         if (owner != null) this.owner = owner;
         if (minPrice != null) this.minPrice = minPrice;
+    }
+
+    public void hideStore(long userId) {
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = userId;
     }
 
 }
