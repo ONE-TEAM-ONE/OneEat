@@ -37,6 +37,7 @@ public class StoreServiceImpl implements StoreService{
     private final DeliveryRegionRepository deliveryRegionRepository;
     private final UserRepository userRepository;
     private final StoreCategotyRepository storeCategotyRepository;
+    private final DeliveryRegionUtil deliveryRegionUtil;
 
     @Override
     public Page<StoreListDto> getStoreList(long userId, int page, int size, String sort, boolean isAsc) {
@@ -50,9 +51,17 @@ public class StoreServiceImpl implements StoreService{
         // 사용자의 주소를 가져옵니다.
         String userAddress = user.getCurrentAddress();
 
-        List<DeliveryRegion> deliveryRegions = deliveryRegionRepository.findAllByDeliveryRegion(userAddress);
+        // 주소 변환
+        String formattedAddress;
+        formattedAddress = deliveryRegionUtil.getFormattedAddress(userAddress);
+        if(formattedAddress.isBlank()){
+            throw new CustomException(ExceptionType.ADDRESS_NOT_FOUND);
+        }
+
+        List<DeliveryRegion> deliveryRegions = deliveryRegionRepository.findAllByDeliveryRegion(formattedAddress);
         List<UUID> storeIds = deliveryRegions.stream()
                 .map(DeliveryRegion::getStore)
+                .filter(store -> store.getDeletedAt() == null)
                 .map(Store::getId)
                 .collect(Collectors.toList());
 
@@ -90,14 +99,21 @@ public class StoreServiceImpl implements StoreService{
                 createStoreReqDto.getMinPrice()
         );
 
-        store = storeRepository.save(store);
-
         // 배달 지역 처리
         Store finalStore = store;
         List<DeliveryRegion> deliveryRegions = createStoreReqDto.getDeliveryRegions().stream()
-                .map(region -> new DeliveryRegion(finalStore, region))
+                .map(region -> {
+                    String formattedRegion = deliveryRegionUtil.getFormattedAddress(region);
+                    if (formattedRegion.isBlank()) {
+                        throw new CustomException(ExceptionType.ADDRESS_NOT_FOUND);
+                    }
+                    return formattedRegion;
+                })
+                .distinct() // 중복 제거
+                .map(formattedRegion -> new DeliveryRegion(finalStore, formattedRegion))
                 .collect(Collectors.toList());
 
+        store = storeRepository.save(store);
         deliveryRegionRepository.saveAll(deliveryRegions);
 
         return new CreateStoreResDto(store.getId());
@@ -107,6 +123,11 @@ public class StoreServiceImpl implements StoreService{
     public StoreDetailDto getStoreDetail(UUID storeId) {
         // 가게 조회
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ExceptionType.STORE_NOT_EXIST));
+
+        // 삭제된 가게인지 확인
+        if (store.getDeletedAt() != null) {
+            throw new CustomException(ExceptionType.STORE_NOT_EXIST);
+        }
 
         List<String> deliveryRegions = deliveryRegionRepository.findAllByStoreId(storeId).stream()
                 .map(DeliveryRegion::getDeliveryRegion)
@@ -137,6 +158,19 @@ public class StoreServiceImpl implements StoreService{
             throw new CustomException(ExceptionType.INVALID_STORE_STATUS);
         }
 
+        // 배달 지역 처리
+        List<DeliveryRegion> newDeliveryRegions = updateStoreReqDto.getDeliveryRegions().stream()
+                .map(region -> {
+                    String formattedRegion = deliveryRegionUtil.getFormattedAddress(region);
+                    if (formattedRegion.isBlank()) {
+                        throw new CustomException(ExceptionType.ADDRESS_NOT_FOUND);
+                    }
+                    return formattedRegion;
+                })
+                .distinct() // 중복 제거
+                .map(formattedRegion -> new DeliveryRegion(store, formattedRegion))
+                .collect(Collectors.toList());
+
         store.updateStore(
                 category,
                 status,
@@ -150,9 +184,6 @@ public class StoreServiceImpl implements StoreService{
         );
 
         deliveryRegionRepository.deleteByStore(store);
-        List<DeliveryRegion> newDeliveryRegions = updateStoreReqDto.getDeliveryRegions().stream()
-                .map(region -> new DeliveryRegion(store, region))
-                .collect(Collectors.toList());
         deliveryRegionRepository.saveAll(newDeliveryRegions);
 
         return new UpdateStoreResDto(store.getId());
