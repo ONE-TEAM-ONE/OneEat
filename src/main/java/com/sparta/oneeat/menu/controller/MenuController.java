@@ -98,7 +98,7 @@ public class MenuController {
         @RequestParam(defaultValue = "price") String sort) {
 
         return ResponseEntity.status(200)
-            .body(BaseResponseBody.of(0, menuService.getMenuList(userDetails.getUser(), storeId, page, size, sort)));
+            .body(BaseResponseBody.of(0, menuService.getMenuList(storeId, page, size, sort)));
     }
 
     @Operation(summary = "메뉴 수정", description = "메뉴를 수정합니다")
