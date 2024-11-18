@@ -5,9 +5,9 @@
 | 이름   | 포지션         | 담당 기능                           | GitHub                                           |
 |--------|----------------|------------------------------------|-------------------------------------------------|
 | 권현준 | 팀장/백엔드 | - 주문 & 결제 시스템 구현 <br/> - 리뷰 API 개발 <br/> - 프로젝트 일정 관리 및 조율     | [GitHub](https://github.com/Kwonhyunjun)         |
-| 양지수 | 백엔드     | 담당 기능 작성해주세요. | [GitHub](https://github.com/username2)         |
-| 유영진 | 백엔드     | 담당 기능 작성해주세요. | [GitHub](https://github.com/username3)         |
-| 최유림 | 백엔드     | 담당 기능 작성해주세요. | [GitHub](https://github.com/username4)         |
+| 양지수 | 백엔드     | - Security & JWT <br/> - 유저 API 개발 <br/> - 인프라 AWS 담당 | [GitHub](https://github.com/JISU-YANG)         |
+| 유영진 | 백엔드     | - 가게 API 개발  | [GitHub](https://github.com/Ye0ngjin)         |
+| 최유림 | 백엔드     | - 메뉴 API 개발 <br/> - AI API 호출 및 응답 파싱 | [GitHub](https://github.com/Yuurim98)         |
 
 
 
