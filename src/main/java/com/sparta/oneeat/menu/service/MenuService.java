@@ -9,8 +9,10 @@ import com.sparta.oneeat.menu.entity.Menu;
 import com.sparta.oneeat.menu.entity.MenuStatusEnum;
 import com.sparta.oneeat.menu.repository.MenuRepository;
 import com.sparta.oneeat.store.entity.Store;
+import com.sparta.oneeat.store.repository.StoreRepository;
 import com.sparta.oneeat.user.entity.User;
 import com.sparta.oneeat.user.entity.UserRoleEnum;
+import com.sparta.oneeat.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,8 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final AiService aiService;
     private final ValidationService validationService;
+    private final UserRepository userRepository;
+    private final StoreRepository storeRepository;
 
     @Transactional
     public MenuResponseDto createMenu(User user, MenuRequestDto menuRequestDto, UUID storeId) {
@@ -158,6 +162,30 @@ public class MenuService {
             .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
 
         menuRepository.delete(menu);
+    }
+
+    private User validateUser(long userId) {
+        // 유저 검증
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_EXIST));
+    }
+
+    private Store validateStore(User user, UUID storeId) {
+        // 가게 검증 / 사장이라면 해당 유저에게 해당 가게가 있는지
+        if (user.getRole() == UserRoleEnum.OWNER) {
+            return storeRepository.findByIdAndUser(storeId, user)
+                .orElseThrow(
+                    () -> new CustomException(
+                        ExceptionType.INTERNAL_SERVER_ERROR)); //TODO 가게 ExceptionType으로 수정 필요
+        } else {
+            return storeRepository.findById(storeId).orElseThrow(
+                () -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); //TODO 가게 ExceptionType으로 수정 필요
+        }
+    }
+
+    private Menu validateMenu(UUID menuId) {
+        return  menuRepository.findById(menuId)
+            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
     }
 }
 
