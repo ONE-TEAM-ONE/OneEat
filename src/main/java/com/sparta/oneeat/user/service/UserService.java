@@ -1,21 +1,18 @@
+
 package com.sparta.oneeat.user.service;
 
-import com.sparta.oneeat.auth.service.UserDetailsImpl;
-import com.sparta.oneeat.user.dto.EmailRequestDto;
-import com.sparta.oneeat.user.dto.NicknameRequestDto;
-import com.sparta.oneeat.user.dto.PasswordRequestDto;
 import com.sparta.oneeat.user.dto.UserResponseDto;
 
 public interface UserService {
     UserResponseDto selectUserDetails(Long id);
 
-    void softDeleteUser(UserDetailsImpl userDetails, String password);
+    void softDeleteUser(Long userId, String password, String receivedPassword);
 
     void hardDeleteUser(Long userId);
 
-    void modifyPassword(UserDetailsImpl userDetails, PasswordRequestDto passwordRequestDto);
+    void modifyPassword(Long userId, String oldPassword, String newPassword);
 
-    void modifyNickname(UserDetailsImpl userDetails, NicknameRequestDto nicknameRequestDto);
+    void modifyNickname(Long userId, String nickname);
 
-    void modifyEmail(UserDetailsImpl userDetails, EmailRequestDto emailRequestDto);
+    void modifyEmail(Long userId, String email);
 }
