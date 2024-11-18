@@ -1,6 +1,5 @@
 package com.sparta.oneeat.menu.service;
 
-import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
 import com.sparta.oneeat.menu.dto.request.AiRequestDto;
@@ -43,9 +42,7 @@ public class MenuService {
             throw new CustomException(ExceptionType.MENU_INVALID_REQUEST);
         }
 
-        Store store = storeRepository.findByIdAndUser(storeId, user)
-            .orElseThrow(
-                () -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음 (유저의 가게X)
+        Store store = validateStore(user, storeId);
 
         // 메뉴 생성
         Menu menu = Menu.builder()
@@ -68,28 +65,33 @@ public class MenuService {
             aiService.saveAi(aiRequestDto);
         }
 
-        return (new MenuResponseDto(menuRepository.findById(menuId)
-            .orElseThrow(() -> new CustomException(ExceptionType.MENU_NOT_FOUND))));
+        return (new MenuResponseDto(validateMenu(menuId)));
+    }
+
+    // 메뉴 상세 조회
+    public MenuResponseDto getMenuDetail(User user, UUID storeId, UUID menuId) {
+        // 유저 검증
+        validateUser(user.getId());
+        // 가게 검증
+        Store store = storeRepository.findById(storeId)
+            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음
+
+        // 해당 가게 상세 메뉴 반환
+        Menu menu = menuRepository.findByIdAndStoreIdAndDeletedAtIsNull(menuId, store)
+            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
+
+        return new MenuResponseDto(menu);
     }
 
     // 가게의 모든 메뉴를 조회 (가격 내림)
+
     public Page<MenuResponseDto> getMenuList(User user, UUID storeId, int page, int size,
         String sort) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, sort));
 
-        Store store;
-
         // 가게 검증 / 사장이라면 해당 유저에게 해당 가게가 있는지
-        if (user.getRole() == UserRoleEnum.OWNER) {
-            store = storeRepository.findByIdAndUser(storeId, user)
-                .orElseThrow(
-                    () -> new CustomException(
-                        ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음 (and 유저의 가게X)
-        } else {
-            store = storeRepository.findById(storeId).orElseThrow(
-                () -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음
-        }
+        Store store = validateStore(user, storeId);
 
         // 정렬 조건에 맞게 해당 가게의 메뉴 전체를 가져온다
         Page<Menu> menus = menuRepository.findAllByStoreAndDeletedAtIsNull(store, pageable);
@@ -103,10 +105,19 @@ public class MenuService {
 
         log.info("userId {}", user.getId());
 
+        Store store;
+
+        if (user.getRole() == UserRoleEnum.OWNER) {
+            store = validateStore(user, storeId);
+        } else {
+            throw new CustomException(ExceptionType.MENU_ACCESS_DENIED); // 권한 X
+        }
+
         // 기존 메뉴는 숨김처리한다
-        Menu menu = menuRepository.findById(menuId)
-            .orElseThrow(() -> new CustomException(ExceptionType.MENU_NOT_FOUND));
+        Menu menu = validateMenu(menuId);
+
         log.info("mene {}", menu.toString());
+
         menu.delete(user.getId());
 
         // 새로 추가된 메뉴를 반환한다
@@ -117,15 +128,15 @@ public class MenuService {
     public void updateMenuStatus(User user, UUID storeId, UUID menuId) {
         Store store;
 
-        // 권한 확인 본인 가게인지 확인
         if (user.getRole() == UserRoleEnum.OWNER) {
-          store = storeRepository.findByIdAndUser(storeId, user).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+            store = validateStore(user, storeId);
         } else {
-            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); // 권한 X
+            throw new CustomException(ExceptionType.MENU_ACCESS_DENIED); // 권한 X
         }
 
         // 상태 변경
-        Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new CustomException(ExceptionType.MENU_NOT_FOUND));
+        Menu menu = validateMenu(menuId);
+
         if (menu.getStatus() == MenuStatusEnum.ON_SALE) {
             menu.updateStatus(MenuStatusEnum.SOLD_OUT);
         } else {
@@ -137,44 +148,59 @@ public class MenuService {
     @Transactional
     public void hideMenu(long userId, UUID storeId, UUID menuId) {
         // 유저 검증
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+        User user = validateUser(userId);
 
         Store store;
 
-        // 가게 검증 / 사장이라면 해당 유저에게 해당 가게가 있는지
         if (user.getRole() == UserRoleEnum.OWNER) {
-            store = storeRepository.findByIdAndUser(storeId, user)
-                .orElseThrow(
-                    () -> new CustomException(
-                        ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음 (and 유저의 가게X)
+            store = validateStore(user, storeId);
         } else {
-            store = storeRepository.findById(storeId).orElseThrow(
-                () -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); // 가게 없음
+            throw new CustomException(ExceptionType.MENU_ACCESS_DENIED); // 권한 X
         }
 
-        Menu menu = menuRepository.findById(menuId)
-            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
+        Menu menu = validateMenu(menuId);
         menu.delete(user.getId());
     }
 
     @Transactional
     public void deleteMenu(long userId, UUID storeId, UUID menuId) {
         // 유저 검증
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
-
-        Store store = storeRepository.findById(storeId)
-            .orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+        User user = validateUser(userId);
 
         if (!(user.getRole() == UserRoleEnum.MASTER || user.getRole() == UserRoleEnum.MANAGER)) {
-            throw new CustomException(ExceptionType.INTERNAL_SERVER_ERROR); // 권한 없음
+            throw new CustomException(ExceptionType.MENU_ACCESS_DENIED); // 권한 없음
         }
+
+        Store store = validateStore(user, storeId);
 
         Menu menu = menuRepository.findByIdAndStore(menuId, store)
             .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
 
         menuRepository.delete(menu);
+    }
+
+    private User validateUser(long userId) {
+        // 유저 검증
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new CustomException(ExceptionType.USER_NOT_EXIST));
+    }
+
+    private Store validateStore(User user, UUID storeId) {
+        // 가게 검증 / 사장이라면 해당 유저에게 해당 가게가 있는지
+        if (user.getRole() == UserRoleEnum.OWNER) {
+            return storeRepository.findByIdAndUser(storeId, user)
+                .orElseThrow(
+                    () -> new CustomException(
+                        ExceptionType.INTERNAL_SERVER_ERROR)); //TODO 가게 ExceptionType으로 수정 필요
+        } else {
+            return storeRepository.findById(storeId).orElseThrow(
+                () -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR)); //TODO 가게 ExceptionType으로 수정 필요
+        }
+    }
+
+    private Menu validateMenu(UUID menuId) {
+        return  menuRepository.findById(menuId)
+            .orElseThrow(() -> new CustomException(ExceptionType.MENU_INVALID_REQUEST));
     }
 }
 

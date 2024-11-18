@@ -25,8 +25,9 @@ public enum ExceptionType {
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "A-003", "요청 형식이 잘못되었습니다."),
 
     // Menu
-    MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "M-001", "메뉴가 생성되지 않았습니다."),
-    MENU_INVALID_REQUEST(HttpStatus.BAD_REQUEST, "M-002", "요청 형식이 잘못되었습니다."),
+    MENU_INVALID_REQUEST(HttpStatus.BAD_REQUEST, "M-001", "요청 형식이 잘못되었습니다."),
+    MENU_ACCESS_DENIED(HttpStatus.FORBIDDEN, "M-002", "권한이 없습니다."),
+
 
     // 주문
     ORDER_NOT_EXIST(HttpStatus.NOT_FOUND, "O-001", "해당 주문이 존재하지 않습니다."),
