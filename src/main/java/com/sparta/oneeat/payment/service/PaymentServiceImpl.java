@@ -3,6 +3,7 @@ package com.sparta.oneeat.payment.service;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
 import com.sparta.oneeat.order.entity.Order;
+import com.sparta.oneeat.order.entity.OrderStatusEnum;
 import com.sparta.oneeat.order.repository.OrderRepository;
 import com.sparta.oneeat.payment.dto.CreatePaymentResDto;
 import com.sparta.oneeat.payment.dto.ModifyPaymentStatusDto;
@@ -71,5 +72,8 @@ public class PaymentServiceImpl implements PaymentService{
         // 수정
         payment.modifyStatus(modifyPaymentStatusDto);
 
+        // 주문 상태도 같이 반영
+        OrderStatusEnum orderStatus = (modifyPaymentStatusDto.getStatus() == PaymentStatusEnum.SUCCESS) ? OrderStatusEnum.PAYMENT_APPROVED : OrderStatusEnum.PAYMENT_REJECTED;
+        order.modifyStatus(orderStatus);
     }
 }
