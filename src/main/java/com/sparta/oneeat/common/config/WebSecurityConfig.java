@@ -61,22 +61,36 @@ public class WebSecurityConfig {
             ).permitAll();
 
             // 회원가입, 로그인 허용
-            authorizeHttpRequests.requestMatchers("/api/auth/**").permitAll();
+            authorizeHttpRequests.requestMatchers("/api/auth/**", "/error").permitAll();
 
-            authorizeHttpRequests.requestMatchers("/error").permitAll();
-
+            // DELETE 메서드는 MANAGER, MASTER 권한만 허용
             authorizeHttpRequests.requestMatchers(HttpMethod.DELETE, "/api/**")
                     .hasAnyAuthority(
                             UserRoleEnum.MANAGER.getAuthority(),
                             UserRoleEnum.MASTER.getAuthority()
                     );
 
+            // 유저 관련 API는 CUSTOMER, OWNER 권한만 허용
             authorizeHttpRequests.requestMatchers("/api/user", "/api/user/**")
                     .hasAnyAuthority(
                             UserRoleEnum.CUSTOMER.getAuthority(),
                             UserRoleEnum.OWNER.getAuthority()
                     );
 
+            // 메뉴 조회는 전부 허용
+            authorizeHttpRequests.requestMatchers(HttpMethod.GET, "/api/store/*/menus", "/api/store/*/menu/*")
+                    .hasAnyAuthority(
+                            UserRoleEnum.CUSTOMER.getAuthority(),
+                            UserRoleEnum.OWNER.getAuthority(),
+                            UserRoleEnum.MANAGER.getAuthority(),
+                            UserRoleEnum.MASTER.getAuthority()
+                    );
+
+            // 메뉴 관련 데이터 변경은 OWNER 권한만 허용
+            authorizeHttpRequests.requestMatchers("/api/store/**", "/api/ai")
+                    .hasAnyAuthority(UserRoleEnum.OWNER.getAuthority());
+
+            // 가게 관련 조회는 모든 권한 허용
             authorizeHttpRequests.requestMatchers(HttpMethod.GET, "/api/store", "/api/store/**")
                     .hasAnyAuthority(
                             UserRoleEnum.CUSTOMER.getAuthority(),
@@ -85,36 +99,60 @@ public class WebSecurityConfig {
                             UserRoleEnum.MASTER.getAuthority()
                     );
 
-            authorizeHttpRequests.requestMatchers("/api/store/**", "/api/ai/**")
-                    .hasAnyAuthority(UserRoleEnum.OWNER.getAuthority());
+            // 가게 생성은 MANAGER, MASTER 권한만 허용
+            authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/api/store")
+                    .hasAnyAuthority(
+                            UserRoleEnum.MANAGER.getAuthority(),
+                            UserRoleEnum.MASTER.getAuthority()
+                    );
 
+            // 카테고리 관련 API는 MANAGER, MASTER 권한만 허용
             authorizeHttpRequests.requestMatchers("/api/category", "/api/category/**")
                     .hasAnyAuthority(
                             UserRoleEnum.MANAGER.getAuthority(),
                             UserRoleEnum.MASTER.getAuthority()
                     );
 
-            authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/api/order")
+            // 주문과 결제는 CUSTOMER 권한만 허용
+            authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/api/order", "/api/order/*/payment")
                     .hasAnyAuthority(UserRoleEnum.CUSTOMER.getAuthority());
-            authorizeHttpRequests.requestMatchers("/api/order/*/payment/**")
-                    .hasAnyAuthority(UserRoleEnum.CUSTOMER.getAuthority());
+
+            // 주문과 결제 관련 데이터 변경은 CUSTOMER, OWNER 권한만 허용
             authorizeHttpRequests.requestMatchers("/api/order", "/api/order/**")
                     .hasAnyAuthority(
                             UserRoleEnum.CUSTOMER.getAuthority(),
                             UserRoleEnum.OWNER.getAuthority()
                     );
 
+            // 결제 상태 변경은 OWNER, MANAGER, MASTER 권한만 허용
+            authorizeHttpRequests.requestMatchers("/api/order", "/api/order/**")
+                    .hasAnyAuthority(
+                            UserRoleEnum.OWNER.getAuthority(),
+                            UserRoleEnum.MANAGER.getAuthority(),
+                            UserRoleEnum.MASTER.getAuthority()
+                    );
+
+            // 리뷰 조회는 모든 권한이 허용
+            authorizeHttpRequests.requestMatchers(HttpMethod.GET, "/api/store/*/reviews")
+                    .hasAnyAuthority(
+                            UserRoleEnum.CUSTOMER.getAuthority(),
+                            UserRoleEnum.OWNER.getAuthority(),
+                            UserRoleEnum.MANAGER.getAuthority(),
+                            UserRoleEnum.MASTER.getAuthority()
+                    );
+
+            // 리뷰 관련 데이터 변경은 CUSTOMER 권한만 허용
             authorizeHttpRequests.requestMatchers("/api/order/*/review", "/api/order/*/review/**")
                     .hasAnyAuthority(UserRoleEnum.CUSTOMER.getAuthority());
-            // 모든 요청은 인증 필요
-            authorizeHttpRequests.anyRequest().authenticated();
 
+            // 이외의 모든 요청은 인증 필요
+            authorizeHttpRequests.anyRequest().authenticated();
 
         });
 
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-       return http.build();
+        return http.build();
     }
 }
