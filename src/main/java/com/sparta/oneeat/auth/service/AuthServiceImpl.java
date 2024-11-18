@@ -1,6 +1,5 @@
 package com.sparta.oneeat.auth.service;
 
-import com.sparta.oneeat.auth.dto.SignupRequestDto;
 import com.sparta.oneeat.auth.dto.SignupResponseDto;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
@@ -8,9 +7,11 @@ import com.sparta.oneeat.user.entity.User;
 import com.sparta.oneeat.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -20,32 +21,33 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public SignupResponseDto signup(SignupRequestDto requestDto) {
-        String username = requestDto.getUsername();
-        String password = requestDto.getPassword();
-        String nickname = requestDto.getNickname();
+    public SignupResponseDto signup(String username, String password, String nickname, String email, String address) {
 
         password = passwordEncoder.encode(password);
+        log.info("비밀번호를 암호화 했습니다: {}", password);
 
-        // 유저네임(아이디) 중복 체크
-        if(userRepository.findByName(username).isPresent())
-            throw new CustomException(ExceptionType.AUTH_DUPLICATE_USERNAME);
+        if (userRepository.findByName(username).isPresent()) {
+            log.warn("중복된 유저 네임 입니다: {}", username);
+            throw new CustomException(ExceptionType.USER_EXIST_USERNAME);
+        }
 
-        // 닉네임 중복 체크
-        if (userRepository.findByNickname(username).isPresent())
-            throw new CustomException(ExceptionType.AUTH_DUPLICATE_NICKNAME);
+        if (userRepository.findByNickname(username).isPresent()) {
+            log.warn("중복된 닉네임 입니다: {}", nickname);
+            throw new CustomException(ExceptionType.USER_EXIST_NICKNAME);
+        }
 
-        User user = User.builder()
-                .name(username)
-                .password(password)
-                .nickname(nickname)
-                .email(requestDto.getEmail())
-                .currentAddress(requestDto.getAddress())
-                .build();
+        if (userRepository.findByEmail(email).isPresent()) {
+            log.warn("중복된 이메일 입니다: {}", email);
+            throw new CustomException(ExceptionType.USER_EXIST_EMAIL);
+        }
+
+        User user = new User(username, password, nickname, email, address);
 
         userRepository.save(user);
+        log.info("회원가입이 성공적으로 되었습니다. Username: {}", user.getName());
 
         return new SignupResponseDto(user.getId());
     }
+
 }
 

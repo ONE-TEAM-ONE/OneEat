@@ -21,7 +21,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/api")
 @Tag(name="Review", description="Review API")
 public class ReviewController {
 

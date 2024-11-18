@@ -8,14 +8,11 @@ public enum ExceptionType {
     // 에러 열거
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "S-001", "서버 내부 오류입니다."),
 
-    // Auth
-    AUTH_DUPLICATE_USERNAME(HttpStatus.CONFLICT,"A-001","중복된 아이디를 가진 사용자가 존재합니다."),
-    AUTH_DUPLICATE_NICKNAME(HttpStatus.CONFLICT,"A-002","중복된 닉네임을 가진 사용자가 존재합니다."),
-
     // User
     USER_PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED,"U-001","일치하지 않는 비밀번호 입니다."),
     USER_NOT_EXIST(HttpStatus.NOT_FOUND, "U-002", "회원을 찾을 수 없습니다."),
     USER_NOT_SOFT_DELETE(HttpStatus.BAD_REQUEST, "U-003", "회원이 숨김처리 되어있지 않습니다."),
+    USER_EXIST_USERNAME(HttpStatus.BAD_REQUEST, "U-005", "이미 사용하고 있는 유저 네임 입니다."),
     USER_EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "U-004", "이미 사용하고 있는 닉네임 입니다."),
     USER_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "U-005", "이미 사용하고 있는 이메일 입니다."),
     USER_EXIST_ADDRESS(HttpStatus.BAD_REQUEST, "U-006", "이미 등록된 주소 입니다."),
@@ -28,8 +25,9 @@ public enum ExceptionType {
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "A-003", "요청 형식이 잘못되었습니다."),
 
     // Menu
-    MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "M-001", "메뉴가 생성되지 않았습니다."),
-    MENU_INVALID_REQUEST(HttpStatus.BAD_REQUEST, "M-002", "요청 형식이 잘못되었습니다."),
+    MENU_INVALID_REQUEST(HttpStatus.BAD_REQUEST, "M-001", "요청 형식이 잘못되었습니다."),
+    MENU_ACCESS_DENIED(HttpStatus.FORBIDDEN, "M-002", "권한이 없습니다."),
+
 
     // 주문
     ORDER_NOT_EXIST(HttpStatus.NOT_FOUND, "O-001", "해당 주문이 존재하지 않습니다."),

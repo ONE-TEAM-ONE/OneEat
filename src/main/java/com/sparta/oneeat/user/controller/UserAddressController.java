@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -33,10 +34,10 @@ public class UserAddressController {
     @PostMapping
     public ResponseEntity<? extends BaseResponseBody> creatAddress(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody AddressRequestDto addressRequestDto
+            @Validated @RequestBody AddressRequestDto addressRequestDto
     ){
         return ResponseEntity.status(200).body(BaseResponseBody.of(0,
-                userAddressService.creatAddress(userDetails, addressRequestDto.getAddress())
+                userAddressService.creatAddress(userDetails.getUser(), addressRequestDto.getAddress())
         ));
     }
 
@@ -50,7 +51,7 @@ public class UserAddressController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
         return ResponseEntity.status(200).body(BaseResponseBody.of(0,
-                userAddressService.selectAddressList(userDetails)
+                userAddressService.selectAddressList(userDetails.getId())
         ));
     }
 
@@ -62,9 +63,9 @@ public class UserAddressController {
     @PatchMapping
     public ResponseEntity<? extends BaseResponseBody> modifyCurrentAddress(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody AddressModifyRequestDto addressModifyRequestDto
+            @Validated @RequestBody AddressModifyRequestDto addressModifyRequestDto
     ){
-        userAddressService.modifyCurrentAddress(userDetails, addressModifyRequestDto.getAddressId());
+        userAddressService.modifyCurrentAddress(userDetails.getUser(), addressModifyRequestDto.getAddressId());
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
@@ -77,9 +78,9 @@ public class UserAddressController {
     public ResponseEntity<? extends BaseResponseBody> modifyAddress(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID addressId,
-            @RequestBody AddressRequestDto addressRequestDto
+            @Validated @RequestBody AddressRequestDto addressRequestDto
     ){
-        userAddressService.modifyAddress(userDetails, addressId, addressRequestDto.getAddress());
+        userAddressService.modifyAddress(userDetails.getId(), addressId, addressRequestDto.getAddress());
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
@@ -93,7 +94,7 @@ public class UserAddressController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID addressId
     ){
-        userAddressService.softDeleteAddress(userDetails, addressId);
+        userAddressService.softDeleteAddress(userDetails.getId(), addressId);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
@@ -104,10 +105,9 @@ public class UserAddressController {
     })
     @DeleteMapping(value = "/{addressId}")
     public ResponseEntity<? extends BaseResponseBody> hardDeleteAddress(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable UUID addressId
     ){
-        userAddressService.hardDeleteAddress(userDetails, addressId);
+        userAddressService.hardDeleteAddress(addressId);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 }

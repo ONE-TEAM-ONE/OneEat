@@ -4,12 +4,10 @@ import com.sparta.oneeat.common.entity.BaseEntity;
 import com.sparta.oneeat.store.entity.Store;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -47,7 +45,6 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRoleEnum role;
 
-    @Builder
     public User(String name, String password, String nickname, String email, String currentAddress) {
         this.name = name;
         this.password = password;
@@ -55,8 +52,6 @@ public class User extends BaseEntity {
         this.email = email;
         this.currentAddress = currentAddress;
         this.role = UserRoleEnum.CUSTOMER;
-        this.userAddress = new ArrayList<>();
-        this.storeList = new ArrayList<>();
     }
 
     public void modifyPassword(String password) {
