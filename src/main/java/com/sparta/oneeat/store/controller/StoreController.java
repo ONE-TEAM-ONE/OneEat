@@ -3,6 +3,7 @@ package com.sparta.oneeat.store.controller;
 import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.response.BaseResponseBody;
 import com.sparta.oneeat.store.dto.CreateStoreReqDto;
+import com.sparta.oneeat.store.dto.UpdateStoreReqDto;
 import com.sparta.oneeat.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -93,4 +94,44 @@ public class StoreController {
         return ResponseEntity.ok(BaseResponseBody.of(0, storeService.getStoreDetail(storeId, menuPage, menuSize, menuSort, menuIsAsc,
                 reviewPage, reviewSize, reviewSort, reviewIsAsc)));
     }
+
+    @Operation(summary = "가게 수정", description = "가게 정보를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "가게 수정 성공"),
+            @ApiResponse(responseCode = "404", description = "가게를 찾을 수 없음"),
+            @ApiResponse(responseCode = "500", description = "가게 수정 실패")
+    })
+    @PutMapping("/store/{store_id}")
+    public ResponseEntity<? extends BaseResponseBody> updateStore(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable(name = "store_id") UUID storeId,
+            @Validated @RequestBody UpdateStoreReqDto updateStoreReqDto
+    ){
+        log.info("userId : {}", userDetails.getId());
+        log.info("storeId : {}", storeId);
+        log.info("storeName : {}", updateStoreReqDto.getName());
+        log.info("category : {}", updateStoreReqDto.getCategory());
+        log.info("address : {}", updateStoreReqDto.getAddress());
+        log.info("DeliveryRegions : {}", updateStoreReqDto.getDeliveryRegions());
+
+        return ResponseEntity.ok(BaseResponseBody.of(0, storeService.updateStore(userDetails.getId(), storeId, updateStoreReqDto)));
+    }
+
+    @Operation(summary = "가게 숨김", description = "가게 숨김을 요청합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "가게 숨김 성공"),
+            @ApiResponse(responseCode = "500", description = "가게 숨김 실패")
+    })
+    @PatchMapping("/store/{store_id}")
+    public ResponseEntity<? extends BaseResponseBody> hideStore(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable(name = "store_id") UUID storeId
+    ){
+        log.info("userId : {}", userDetails.getId());
+        log.info("storeId : {}", storeId);
+
+        storeService.hideStore(userDetails.getId(), storeId);
+        return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
+    }
+
 }

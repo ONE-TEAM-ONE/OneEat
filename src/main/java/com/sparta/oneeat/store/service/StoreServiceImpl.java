@@ -10,11 +10,8 @@ import com.sparta.oneeat.menu.repository.MenuRepository;
 import com.sparta.oneeat.review.dto.ReviewListDto;
 import com.sparta.oneeat.review.entity.Review;
 import com.sparta.oneeat.review.repository.ReviewRepository;
-import com.sparta.oneeat.store.dto.CreateStoreReqDto;
-import com.sparta.oneeat.store.dto.CreateStoreResDto;
-import com.sparta.oneeat.store.dto.StoreDetailDto;
+import com.sparta.oneeat.store.dto.*;
 import com.sparta.oneeat.store.entity.Store;
-import com.sparta.oneeat.store.dto.StoreListDto;
 import com.sparta.oneeat.store.entity.DeliveryRegion;
 import com.sparta.oneeat.store.entity.StoreStatusEnum;
 import com.sparta.oneeat.store.repository.DeliveryRegionRepository;
@@ -32,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -152,6 +150,65 @@ public class StoreServiceImpl implements StoreService{
                 .collect(Collectors.toList());
 
         return new StoreDetailDto(store, deliveryRegions, menuDtos, reviewDtos);
+    }
+
+    @Override
+    @Transactional
+    public UpdateStoreResDto updateStore(long userId, UUID storeId, UpdateStoreReqDto updateStoreReqDto) {
+        // 유저 조회
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
+        // 가게 조회
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ExceptionType.STORE_NOT_EXIST));
+
+        // 권한 조회
+        if(!Objects.equals(user.getId(), store.getUser().getId())) throw new CustomException(ExceptionType.STORE_ACCESS_DENIED);
+
+        Category category = storeCategotyRepository.findByCategoryName(updateStoreReqDto.getCategory())
+                .orElseThrow(() -> new CustomException(ExceptionType.CATEGORY_NOT_FOUND));
+
+        StoreStatusEnum status;
+        try {
+            status = StoreStatusEnum.valueOf(updateStoreReqDto.getStatus());
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(ExceptionType.INVALID_STORE_STATUS);
+        }
+
+        store.updateStore(
+                category,
+                status,
+                updateStoreReqDto.getName(),
+                updateStoreReqDto.getAddress(),
+                updateStoreReqDto.getDescription(),
+                updateStoreReqDto.getStartTime(),
+                updateStoreReqDto.getEndTime(),
+                updateStoreReqDto.getOwner(),
+                updateStoreReqDto.getMinPrice()
+        );
+
+        deliveryRegionRepository.deleteByStore(store);
+        List<DeliveryRegion> newDeliveryRegions = updateStoreReqDto.getDeliveryRegions().stream()
+                .map(region -> new DeliveryRegion(store, region))
+                .collect(Collectors.toList());
+        deliveryRegionRepository.saveAll(newDeliveryRegions);
+
+        return new UpdateStoreResDto(store.getId());
+    }
+
+    @Override
+    @Transactional
+    public void hideStore(long userId, UUID storeId) {
+        // 유저 조회
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionType.INTERNAL_SERVER_ERROR));
+
+        // 가게 조회
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ExceptionType.STORE_NOT_EXIST));
+
+        // 권한 조회
+        if(!Objects.equals(user.getId(), store.getUser().getId())) throw new CustomException(ExceptionType.STORE_ACCESS_DENIED);
+
+        // 가게 숨김
+        store.hideStore(userId);
     }
 
 }
