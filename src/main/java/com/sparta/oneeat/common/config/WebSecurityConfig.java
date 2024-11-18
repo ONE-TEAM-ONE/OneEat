@@ -99,11 +99,10 @@ public class WebSecurityConfig {
                             UserRoleEnum.MASTER.getAuthority()
                     );
 
-            // 가게 생성은 MANAGER, MASTER 권한만 허용
+            // 가게 생성은 OWNER만 허용
             authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/api/store")
                     .hasAnyAuthority(
-                            UserRoleEnum.MANAGER.getAuthority(),
-                            UserRoleEnum.MASTER.getAuthority()
+                            UserRoleEnum.OWNER.getAuthority()
                     );
 
             // 카테고리 관련 API는 MANAGER, MASTER 권한만 허용
