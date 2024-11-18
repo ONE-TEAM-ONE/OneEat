@@ -34,11 +34,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void softDeleteUser(Long userId, String password, String receivedPassword) {
+    public void softDeleteUser(Long userId, String password) {
 
         User user = this.validateUserExist(userId);
 
-        this.validatePasswordMatches(receivedPassword, password);
+        this.validatePasswordMatches(password, user.getPassword());
 
         user.softDelete(userId);
         log.info("회원이 비활성화 되었습니다. DeletedAt: {}", user.getDeletedAt());
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
         User user = this.validateUserExist(userId);
 
-        this.validatePasswordMatches(oldPassword, newPassword);
+        this.validatePasswordMatches(oldPassword, user.getPassword());
 
         user.modifyPassword(passwordEncoder.encode(newPassword));
         log.info("회원의 비밀번호가 암호화되어 변경되었습니다.");
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validatePasswordMatches(String rawPassword, String encodedPassword) {
-        if(passwordEncoder.matches(rawPassword, encodedPassword)){
+        if(!passwordEncoder.matches(rawPassword, encodedPassword)){
             log.warn("회원의 비밀번호가 일치하지 않습니다.");
             throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
         }
