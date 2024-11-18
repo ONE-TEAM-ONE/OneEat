@@ -31,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(ExceptionType.USER_EXIST_USERNAME);
         }
 
-        if (userRepository.findByNickname(username).isPresent()) {
+        if (userRepository.findByNickname(nickname).isPresent()) {
             log.warn("중복된 닉네임 입니다: {}", nickname);
             throw new CustomException(ExceptionType.USER_EXIST_NICKNAME);
         }
