@@ -83,7 +83,8 @@ public class MenuService {
         return new MenuResponseDto(menu);
     }
 
-    // 가게의 모든 메뉴를 조회
+    // 가게의 모든 메뉴를 조회 (가격 내림)
+
     public Page<MenuResponseDto> getMenuList(User user, UUID storeId, int page, int size,
         String sort) {
 
@@ -93,7 +94,7 @@ public class MenuService {
         Store store = validateStore(user, storeId);
 
         // 정렬 조건에 맞게 해당 가게의 메뉴 전체를 가져온다
-        Page<Menu> menus = menuRepository.findAllByStore(store, pageable);
+        Page<Menu> menus = menuRepository.findAllByStoreAndDeletedAtIsNull(store, pageable);
 
         return menus.map(MenuResponseDto::new);
     }

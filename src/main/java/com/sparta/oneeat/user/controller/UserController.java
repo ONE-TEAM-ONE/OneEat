@@ -1,3 +1,4 @@
+
 package com.sparta.oneeat.user.controller;
 
 import com.sparta.oneeat.auth.service.UserDetailsImpl;
@@ -49,7 +50,7 @@ public class UserController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody String password
     ){
-        userService.softDeleteUser(userDetails, password);
+        userService.softDeleteUser(userDetails.getId(), userDetails.getPassword(), password);
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
@@ -76,7 +77,7 @@ public class UserController {
             @Validated @RequestBody PasswordRequestDto passwordRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ){
-        userService.modifyPassword(userDetails, passwordRequestDto);
+        userService.modifyPassword(userDetails.getId(), passwordRequestDto.getOldPassword(), passwordRequestDto.getNewPassword());
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
@@ -90,7 +91,7 @@ public class UserController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Validated @RequestBody NicknameRequestDto nicknameRequestDto
     ){
-        userService.modifyNickname(userDetails, nicknameRequestDto);
+        userService.modifyNickname(userDetails.getId(), nicknameRequestDto.getNickname());
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 
@@ -105,7 +106,8 @@ public class UserController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Validated@RequestBody EmailRequestDto emailRequestDto
     ){
-        userService.modifyEmail(userDetails, emailRequestDto);
+        userService.modifyEmail(userDetails.getId(), emailRequestDto.getEmail());
         return ResponseEntity.status(200).body(BaseResponseBody.of(0, null));
     }
 }
+

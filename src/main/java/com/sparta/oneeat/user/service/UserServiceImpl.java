@@ -1,11 +1,7 @@
 package com.sparta.oneeat.user.service;
 
-import com.sparta.oneeat.auth.service.UserDetailsImpl;
 import com.sparta.oneeat.common.exception.CustomException;
 import com.sparta.oneeat.common.exception.ExceptionType;
-import com.sparta.oneeat.user.dto.EmailRequestDto;
-import com.sparta.oneeat.user.dto.NicknameRequestDto;
-import com.sparta.oneeat.user.dto.PasswordRequestDto;
 import com.sparta.oneeat.user.dto.UserResponseDto;
 import com.sparta.oneeat.user.entity.User;
 import com.sparta.oneeat.user.repository.UserRepository;
@@ -24,12 +20,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserResponseDto selectUserDetails(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new CustomException(ExceptionType.USER_NOT_EXIST)
-        );
-
-        log.info("username" + user.getName());
+    public UserResponseDto selectUserDetails(Long userId) {
+        User user = this.validateUserExist(userId);
 
         return new UserResponseDto(
                 user.getName(),
@@ -42,17 +34,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void softDeleteUser(UserDetailsImpl userDetails, String password) {
-        // 암호화된 비밀번호 비교
-        if(passwordEncoder.matches(password, userDetails.getPassword())){
-            throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
-        }
+    public void softDeleteUser(Long userId, String password, String receivedPassword) {
 
-        User user = userRepository.findById(userDetails.getId()).orElseThrow(() ->
-               new CustomException(ExceptionType.USER_NOT_EXIST)
-        );
+        User user = this.validateUserExist(userId);
 
-        user.softDelete(userDetails.getId());
+        this.validatePasswordMatches(receivedPassword, password);
+
+        user.softDelete(userId);
+        log.info("회원이 비활성화 되었습니다. DeletedAt: {}", user.getDeletedAt());
 
     }
 
@@ -60,59 +49,77 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void hardDeleteUser(Long userId) {
 
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new CustomException(ExceptionType.USER_NOT_EXIST)
-        );
+        User user = this.validateUserExist(userId);
 
-        // 숨김 처리가 되었는지 확인
-        if(user.getDeletedAt() == null)
+        if(user.getDeletedAt() == null){
+            log.warn("삭제하려는 회원이 비활성화 상태가 아닙니다.");
             throw new CustomException(ExceptionType.USER_NOT_SOFT_DELETE);
-
-        userRepository.deleteById(userId);
-    }
-
-    @Override
-    @Transactional
-    public void modifyPassword(UserDetailsImpl userDetails, PasswordRequestDto passwordRequestDto) {
-
-        User user = userRepository.findById(userDetails.getId()).orElseThrow(()->
-                new CustomException(ExceptionType.USER_NOT_EXIST)
-        );
-
-        if(passwordEncoder.matches(passwordRequestDto.getOldPassword(), user.getPassword())){
-            throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
         }
 
-        user.modifyPassword(passwordEncoder.encode(passwordRequestDto.getNewPassword()));
+        userRepository.deleteById(userId);
+        log.info("회원이 삭제되었습니다. DeletedBy: {}", user.getDeletedBy());
 
     }
 
     @Override
     @Transactional
-    public void modifyNickname(UserDetailsImpl userDetails, NicknameRequestDto nicknameRequestDto) {
+    public void modifyPassword(Long userId, String oldPassword, String newPassword) {
 
-        User user = userRepository.findById(userDetails.getId()).orElseThrow(()->
-                new CustomException(ExceptionType.USER_NOT_EXIST)
-        );
+        User user = this.validateUserExist(userId);
 
-        user.modifyNickname(nicknameRequestDto.getNickname());
+        this.validatePasswordMatches(oldPassword, newPassword);
+
+        user.modifyPassword(passwordEncoder.encode(newPassword));
+        log.info("회원의 비밀번호가 암호화되어 변경되었습니다.");
 
     }
 
     @Override
     @Transactional
-    public void modifyEmail(UserDetailsImpl userDetails, EmailRequestDto emailRequestDto) {
+    public void modifyNickname(Long userId, String nickname) {
 
-        User user = userRepository.findById(userDetails.getId()).orElseThrow(()->
-                new CustomException(ExceptionType.USER_NOT_EXIST)
-        );
+        User user = this.validateUserExist(userId);
 
-        // 이메일 중복 확인
-        if(userRepository.findByEmail(emailRequestDto.getEmail()).isPresent())
+        if(userRepository.findByNickname(nickname).isPresent()){
+            log.warn("이미 존재하는 닉네임 입니다. Nickname: {}", nickname);
+            throw new CustomException(ExceptionType.USER_EXIST_NICKNAME);
+        }
+
+        user.modifyNickname(nickname);
+        log.info("회원의 닉네임이 변경되었습니다. Nickname: {}", user.getNickname());
+
+    }
+
+    @Override
+    @Transactional
+    public void modifyEmail(Long userId, String email) {
+
+        User user = this.validateUserExist(userId);
+
+        if(userRepository.findByEmail(email).isPresent()){
+            log.warn("이미 존재하는 이메일 입니다. Email: {}", email);
             throw new CustomException(ExceptionType.USER_EXIST_EMAIL);
+        }
 
-        user.modifyEmail(emailRequestDto.getEmail());
+        user.modifyEmail(email);
+        log.info("회원의 이메일이 변경되었습니다. Email: {}", user.getEmail());
 
+    }
+
+    protected User validateUserExist(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(()->
+                new CustomException(ExceptionType.USER_NOT_EXIST)
+        );
+        log.info("회원의 정보가 확인되었습니다. UserID: {}", user.getId());
+
+        return user;
+    }
+
+    private void validatePasswordMatches(String rawPassword, String encodedPassword) {
+        if(passwordEncoder.matches(rawPassword, encodedPassword)){
+            log.warn("회원의 비밀번호가 일치하지 않습니다.");
+            throw new CustomException(ExceptionType.USER_PASSWORD_MISMATCH);
+        }
     }
 
 }

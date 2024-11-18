@@ -13,6 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface MenuRepository extends JpaRepository<Menu, UUID> {
 
     Optional<Menu> findByIdAndStoreIdAndDeletedAtIsNull(UUID menuId, Store store);
-    Page<Menu> findAllByStore(Store store, Pageable pageable);
+    Page<Menu> findAllByStoreAndDeletedAtIsNull(Store store, Pageable pageable);
     Optional<Menu> findByIdAndStore(UUID menuId, Store store);
 }
