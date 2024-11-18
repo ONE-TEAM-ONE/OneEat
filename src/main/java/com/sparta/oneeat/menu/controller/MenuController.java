@@ -69,6 +69,21 @@ public class MenuController {
             .body(BaseResponseBody.of(0, menuService.createMenu(userDetails.getUser(), requestDto, storeId)));
     }
 
+    @Operation(summary = "메뉴 상세 조회", description = "메뉴 상세 조회를 요청합니다")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "메뉴 조회 성공"),
+        @ApiResponse(responseCode = "500", description = "메뉴 조회 실패")
+    })
+    @PostMapping("/store/{storeId}/menu/{menuId}")
+    public ResponseEntity<? extends BaseResponseBody> getMenuDetail(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable UUID storeId,
+        @PathVariable UUID menuId) {
+
+        return ResponseEntity.status(200)
+            .body(BaseResponseBody.of(0, menuService.getMenuDetail(userDetails.getUser(), storeId, menuId)));
+    }
+
     @Operation(summary = "메뉴 목록 조회", description = "메뉴 목록을 요청합니다")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "메뉴 목록 조회 성공"),
