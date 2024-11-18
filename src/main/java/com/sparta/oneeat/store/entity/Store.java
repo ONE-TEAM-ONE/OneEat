@@ -10,7 +10,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,14 +53,48 @@ public class Store extends BaseEntity {
     private StoreStatusEnum status;
 
     @Column(name="STORE_START_TIME", nullable = false)
-    private Date startTime;
+    private LocalTime startTime;
 
     @Column(name="STORE_END_TIME", nullable = false)
-    private Date endTime;
+    private LocalTime endTime;
 
     @Column(name="STORE_OWNER")
     private String owner;
 
     @Column(name="STORE_MINPRICE")
     private Integer minPrice;
+
+    public Store(User user, Category category, String name, String address, String description,
+                 StoreStatusEnum status, LocalTime startTime, LocalTime endTime, String owner, Integer minPrice) {
+        this.user = user;
+        this.category = category;
+        this.name = name;
+        this.address = address;
+        this.description = description;
+        this.status = status;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.owner = owner;
+        this.minPrice = minPrice;
+    }
+
+    public void updateStore(Category category, StoreStatusEnum status,
+                            String name, String address, String description,
+                       LocalTime startTime, LocalTime endTime, String owner, Integer minPrice) {
+        this.category = category;
+        this.status = status;
+        this.name = name;
+        this.address = address;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.owner = owner;
+        this.minPrice = minPrice;
+    }
+
+    public void hideStore(long userId) {
+        this.deletedAt = LocalDateTime.now();
+        this.deletedBy = userId;
+    }
+
 }

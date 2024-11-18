@@ -55,8 +55,14 @@ public enum ExceptionType {
 
     // 카테고리
     CATEGORY_ACCESS_DENIED(HttpStatus.FORBIDDEN, "C-001", "관리자만 접근할 수 있습니다."),
-    CATEGORY_DUPLICATED(HttpStatus.BAD_REQUEST, "C-002", "중복된 카테고리명 입니다.");
+    CATEGORY_DUPLICATED(HttpStatus.BAD_REQUEST, "C-002", "중복된 카테고리명 입니다."),
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "C-003", "해당 카테고리명이 존재하지 않습니다."),
 
+    // 가게
+    STORE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "T-001", "이미 등록된 가게입니다."),
+    STORE_NOT_EXIST(HttpStatus.NOT_FOUND, "T-002", "해당 가게가 존재하지 않습니다."),
+    STORE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "T-003", "해당 가게에 대한 권한이 없습니다."),
+    INVALID_STORE_STATUS(HttpStatus.BAD_REQUEST, "T-004", "가게 상태의 요청 형식이 잘못되었습니다.");
 
     // 상태, 에러 코드, 메시지
     private final HttpStatus httpStatus;

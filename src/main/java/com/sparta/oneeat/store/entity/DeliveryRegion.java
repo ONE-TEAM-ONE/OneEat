@@ -24,4 +24,9 @@ public class DeliveryRegion {
 
     @Column(name = "DELIVERY_REGION")
     private String deliveryRegion;
+
+    public DeliveryRegion(Store store, String deliveryRegion) {
+        this.store = store;
+        this.deliveryRegion = deliveryRegion;
+    }
 }
