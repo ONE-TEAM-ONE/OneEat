@@ -6,7 +6,7 @@ import com.sparta.oneeat.user.dto.UserResponseDto;
 public interface UserService {
     UserResponseDto selectUserDetails(Long id);
 
-    void softDeleteUser(Long userId, String password, String receivedPassword);
+    void softDeleteUser(Long userId, String password);
 
     void hardDeleteUser(Long userId);
 
