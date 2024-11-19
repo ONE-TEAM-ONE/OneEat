@@ -87,7 +87,7 @@ public class WebSecurityConfig {
                     );
 
             // 메뉴 관련 데이터 변경은 OWNER 권한만 허용
-            authorizeHttpRequests.requestMatchers("/api/store/**", "/api/ai")
+            authorizeHttpRequests.requestMatchers("/api/store/*/menu/*", "/api/ai")
                     .hasAnyAuthority(UserRoleEnum.OWNER.getAuthority());
 
             // 가게 관련 조회는 모든 권한 허용
