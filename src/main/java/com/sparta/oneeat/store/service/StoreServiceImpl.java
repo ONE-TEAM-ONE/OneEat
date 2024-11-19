@@ -37,6 +37,7 @@ public class StoreServiceImpl implements StoreService{
     private final DeliveryRegionRepository deliveryRegionRepository;
     private final UserRepository userRepository;
     private final StoreCategotyRepository storeCategotyRepository;
+    private final DeliveryRegionUtil deliveryRegionUtil;
 
     @Override
     public Page<StoreListDto> getStoreList(long userId, int page, int size, String sort, boolean isAsc) {
@@ -50,9 +51,17 @@ public class StoreServiceImpl implements StoreService{
         // 사용자의 주소를 가져옵니다.
         String userAddress = user.getCurrentAddress();
 
-        List<DeliveryRegion> deliveryRegions = deliveryRegionRepository.findAllByDeliveryRegion(userAddress);
+        // 주소 변환
+        String formattedAddress;
+        formattedAddress = deliveryRegionUtil.getFormattedAddress(userAddress);
+        if(formattedAddress.isBlank()){
+            throw new CustomException(ExceptionType.ADDRESS_NOT_FOUND);
+        }
+
+        List<DeliveryRegion> deliveryRegions = deliveryRegionRepository.findAllByDeliveryRegion(formattedAddress);
         List<UUID> storeIds = deliveryRegions.stream()
                 .map(DeliveryRegion::getStore)
+                .filter(store -> store.getDeletedAt() == null)
                 .map(Store::getId)
                 .collect(Collectors.toList());
 
@@ -107,6 +116,11 @@ public class StoreServiceImpl implements StoreService{
     public StoreDetailDto getStoreDetail(UUID storeId) {
         // 가게 조회
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new CustomException(ExceptionType.STORE_NOT_EXIST));
+
+        // 삭제된 가게인지 확인
+        if (store.getDeletedAt() != null) {
+            throw new CustomException(ExceptionType.STORE_NOT_EXIST);
+        }
 
         List<String> deliveryRegions = deliveryRegionRepository.findAllByStoreId(storeId).stream()
                 .map(DeliveryRegion::getDeliveryRegion)

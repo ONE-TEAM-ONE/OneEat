@@ -38,3 +38,7 @@ springdoc:
     disable-swagger-default-url: true # Swagger 기본 URL 비활성화 여부
   paths-to-match: # 경로 필터링 규칙(API 문서화 적용할 경로)
     - /**
+
+kakao:
+  api:
+    key: ${KAKAO_API_KEY}

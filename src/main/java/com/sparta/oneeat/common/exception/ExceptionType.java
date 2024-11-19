@@ -61,7 +61,8 @@ public enum ExceptionType {
     STORE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "T-001", "이미 등록된 가게입니다."),
     STORE_NOT_EXIST(HttpStatus.NOT_FOUND, "T-002", "해당 가게가 존재하지 않습니다."),
     STORE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "T-003", "해당 가게에 대한 권한이 없습니다."),
-    INVALID_STORE_STATUS(HttpStatus.BAD_REQUEST, "T-004", "가게 상태의 요청 형식이 잘못되었습니다.");
+    INVALID_STORE_STATUS(HttpStatus.BAD_REQUEST, "T-004", "가게 상태의 요청 형식이 잘못되었습니다."),
+    ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "T-005", "주소를 찾을 수 없습니다.");
 
     // 상태, 에러 코드, 메시지
     private final HttpStatus httpStatus;
